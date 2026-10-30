@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <base href="/evergreen/" />
     <link rel="stylesheet" href="app.css" />
     <link rel="stylesheet" href="garden.css" />
@@ -14,14 +14,25 @@
 
 <body>
     <div id="app">
-        <p>Loading Evergreen...</p>
+        <p data-localization="loading">Loading Evergreen...</p>
     </div>
     <div id="blazor-error-ui">
-        An unexpected error occurred.
-        <a href="" class="reload">Reload</a>
-        <span class="dismiss">🗙</span>
+        <span data-localization="error">An unexpected error occurred.</span>
+        <a href="" class="reload" data-localization="reload">Reload</a>
+        <button type="button" class="dismiss" data-localization="dismiss" aria-label="Dismiss">🗙</button>
     </div>
-    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="localization.js"></script>
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
+    <script>
+        Blazor.start({
+            applicationCulture: document.documentElement.lang,
+            // Load all translations so live switching never needs a page reload.
+            configureRuntime: runtime => runtime.withConfig({ loadAllSatelliteResources: true })
+        }).catch(error => {
+            console.error("Evergreen: application startup failed.", error);
+            document.querySelector("#blazor-error-ui").style.display = "block";
+        });
+    </script>
 </body>
 
 </html>
