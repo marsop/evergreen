@@ -1,5 +1,28 @@
-bin/
-obj/
+# Build output
+[Bb]in/
+[Oo]bj/
+[Aa]rtifacts/
+[Pp]ublish/
+TestResults/
+
+# Visual Studio and user-specific files
 .vs/
 *.user
 *.suo
+*.userosscache
+*.sln.docstates
+
+# Local settings and secrets
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+*.secrets.json
+
+# IDE and operating-system files
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local logs
+*.log
