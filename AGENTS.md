@@ -2,14 +2,14 @@
 
 ## Project
 
-- This is a .NET 10 Blazor WebAssembly app for static hosting. See `Program.cs` and `LittleJungle.csproj`.
+- This is a .NET 10 Blazor WebAssembly app for static hosting. See `Program.cs` and `Evergreen.csproj`.
 - The plant-care dashboard and its current sample data are in `Components/Pages/Home.razor`.
 - App data is currently held in component memory; do not imply that it is persisted.
 - Keep static assets in `wwwroot/` and reuse the existing application styles where practical.
 
 ## Build and validation
 
-- Build with `dotnet build LittleJungle.csproj`.
+- Build with `dotnet build Evergreen.csproj`.
 - There is no automated test project yet. If behavior changes, add or update appropriate tests when a test project is introduced.
 - Keep the GitHub Actions build workflow in sync with the supported .NET SDK.
 

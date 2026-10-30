@@ -1,6 +1,6 @@
-# Little Jungle
+# Evergreen
 
-Little Jungle is a Blazor WebAssembly plant-care dashboard for keeping track of plants, growing places, and care journal entries. It runs in the browser and can be hosted as static files on GitHub Pages.
+Evergreen is a Blazor WebAssembly plant-care dashboard for keeping track of plants, growing places, and care journal entries. It runs in the browser and can be hosted as static files on GitHub Pages.
 
 ## Features
 
@@ -21,13 +21,13 @@ The current app is a prototype: its plant, place, and journal data lives in brow
 From the repository root:
 
 ```powershell
-dotnet run --project LittleJungle.csproj
+dotnet run --project Evergreen.csproj
 ```
 
 The Blazor WebAssembly development server URL is printed when the app starts. To build without starting the app:
 
 ```powershell
-dotnet build LittleJungle.csproj
+dotnet build Evergreen.csproj
 ```
 
 There is not currently an automated test project. The CI workflow builds the app in Release configuration and deploys it to GitHub Pages when a commit is pushed to the repository's default branch.

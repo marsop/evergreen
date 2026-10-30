@@ -1,6 +1,6 @@
 # Changelog
 
-Notable changes to Little Jungle are documented here.
+Notable changes to Evergreen are documented here.
 
 ## [Unreleased]
 

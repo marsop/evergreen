@@ -20,10 +20,10 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Restore dependencies
-        run: dotnet restore LittleJungle.csproj
+        run: dotnet restore Evergreen.csproj
 
       - name: Build
-        run: dotnet build LittleJungle.csproj --no-restore --configuration Release
+        run: dotnet build Evergreen.csproj --no-restore --configuration Release
 
   deploy:
     if: github.event_name == 'push' && github.ref_name == github.event.repository.default_branch
@@ -46,7 +46,7 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Publish WebAssembly app
-        run: dotnet publish LittleJungle.csproj --configuration Release --output publish
+        run: dotnet publish Evergreen.csproj --configuration Release --output publish
 
       - name: Configure GitHub Pages paths
         run: |
