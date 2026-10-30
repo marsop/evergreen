@@ -1,0 +1,109 @@
+@namespace Evergreen.Components.Shared
+<svg class="app-icon @Class" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+    @switch (Name)
+    {
+        case IconName.Alert:
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 8v5" />
+            <path d="M12 16h.01" />
+            break;
+        case IconName.ArrowLeft:
+            <path d="m14 18-6-6 6-6" />
+            <path d="M20 12H8" />
+            break;
+        case IconName.ArrowRight:
+            <path d="m10 18 6-6-6-6" />
+            <path d="M4 12h12" />
+            break;
+        case IconName.Check:
+            <path d="m5 12 4 4L19 6" />
+            break;
+        case IconName.Fertilizer:
+            <path d="M12 20v-8" />
+            <path d="M12 13c-5 0-7-2.5-7-6 4.5 0 7 2 7 6Z" />
+            <path d="M12 16c0-4 2.5-6 7-6 0 3.5-2 6-7 6Z" />
+            <path d="M19 3v4M17 5h4" />
+            break;
+        case IconName.Home:
+            <path d="m3 10 9-7 9 7" />
+            <path d="M5 9v11h14V9M9 20v-6h6v6" />
+            break;
+        case IconName.Journal:
+            <path d="M5 4.5A2.5 2.5 0 0 1 7.5 2H20v18H7.5A2.5 2.5 0 0 1 5 17.5z" />
+            <path d="M5 5h15M9 9h7M9 13h7" />
+            <path d="M5 17.5A2.5 2.5 0 0 1 7.5 15H20" />
+            break;
+        case IconName.Leaf:
+            <path d="M20 4c-9 0-15 3-15 10a6 6 0 0 0 6 6c7 0 9-7 9-16Z" />
+            <path d="M4 21c3-5 7-8 12-11" />
+            break;
+        case IconName.Pin:
+            <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" />
+            <circle cx="12" cy="10" r="2.5" />
+            break;
+        case IconName.Plants:
+            <path d="M12 21v-9" />
+            <path d="M12 14c-5 0-8-2.5-8-7 5 0 8 2.5 8 7Z" />
+            <path d="M12 11c0-4 2-7 7-7 0 4.5-2.5 7-7 7Z" />
+            <path d="M8 21h8" />
+            break;
+        case IconName.Places:
+            <path d="m3 10 9-7 9 7" />
+            <path d="M5 9v11h14V9" />
+            <path d="M9 20v-6h6v6" />
+            break;
+        case IconName.Plus:
+            <path d="M12 5v14M5 12h14" />
+            break;
+        case IconName.Photo:
+            <rect x="3" y="4" width="18" height="16" rx="2" />
+            <circle cx="8.5" cy="9" r="1.5" />
+            <path d="m21 15-5-5L5 20" />
+            break;
+        case IconName.Prune:
+            <path d="m14 14 6 6M14 10l6-6" />
+            <circle cx="7" cy="7" r="3" />
+            <circle cx="7" cy="17" r="3" />
+            <path d="m10 10 4 4M10 14l4-4" />
+            break;
+        case IconName.Repot:
+            <path d="m4 10 2 10h12l2-10H4Z" />
+            <path d="M3 10h18M8 7c0-2 1.5-3 4-3s4 1 4 3" />
+            <path d="M12 4V2" />
+            break;
+        case IconName.Search:
+            <circle cx="10.8" cy="10.8" r="6.8" />
+            <path d="m16 16 5 5" />
+            break;
+        case IconName.Sparkle:
+            <path d="m12 3 1.8 6.2L20 11l-6.2 1.8L12 19l-1.8-6.2L4 11l6.2-1.8L12 3Z" />
+            <path d="m19 15 .8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z" />
+            break;
+        case IconName.Sun:
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />
+            break;
+        case IconName.Thermometer:
+            <path d="M14 14.8V5a3 3 0 0 0-6 0v9.8a5 5 0 1 0 6 0Z" />
+            <path d="M11 12v6" />
+            break;
+        case IconName.Today:
+            <rect x="3" y="5" width="18" height="16" rx="2" />
+            <path d="M7 3v4M17 3v4M3 10h18" />
+            <path d="m8 15 2 2 4-4" />
+            break;
+        case IconName.Treatment:
+            <path d="M12 3v18M3 12h18" />
+            <circle cx="12" cy="12" r="9" />
+            break;
+        case IconName.Water:
+            <path d="M12 3C9.5 7 6 10.5 6 14a6 6 0 0 0 12 0c0-3.5-3.5-7-6-11Z" />
+            <path d="M9 15a3 3 0 0 0 3 3" />
+            break;
+    }
+</svg>
+
+@code {
+    [Parameter, EditorRequired] public IconName Name { get; set; }
+    [Parameter] public string? Class { get; set; }
+}

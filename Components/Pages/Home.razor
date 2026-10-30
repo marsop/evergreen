@@ -5,7 +5,7 @@
 <div class="app-shell">
 	<aside class="sidebar" aria-label="@T("MainNavigation")">
 		<a class="brand" href="" aria-label="@T("EvergreenHome")">
-			<span class="brand-mark" aria-hidden="true">e</span>
+			<span class="brand-mark"><AppIcon Name="@IconName.Leaf" /></span>
 			<span><strong>Evergreen</strong><small>@T("BrandTagline")</small></span>
 		</a>
 
@@ -14,7 +14,7 @@
 			@foreach (var item in NavigationItems)
 			{
 				<button class="nav-item @(IsCurrent(item.Name) ? "active" : "")" @onclick="() => Navigate(item.Name)">
-					<span class="nav-icon" aria-hidden="true">@item.Icon</span>
+					<span class="nav-icon"><AppIcon Name="@item.Icon" /></span>
 					<span>@T(item.Name)</span>
 					@if (item.Name == "Today")
 					{
@@ -26,7 +26,7 @@
 
 		<div class="sidebar-bottom">
 			<div class="season-card">
-				<span class="season-mark" aria-hidden="true">✳</span>
+				<span class="season-mark"><AppIcon Name="@IconName.Sparkle" /></span>
 				<div><strong>@T("WinterRhythm")</strong><span>@T("WinterFeed")</span></div>
 			</div>
 			<div class="sidebar-foot"><span class="status-dot"></span> @T("GardenCounts", CountLabel("PlantCount", plants.Count), CountLabel("PlaceCount", places.Count))</div>
@@ -39,7 +39,7 @@
 			<div class="topbar-actions">
 				<span class="today-date">@SampleToday.ToString(T("DashboardDateFormat"), Cultures.Culture)</span>
 				<LanguageSelector />
-				<button class="button button-dark" @onclick="OpenJournalForm"><span aria-hidden="true">+</span> @T("LogCare")</button>
+				<button class="button button-dark" @onclick="OpenJournalForm"><AppIcon Name="@IconName.Plus" /> @T("LogCare")</button>
 			</div>
 		</header>
 
@@ -59,21 +59,21 @@
 				</div>
 
 				<div class="today-banner">
-					<div class="banner-icon" aria-hidden="true">✳</div>
+					<div class="banner-icon"><AppIcon Name="@IconName.Sparkle" /></div>
 					<div><strong>@T("WinterRhythm")</strong><span>@T("WinterFertilizing")</span></div>
 					<span class="banner-note">@T("SeasonRoutine")</span>
 				</div>
 
 				<div class="section-heading task-heading">
 					<div><p class="eyebrow">@T("CareList")</p><h2>@CountLabel("ThingsToday", DueCount)</h2></div>
-					<button class="text-button" @onclick='() => Navigate("Plants")'>@T("ViewAllPlants") <span aria-hidden="true">→</span></button>
+					<button class="text-button" @onclick='() => Navigate("Plants")'>@T("ViewAllPlants") <AppIcon Name="@IconName.ArrowRight" /></button>
 				</div>
 
 				<div class="task-locations">
 					@foreach (var locationGroup in plants.GroupBy(plant => plant.Location))
 					{
 						<section class="task-location">
-							<div class="location-heading"><span class="location-pin" aria-hidden="true">⌖</span><h3>@locationGroup.Key</h3><span>@CountLabel("PlantCount", locationGroup.Count())</span></div>
+							<div class="location-heading"><span class="location-pin"><AppIcon Name="@IconName.Pin" /></span><h3>@locationGroup.Key</h3><span>@CountLabel("PlantCount", locationGroup.Count())</span></div>
 							<div class="task-list">
 								@foreach (var plant in locationGroup)
 								{
@@ -86,7 +86,7 @@
 											<span class="task-copy"><strong>@plant.Name</strong><small>@T("WaterSchedule", T(plant.WaterAmount))</small></span>
 										</button>
 										<button class="water-button @(plant.Watered ? "done" : "")" @onclick="() => ToggleWater(plant)" aria-label="@T(plant.Watered ? "UndoWatering" : "MarkWatered", plant.Name)">
-											<span aria-hidden="true">@(plant.Watered ? "✓" : "↓")</span> @T(plant.Watered ? "Watered" : "Water")
+											<AppIcon Name="@(plant.Watered ? IconName.Check : IconName.Water)" /> @T(plant.Watered ? "Watered" : "Water")
 										</button>
 									</article>
 								}
@@ -111,10 +111,10 @@
 			<section class="view-content">
 				<div class="page-heading">
 					<div><p class="eyebrow">@T("YourCollection")</p><h1>@T("Plants") <span class="heading-count">@plants.Count</span></h1><p class="lead">@T("PlantsLead")</p></div>
-					<button class="button button-dark" @onclick="OpenPlantForm"><span aria-hidden="true">+</span> @T("AddPlant")</button>
+					<button class="button button-dark" @onclick="OpenPlantForm"><AppIcon Name="@IconName.Plus" /> @T("AddPlant")</button>
 				</div>
 				<div class="toolbar">
-					<label class="search-box"><span aria-hidden="true">⌕</span><input aria-label="@T("SearchPlants")" placeholder="@CountLabel("SearchPlantCount", plants.Count)" @bind="searchTerm" @bind:event="oninput" /></label>
+					<label class="search-box"><AppIcon Name="@IconName.Search" /><input aria-label="@T("SearchPlants")" placeholder="@CountLabel("SearchPlantCount", plants.Count)" @bind="searchTerm" @bind:event="oninput" /></label>
 					<div class="filter-row" role="group" aria-label="@T("FilterByPlace")">
 						@foreach (var placeName in new[] { "All" }.Concat(places.Select(place => place.Name)))
 						{
@@ -142,8 +142,8 @@
 												else { <span aria-hidden="true">✿</span> }
 											</span>
 											<span class="plant-name"><strong>@plant.Name</strong><small>@plant.Location</small></span>
-											<span class="sun-label"><span aria-hidden="true">☼</span> @T(plant.Light)</span>
-											<span class="row-arrow" aria-hidden="true">↗</span>
+											<span class="sun-label"><AppIcon Name="@IconName.Sun" /> @T(plant.Light)</span>
+											<span class="row-arrow"><AppIcon Name="@IconName.ArrowRight" /></span>
 										</button>
 									}
 								</div>
@@ -158,16 +158,16 @@
 			<section class="view-content">
 				<div class="page-heading">
 					<div><p class="eyebrow">@T("LightMakesHome")</p><h1>@T("Places")</h1><p class="lead">@T("PlacesLead")</p></div>
-					<button class="button button-dark" @onclick="OpenPlaceForm"><span aria-hidden="true">+</span> @T("AddPlace")</button>
+					<button class="button button-dark" @onclick="OpenPlaceForm"><AppIcon Name="@IconName.Plus" /> @T("AddPlace")</button>
 				</div>
 				<h2 class="subsection-title">@T("Indoor") <span>@CountLabel("SpotCount", places.Count(place => !place.Outdoor))</span></h2>
 				<div class="place-grid">
 					@foreach (var place in places.Where(place => !place.Outdoor))
 					{
 						<button class="place-card" @onclick="() => ShowPlacePlants(place.Name)">
-							<div class="place-card-top"><span class="place-symbol" aria-hidden="true">⌂</span><span class="plant-count">@CountLabel("PlantCount", plants.Count(plant => plant.Location == place.Name))</span></div>
+							<div class="place-card-top"><span class="place-symbol"><AppIcon Name="@IconName.Home" /></span><span class="plant-count">@CountLabel("PlantCount", plants.Count(plant => plant.Location == place.Name))</span></div>
 							<h3>@place.Name</h3>
-							<div class="place-facts"><span><b aria-hidden="true">☼</b> @T(place.Light)</span><span><b aria-hidden="true">°</b> @PlaceTemperature(place)</span></div>
+							<div class="place-facts"><span><AppIcon Name="@IconName.Sun" /> @T(place.Light)</span><span><AppIcon Name="@IconName.Thermometer" /> @PlaceTemperature(place)</span></div>
 							<div class="place-leaves">
 								@foreach (var plant in plants.Where(plant => plant.Location == place.Name).Take(4))
 								{
@@ -183,12 +183,12 @@
 					@foreach (var place in places.Where(place => place.Outdoor))
 					{
 						<button class="place-card outdoor-card" @onclick="() => ShowPlacePlants(place.Name)">
-							<div class="place-card-top"><span class="place-symbol" aria-hidden="true">☼</span><span class="plant-count">@CountLabel("PlantCount", plants.Count(plant => plant.Location == place.Name))</span></div>
-							<h3>@place.Name</h3><div class="place-facts"><span><b aria-hidden="true">☼</b> @T(place.Light)</span><span><b aria-hidden="true">°</b> @PlaceTemperature(place)</span></div>
+							<div class="place-card-top"><span class="place-symbol"><AppIcon Name="@IconName.Sun" /></span><span class="plant-count">@CountLabel("PlantCount", plants.Count(plant => plant.Location == place.Name))</span></div>
+							<h3>@place.Name</h3><div class="place-facts"><span><AppIcon Name="@IconName.Sun" /> @T(place.Light)</span><span><AppIcon Name="@IconName.Thermometer" /> @PlaceTemperature(place)</span></div>
 						</button>
 						@if (place.Name == "Garden")
 						{
-							<button class="add-place-card" @onclick="OpenPlaceForm"><span aria-hidden="true">+</span><span>@T("AddOutdoorPlace")</span></button>
+							<button class="add-place-card" @onclick="OpenPlaceForm"><AppIcon Name="@IconName.Plus" /><span>@T("AddOutdoorPlace")</span></button>
 						}
 					}
 				</div>
@@ -199,13 +199,13 @@
 			<section class="view-content">
 				<div class="page-heading">
 					<div><p class="eyebrow">@T("NotesFromGarden")</p><h1>@T("Journal")</h1><p class="lead">@T("JournalLead")</p></div>
-					<button class="button button-dark" @onclick="OpenJournalForm"><span aria-hidden="true">+</span> @T("AddEntry")</button>
+					<button class="button button-dark" @onclick="OpenJournalForm"><AppIcon Name="@IconName.Plus" /> @T("AddEntry")</button>
 				</div>
 				<div class="journal-filters" role="group" aria-label="@T("FilterJournal")">
 					@foreach (var entryType in JournalTypes)
 					{
 						<button class="journal-filter @(selectedJournalType == entryType ? "selected" : "")" @onclick="() => SetJournalFilter(entryType)">
-							<span aria-hidden="true">@JournalIcon(entryType)</span>@T(entryType)
+							<AppIcon Name="@JournalIcon(entryType)" />@T(entryType)
 						</button>
 					}
 					<button class="journal-filter @(selectedJournalType == "All" ? "selected" : "")" @onclick='() => selectedJournalType = "All"'>@T("All")</button>
@@ -216,7 +216,7 @@
 						<section class="journal-day"><h2>@JournalDate(day.Key)</h2>
 							@foreach (var entry in day)
 							{
-								<article class="journal-entry"><span class="journal-entry-icon" aria-hidden="true">@JournalIcon(entry.Type)</span><div><strong>@JournalTitle(entry)</strong><p>@JournalDescription(entry)</p>@if (!string.IsNullOrWhiteSpace(entry.PhotoData)) { <img class="journal-photo" src="@entry.PhotoData" alt="@T("JournalAttachment")" /> }</div><time>@T(entry.Type)</time></article>
+								<article class="journal-entry"><span class="journal-entry-icon"><AppIcon Name="@JournalIcon(entry.Type)" /></span><div><strong>@JournalTitle(entry)</strong><p>@JournalDescription(entry)</p>@if (!string.IsNullOrWhiteSpace(entry.PhotoData)) { <img class="journal-photo" src="@entry.PhotoData" alt="@T("JournalAttachment")" /> }</div><time>@T(entry.Type)</time></article>
 							}
 						</section>
 					}
@@ -227,13 +227,13 @@
 		else
 		{
 			<section class="view-content profile-view">
-				<div class="profile-back-row"><button class="back-button" @onclick='() => Navigate("Plants")'>← <span>@T("BackToPlants")</span></button><button class="text-button" @onclick="OpenEditPlantForm">@T("EditPlant") <span aria-hidden="true">↗</span></button></div>
+				<div class="profile-back-row"><button class="back-button" @onclick='() => Navigate("Plants")'><AppIcon Name="@IconName.ArrowLeft" /><span>@T("BackToPlants")</span></button><button class="text-button" @onclick="OpenEditPlantForm">@T("EditPlant") <AppIcon Name="@IconName.ArrowRight" /></button></div>
 				<div class="profile-hero">
 					<div class="profile-photo">
 						@if (!string.IsNullOrWhiteSpace(selectedPlant.Image)) { <img src="@selectedPlant.Image" alt="@selectedPlant.Species" /> }
 						else { <span aria-hidden="true">✿</span> }
 					</div>
-					<div class="profile-title"><p class="eyebrow">@selectedPlant.Location <span class="eyebrow-dot"></span> @T(selectedPlant.Category)</p><h1>@selectedPlant.Name</h1><p class="species">@selectedPlant.Species</p><span class="profile-alert">⚘ <span>@T("ProfileAlert")</span></span></div>
+					<div class="profile-title"><p class="eyebrow">@selectedPlant.Location <span class="eyebrow-dot"></span> @T(selectedPlant.Category)</p><h1>@selectedPlant.Name</h1><p class="species">@selectedPlant.Species</p><span class="profile-alert"><AppIcon Name="@IconName.Alert" /><span>@T("ProfileAlert")</span></span></div>
 				</div>
 				<section class="care-chart"><div class="care-chart-head"><div><p class="eyebrow">@T("SeasonalCare")</p><h2>@T("CareThroughYear")</h2></div><div class="chart-legend"><span><i class="legend-water"></i>@T("Water")</span><span><i class="legend-feed"></i>@T("Fertilize")</span></div></div><div class="month-chart">
 					@foreach (var month in Months)
@@ -245,15 +245,15 @@
 					<section class="care-cards">
 						@foreach (var care in CareDetails)
 						{
-							<article class="care-card"><span class="care-icon" aria-hidden="true">@care.Icon</span><div><div class="care-card-title"><h3>@T(care.Title)</h3><strong>@T(care.Value)</strong></div><p>@T(care.Description)</p></div></article>
+							<article class="care-card"><span class="care-icon"><AppIcon Name="@care.Icon" /></span><div><div class="care-card-title"><h3>@T(care.Title)</h3><strong>@T(care.Value)</strong></div><p>@T(care.Description)</p></div></article>
 						}
 					</section>
 					<aside class="watchout-panel"><p class="eyebrow">@T("ThingsToWatch")</p><h2>@T("WatchOutFor")</h2><ul><li><strong>@T("YellowLeaves")</strong><span>@T("YellowLeavesAdvice")</span></li><li><strong>@T("BrownEdges")</strong><span>@T("BrownEdgesAdvice")</span></li><li><strong>@T("SpiderMites")</strong><span>@T("SpiderMitesAdvice")</span></li><li><strong>@T("Thrips")</strong><span>@T("ThripsAdvice")</span></li></ul></aside>
 				</div>
-				<section class="profile-history"><div class="section-heading"><div><p class="eyebrow">@T("LifeLogged")</p><h2>@T("RecentHistory")</h2></div><button class="text-button" @onclick='() => Navigate("Journal")'>@T("OpenJournal") <span aria-hidden="true">→</span></button></div>
+				<section class="profile-history"><div class="section-heading"><div><p class="eyebrow">@T("LifeLogged")</p><h2>@T("RecentHistory")</h2></div><button class="text-button" @onclick='() => Navigate("Journal")'>@T("OpenJournal") <AppIcon Name="@IconName.ArrowRight" /></button></div>
 					@foreach (var entry in journalEntries.Where(entry => JournalPlantName(entry) == selectedPlant.Name).Take(4))
 					{
-						<div class="history-row"><span class="journal-entry-icon" aria-hidden="true">@JournalIcon(entry.Type)</span><strong>@JournalTitle(entry)</strong><time>@JournalDate(entry.Date)</time></div>
+						<div class="history-row"><span class="journal-entry-icon"><AppIcon Name="@JournalIcon(entry.Type)" /></span><strong>@JournalTitle(entry)</strong><time>@JournalDate(entry.Date)</time></div>
 					}
 				</section>
 			</section>
@@ -264,7 +264,7 @@
 <nav class="mobile-nav" aria-label="@T("MobileNavigation")">
 	@foreach (var item in NavigationItems)
 	{
-		<button class="mobile-nav-item @(IsCurrent(item.Name) ? "active" : "")" @onclick="() => Navigate(item.Name)"><span aria-hidden="true">@item.Icon</span>@T(item.Name)</button>
+		<button class="mobile-nav-item @(IsCurrent(item.Name) ? "active" : "")" @onclick="() => Navigate(item.Name)"><AppIcon Name="@item.Icon" />@T(item.Name)</button>
 	}
 </nav>
 
@@ -327,18 +327,18 @@
 	private static readonly string[] CategoryOrder = ["Succulents & dry", "Tropical, let top dry", "Tropical, evenly moist", "Mediterranean"];
 	private static readonly string[] JournalTypes = ["Watered", "Fertilized", "Repotted", "Pruned", "Treated", "Photo"];
 	private static readonly string[] PlaceLights = ["Bright, filtered", "Direct afternoon sun", "Full sun", "Low light", "Full sun to shade"];
-	private static readonly (string Name, string Icon)[] NavigationItems = [("Today", "◷"), ("Plants", "♧"), ("Places", "⌂"), ("Journal", "▤")];
+	private static readonly (string Name, IconName Icon)[] NavigationItems = [("Today", IconName.Today), ("Plants", IconName.Plants), ("Places", IconName.Places), ("Journal", IconName.Journal)];
 	private static readonly (DayOfWeek Day, string Count)[] WeekDays = [(DayOfWeek.Monday, "·"), (DayOfWeek.Tuesday, "·"), (DayOfWeek.Wednesday, "·"), (DayOfWeek.Thursday, "·"), (DayOfWeek.Friday, "·"), (DayOfWeek.Saturday, "·"), (DayOfWeek.Sunday, "23")];
 	private static readonly (int Number, int WaterHeight, int FeedHeight)[] Months = [(1, 34, 0), (2, 36, 0), (3, 42, 18), (4, 52, 34), (5, 68, 43), (6, 78, 48), (7, 86, 50), (8, 78, 46), (9, 66, 30), (10, 52, 8), (11, 38, 0), (12, 34, 0)];
-	private static readonly (string Icon, string Title, string Value, string Description)[] CareDetails =
+	private static readonly (IconName Icon, string Title, string Value, string Description)[] CareDetails =
 	[
-		("☼", "Light", "CareLightValue", "CareLightAdvice"),
-		("↓", "Water", "CareWaterValue", "CareWaterAdvice"),
-		("✳", "Fertilizer", "CareFeedValue", "CareFeedAdvice"),
-		("°", "TemperatureHumidity", "CareTemperatureValue", "CareTemperatureAdvice"),
-		("▧", "SubstrateRepotting", "CareRepotValue", "CareRepotAdvice"),
-		("✂", "Pruning", "CarePruningValue", "CarePruningAdvice"),
-		("♧", "Propagation", "CarePropagationValue", "CarePropagationAdvice")
+		(IconName.Sun, "Light", "CareLightValue", "CareLightAdvice"),
+		(IconName.Water, "Water", "CareWaterValue", "CareWaterAdvice"),
+		(IconName.Fertilizer, "Fertilizer", "CareFeedValue", "CareFeedAdvice"),
+		(IconName.Thermometer, "TemperatureHumidity", "CareTemperatureValue", "CareTemperatureAdvice"),
+		(IconName.Repot, "SubstrateRepotting", "CareRepotValue", "CareRepotAdvice"),
+		(IconName.Prune, "Pruning", "CarePruningValue", "CarePruningAdvice"),
+		(IconName.Plants, "Propagation", "CarePropagationValue", "CarePropagationAdvice")
 	];
 
 	private readonly List<Plant> plants = CreatePlants();
@@ -548,15 +548,15 @@
 		editingPlant = null;
 	}
 
-	private static string JournalIcon(string type) => type switch
+	private static IconName JournalIcon(string type) => type switch
 	{
-		"Watered" => "↓",
-		"Fertilized" => "✳",
-		"Repotted" => "▧",
-		"Pruned" => "✂",
-		"Treated" => "✣",
-		"Photo" => "▣",
-		_ => "•"
+		"Watered" => IconName.Water,
+		"Fertilized" => IconName.Fertilizer,
+		"Repotted" => IconName.Repot,
+		"Pruned" => IconName.Prune,
+		"Treated" => IconName.Treatment,
+		"Photo" => IconName.Photo,
+		_ => IconName.Leaf
 	};
 
 	private static List<Plant> CreatePlants() =>
