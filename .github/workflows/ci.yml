@@ -29,3 +29,14 @@ jobs:
 
       - name: Build
         run: dotnet build Evergreen.csproj --no-restore --configuration Release
+
+      - name: Test localization
+        run: dotnet test Tests/Evergreen.Tests.csproj --configuration Release
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Test browser localization bootstrap
+        run: node --test Tests/localization.test.cjs

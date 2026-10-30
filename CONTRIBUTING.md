@@ -12,8 +12,9 @@ Thanks for helping improve Evergreen.
 ## Before opening a pull request
 
 - Build the app with `dotnet build Evergreen.csproj --configuration Release`.
+- Run `dotnet test Tests\Evergreen.Tests.csproj` and `node --test Tests\localization.test.cjs` (Node.js 22 or later).
 - Describe the user-visible change and any relevant limitations in the pull request.
 - Include screenshots for visual changes when useful.
 - Do not include generated build output, local settings, or secrets.
 
-There is currently no automated test project. If you add one, include its test command here and in the CI workflow.
+For UI changes, update all three `Resources/AppResources*.resx` files with matching keys and placeholders. Keep user content and stable internal identifiers separate from translated labels. Check language switching without reloading, including open forms, and check Spanish/German text at mobile widths. See [README.md](README.md#languages-and-localization) for the localization design.

@@ -1,0 +1,39 @@
+@inherits LocalizedComponentBase
+
+<div class="language-selector">
+    <label>
+        <span class="visually-hidden">@T("Language")</span>
+        <select aria-label="@T("Language")" value="@Cultures.Culture.Name" @onchange="ChangeLanguage" disabled="@changing">
+            <option value="en" lang="en">English</option>
+            <option value="es" lang="es">Español</option>
+            <option value="de" lang="de">Deutsch</option>
+        </select>
+    </label>
+    @if (changeFailed)
+    {
+        <span class="form-error" role="alert">@T("LanguageChangeFailed")</span>
+    }
+</div>
+
+@code {
+    private bool changing;
+    private bool changeFailed;
+
+    private async Task ChangeLanguage(ChangeEventArgs args)
+    {
+        changing = true;
+        changeFailed = false;
+        try
+        {
+            await Cultures.SetCultureAsync(args.Value?.ToString() ?? string.Empty);
+        }
+        catch (JSException)
+        {
+            changeFailed = true;
+        }
+        finally
+        {
+            changing = false;
+        }
+    }
+}

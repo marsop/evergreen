@@ -1,9 +1,22 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager Navigation
+@inject LocalizationService Cultures
+@inject IStringLocalizer<AppResources> Localizer
+
+@if (!string.IsNullOrEmpty(Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0]))
+{
+    <div class="route-language-selector"><LanguageSelector /></div>
+}
 
 @Body
 
 <div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
+    <span data-localization="error">@T("UnexpectedError")</span>
+    <a href="." class="reload" data-localization="reload">@T("Reload")</a>
+    <button type="button" class="dismiss" data-localization="dismiss" title="@T("Dismiss")" aria-label="@T("Dismiss")">🗙</button>
 </div>
+
+@code {
+    [CascadingParameter] public CultureInfo SelectedCulture { get; set; } = CultureInfo.GetCultureInfo("en");
+    private string T(string key) => Cultures.Translate(Localizer, key);
+}

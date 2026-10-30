@@ -1,1 +1,19 @@
-﻿<Routes />
+@inject LocalizationService Cultures
+@inject IStringLocalizer<AppResources> Localizer
+@implements IDisposable
+
+<CascadingValue Value="Cultures.Culture">
+    @if (Cultures.PreferenceUnavailable)
+    {
+        <p class="language-warning" role="status">@Cultures.Translate(Localizer, "PreferenceUnavailable")</p>
+    }
+    <Routes />
+</CascadingValue>
+
+@code {
+    protected override void OnInitialized() => Cultures.Changed += OnCultureChanged;
+
+    private void OnCultureChanged() => _ = InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Cultures.Changed -= OnCultureChanged;
+}

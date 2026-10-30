@@ -1,7 +1,8 @@
 ﻿@page "/Error"
+@inherits LocalizedComponentBase
 
-<PageTitle>Error</PageTitle>
+<PageTitle>@T("Error")</PageTitle>
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">The application encountered an error.</h2>
-<p>Reload the page to try again.</p>
+<h1 class="text-danger">@T("Error")</h1>
+<h2 class="text-danger">@T("ApplicationError")</h2>
+<p>@T("ReloadToRetry")</p>

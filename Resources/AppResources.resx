@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="Language" xml:space="preserve"><value>Language</value></data>
+  <data name="PreferenceUnavailable" xml:space="preserve"><value>Your language is active, but the preference cannot be saved in this browser. Garden data is still only held in memory.</value></data>
+  <data name="LanguageChangeFailed" xml:space="preserve"><value>The language could not be changed. Please try again.</value></data>
+  <data name="UnexpectedError" xml:space="preserve"><value>An unexpected error occurred.</value></data>
+  <data name="Reload" xml:space="preserve"><value>Reload</value></data>
+  <data name="Dismiss" xml:space="preserve"><value>Dismiss</value></data>
+  <data name="Counter" xml:space="preserve"><value>Counter</value></data>
+  <data name="CurrentCount" xml:space="preserve"><value>Current count: {0}</value></data>
+  <data name="ClickMe" xml:space="preserve"><value>Click me</value></data>
+  <data name="Error" xml:space="preserve"><value>Error</value></data>
+  <data name="ApplicationError" xml:space="preserve"><value>The application encountered an error.</value></data>
+  <data name="ReloadToRetry" xml:space="preserve"><value>Reload the page to try again.</value></data>
+  <data name="NotFound" xml:space="preserve"><value>Not Found</value></data>
+  <data name="ContentNotFound" xml:space="preserve"><value>Sorry, the content you are looking for does not exist.</value></data>
+  <data name="Weather" xml:space="preserve"><value>Weather</value></data>
+  <data name="WeatherDemo" xml:space="preserve"><value>This component demonstrates showing data.</value></data>
+  <data name="Loading" xml:space="preserve"><value>Loading...</value></data>
+  <data name="Date" xml:space="preserve"><value>Date</value></data>
+  <data name="DashboardDateFormat" xml:space="preserve"><value>dddd, d MMMM</value></data>
+  <data name="JournalDateFormat" xml:space="preserve"><value>ddd, d MMM</value></data>
+  <data name="TemperatureCelsius" xml:space="preserve"><value>Temperature in Celsius</value></data>
+  <data name="TemperatureFahrenheit" xml:space="preserve"><value>Temperature in Fahrenheit</value></data>
+  <data name="TempC" xml:space="preserve"><value>Temp. (C)</value></data>
+  <data name="TempF" xml:space="preserve"><value>Temp. (F)</value></data>
+  <data name="Summary" xml:space="preserve"><value>Summary</value></data>
+  <data name="Freezing" xml:space="preserve"><value>Freezing</value></data>
+  <data name="Bracing" xml:space="preserve"><value>Bracing</value></data>
+  <data name="Chilly" xml:space="preserve"><value>Chilly</value></data>
+  <data name="Cool" xml:space="preserve"><value>Cool</value></data>
+  <data name="Mild" xml:space="preserve"><value>Mild</value></data>
+  <data name="Warm" xml:space="preserve"><value>Warm</value></data>
+  <data name="Balmy" xml:space="preserve"><value>Balmy</value></data>
+  <data name="Hot" xml:space="preserve"><value>Hot</value></data>
+  <data name="Sweltering" xml:space="preserve"><value>Sweltering</value></data>
+  <data name="Scorching" xml:space="preserve"><value>Scorching</value></data>
+  <data name="NavigationMenu" xml:space="preserve"><value>Navigation menu</value></data>
+  <data name="Home" xml:space="preserve"><value>Home</value></data>
+  <data name="PlantCareTitle" xml:space="preserve"><value>Evergreen | Plant care</value></data>
+  <data name="MainNavigation" xml:space="preserve"><value>Main navigation</value></data>
+  <data name="EvergreenHome" xml:space="preserve"><value>Evergreen home</value></data>
+  <data name="BrandTagline" xml:space="preserve"><value>plant care, in rhythm</value></data>
+  <data name="YourGarden" xml:space="preserve"><value>YOUR GARDEN</value></data>
+  <data name="Today" xml:space="preserve"><value>Today</value></data>
+  <data name="Plants" xml:space="preserve"><value>Plants</value></data>
+  <data name="Places" xml:space="preserve"><value>Places</value></data>
+  <data name="Journal" xml:space="preserve"><value>Journal</value></data>
+  <data name="WinterRhythm" xml:space="preserve"><value>Winter rhythm</value></data>
+  <data name="WinterFeed" xml:space="preserve"><value>Sun only · no feed until April</value></data>
+  <data name="GardenCounts" xml:space="preserve"><value>{0} · {1}</value></data>
+  <data name="PlantCountOne" xml:space="preserve"><value>{0} plant</value></data>
+  <data name="PlantCountMany" xml:space="preserve"><value>{0} plants</value></data>
+  <data name="PlaceCountOne" xml:space="preserve"><value>{0} place</value></data>
+  <data name="PlaceCountMany" xml:space="preserve"><value>{0} places</value></data>
+  <data name="LogCare" xml:space="preserve"><value>Log care</value></data>
+  <data name="WateringDay" xml:space="preserve"><value>WATERING DAY</value></data>
+  <data name="TodayHeading" xml:space="preserve"><value>A little care goes a long way.</value></data>
+  <data name="TodayLead" xml:space="preserve"><value>A calm check-in for your garden, one plant at a time.</value></data>
+  <data name="WateringProgress" xml:space="preserve"><value>{0} of {1} plants watered</value></data>
+  <data name="WateredToday" xml:space="preserve"><value>watered today</value></data>
+  <data name="WinterFertilizing" xml:space="preserve"><value>Sun only · no fertilizing until April</value></data>
+  <data name="SeasonRoutine" xml:space="preserve"><value>Your routine is adjusted for the season.</value></data>
+  <data name="CareList" xml:space="preserve"><value>THE CARE LIST</value></data>
+  <data name="ThingsTodayOne" xml:space="preserve"><value>{0} thing today</value></data>
+  <data name="ThingsTodayMany" xml:space="preserve"><value>{0} things today</value></data>
+  <data name="ViewAllPlants" xml:space="preserve"><value>View all plants</value></data>
+  <data name="OpenPlantProfile" xml:space="preserve"><value>Open {0} profile</value></data>
+  <data name="WaterSchedule" xml:space="preserve"><value>{0} · 1× week</value></data>
+  <data name="UndoWatering" xml:space="preserve"><value>Undo watering {0}</value></data>
+  <data name="MarkWatered" xml:space="preserve"><value>Mark {0} as watered</value></data>
+  <data name="Watered" xml:space="preserve"><value>Watered</value></data>
+  <data name="Water" xml:space="preserve"><value>Water</value></data>
+  <data name="AheadOfYou" xml:space="preserve"><value>AHEAD OF YOU</value></data>
+  <data name="NextSevenDays" xml:space="preserve"><value>Next 7 days</value></data>
+  <data name="WeekPreview" xml:space="preserve"><value>A light look at the week</value></data>
+  <data name="YourCollection" xml:space="preserve"><value>YOUR COLLECTION</value></data>
+  <data name="PlantsLead" xml:space="preserve"><value>Every leaf, in its own place.</value></data>
+  <data name="AddPlant" xml:space="preserve"><value>Add plant</value></data>
+  <data name="SearchPlants" xml:space="preserve"><value>Search plants</value></data>
+  <data name="SearchPlantCountOne" xml:space="preserve"><value>Search {0} plant</value></data>
+  <data name="SearchPlantCountMany" xml:space="preserve"><value>Search {0} plants</value></data>
+  <data name="FilterByPlace" xml:space="preserve"><value>Filter by place</value></data>
+  <data name="All" xml:space="preserve"><value>All</value></data>
+  <data name="NoPlantsFound" xml:space="preserve"><value>No plants found</value></data>
+  <data name="TryDifferentSearch" xml:space="preserve"><value>Try a different name or place.</value></data>
+  <data name="Succulents &amp; dry" xml:space="preserve"><value>Succulents &amp; dry</value></data>
+  <data name="Tropical, let top dry" xml:space="preserve"><value>Tropical, let top dry</value></data>
+  <data name="Tropical, evenly moist" xml:space="preserve"><value>Tropical, evenly moist</value></data>
+  <data name="Mediterranean" xml:space="preserve"><value>Mediterranean</value></data>
+  <data name="Small" xml:space="preserve"><value>Small</value></data>
+  <data name="Normal" xml:space="preserve"><value>Normal</value></data>
+  <data name="Sip, only if bone dry" xml:space="preserve"><value>Sip, only if bone dry</value></data>
+  <data name="Bright" xml:space="preserve"><value>Bright</value></data>
+  <data name="Filtered" xml:space="preserve"><value>Filtered</value></data>
+  <data name="Sun" xml:space="preserve"><value>Sun</value></data>
+  <data name="Low light" xml:space="preserve"><value>Low light</value></data>
+  <data name="LightMakesHome" xml:space="preserve"><value>LIGHT MAKES A HOME</value></data>
+  <data name="PlacesLead" xml:space="preserve"><value>A good spot is half the care.</value></data>
+  <data name="AddPlace" xml:space="preserve"><value>Add place</value></data>
+  <data name="Indoor" xml:space="preserve"><value>Indoor</value></data>
+  <data name="SpotCountOne" xml:space="preserve"><value>{0} spot</value></data>
+  <data name="SpotCountMany" xml:space="preserve"><value>{0} spots</value></data>
+  <data name="Bright, filtered" xml:space="preserve"><value>Bright, filtered</value></data>
+  <data name="Direct afternoon sun" xml:space="preserve"><value>Direct afternoon sun</value></data>
+  <data name="Full sun" xml:space="preserve"><value>Full sun</value></data>
+  <data name="Full sun to shade" xml:space="preserve"><value>Full sun to shade</value></data>
+  <data name="Outdoor" xml:space="preserve"><value>Outdoor</value></data>
+  <data name="LetWeatherIn" xml:space="preserve"><value>Let the weather in</value></data>
+  <data name="AddOutdoorPlace" xml:space="preserve"><value>Add outdoor place</value></data>
+  <data name="NotesFromGarden" xml:space="preserve"><value>NOTES FROM THE GARDEN</value></data>
+  <data name="JournalLead" xml:space="preserve"><value>Small moments add up to good care.</value></data>
+  <data name="AddEntry" xml:space="preserve"><value>Add entry</value></data>
+  <data name="FilterJournal" xml:space="preserve"><value>Filter journal entries</value></data>
+  <data name="Fertilized" xml:space="preserve"><value>Fertilized</value></data>
+  <data name="Repotted" xml:space="preserve"><value>Repotted</value></data>
+  <data name="Pruned" xml:space="preserve"><value>Pruned</value></data>
+  <data name="Treated" xml:space="preserve"><value>Treated</value></data>
+  <data name="Photo" xml:space="preserve"><value>Photo</value></data>
+  <data name="ChoosePhoto" xml:space="preserve"><value>Choose photo</value></data>
+  <data name="NoPhotoSelected" xml:space="preserve"><value>No photo selected</value></data>
+  <data name="JournalAttachment" xml:space="preserve"><value>Garden journal attachment</value></data>
+  <data name="FreshPage" xml:space="preserve"><value>A fresh page</value></data>
+  <data name="CareNotesHere" xml:space="preserve"><value>Care notes will show up here.</value></data>
+  <data name="BackToPlants" xml:space="preserve"><value>Back to plants</value></data>
+  <data name="EditPlant" xml:space="preserve"><value>Edit plant</value></data>
+  <data name="PlantProfile" xml:space="preserve"><value>Plant profile</value></data>
+  <data name="ProfileAlert" xml:space="preserve"><value>Yellow leaves, thrips, spider mites · 18–27 °C</value></data>
+  <data name="SeasonalCare" xml:space="preserve"><value>SEASONAL CARE</value></data>
+  <data name="CareThroughYear" xml:space="preserve"><value>Care through the year</value></data>
+  <data name="Fertilize" xml:space="preserve"><value>Fertilize</value></data>
+  <data name="WaterAmountTooltip" xml:space="preserve"><value>Water amount: {0}</value></data>
+  <data name="FertilizerTooltip" xml:space="preserve"><value>Fertilizer: {0}</value></data>
+  <data name="Light" xml:space="preserve"><value>Light</value></data>
+  <data name="CareLightValue" xml:space="preserve"><value>bright</value></data>
+  <data name="CareLightAdvice" xml:space="preserve"><value>Bright, indirect. No direct midday sun</value></data>
+  <data name="CareWaterValue" xml:space="preserve"><value>1× week</value></data>
+  <data name="CareWaterAdvice" xml:space="preserve"><value>Sundays. Normal amount in summer, small in winter. Skip if the top 3 cm are still wet</value></data>
+  <data name="Fertilizer" xml:space="preserve"><value>Fertilizer</value></data>
+  <data name="CareFeedValue" xml:space="preserve"><value>paused</value></data>
+  <data name="CareFeedAdvice" xml:space="preserve"><value>Foliage plant fertilizer, April to September</value></data>
+  <data name="TemperatureHumidity" xml:space="preserve"><value>Temperature &amp; humidity</value></data>
+  <data name="CareTemperatureValue" xml:space="preserve"><value>18–27 °C</value></data>
+  <data name="CareTemperatureAdvice" xml:space="preserve"><value>Never below 15 °C. Keep out of Panopticon in winter</value></data>
+  <data name="SubstrateRepotting" xml:space="preserve"><value>Substrate &amp; repotting</value></data>
+  <data name="CareRepotValue" xml:space="preserve"><value>2–3 yrs</value></data>
+  <data name="CareRepotAdvice" xml:space="preserve"><value>Aroid mix: bark, perlite, coco. Repot in spring</value></data>
+  <data name="Pruning" xml:space="preserve"><value>Pruning</value></data>
+  <data name="CarePruningValue" xml:space="preserve"><value>spring</value></data>
+  <data name="CarePruningAdvice" xml:space="preserve"><value>Cut above a node. Sap irritates skin</value></data>
+  <data name="Propagation" xml:space="preserve"><value>Propagation</value></data>
+  <data name="CarePropagationValue" xml:space="preserve"><value>cutting</value></data>
+  <data name="CarePropagationAdvice" xml:space="preserve"><value>Stem piece with node and aerial root, in water</value></data>
+  <data name="ThingsToWatch" xml:space="preserve"><value>A FEW THINGS TO WATCH</value></data>
+  <data name="WatchOutFor" xml:space="preserve"><value>Watch out for</value></data>
+  <data name="YellowLeaves" xml:space="preserve"><value>Yellow lower leaves</value></data>
+  <data name="YellowLeavesAdvice" xml:space="preserve"><value>Soil stays wet → water less, check drainage</value></data>
+  <data name="BrownEdges" xml:space="preserve"><value>Brown crispy edges</value></data>
+  <data name="BrownEdgesAdvice" xml:space="preserve"><value>Air too dry → raise humidity</value></data>
+  <data name="SpiderMites" xml:space="preserve"><value>Spider mites</value></data>
+  <data name="SpiderMitesAdvice" xml:space="preserve"><value>Fine webs under leaves → shower, neem oil</value></data>
+  <data name="Thrips" xml:space="preserve"><value>Thrips</value></data>
+  <data name="ThripsAdvice" xml:space="preserve"><value>Silver speckles → isolate, blue sticky traps</value></data>
+  <data name="LifeLogged" xml:space="preserve"><value>A GOOD LIFE, LOGGED</value></data>
+  <data name="RecentHistory" xml:space="preserve"><value>Recent history</value></data>
+  <data name="OpenJournal" xml:space="preserve"><value>Open journal</value></data>
+  <data name="MobileNavigation" xml:space="preserve"><value>Mobile navigation</value></data>
+  <data name="AddAPlant" xml:space="preserve"><value>Add a plant</value></data>
+  <data name="Close" xml:space="preserve"><value>Close</value></data>
+  <data name="PlantName" xml:space="preserve"><value>Plant name</value></data>
+  <data name="PlantNameExample" xml:space="preserve"><value>e.g. Monstera</value></data>
+  <data name="BotanicalName" xml:space="preserve"><value>Botanical name</value></data>
+  <data name="BotanicalNameExample" xml:space="preserve"><value>e.g. Monstera deliciosa</value></data>
+  <data name="Place" xml:space="preserve"><value>Place</value></data>
+  <data name="CareGroup" xml:space="preserve"><value>Care group</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="SaveChanges" xml:space="preserve"><value>Save changes</value></data>
+  <data name="MakeRoomToGrow" xml:space="preserve"><value>MAKE ROOM TO GROW</value></data>
+  <data name="AddAPlace" xml:space="preserve"><value>Add a place</value></data>
+  <data name="PlaceName" xml:space="preserve"><value>Place name</value></data>
+  <data name="PlaceNameExample" xml:space="preserve"><value>e.g. Kitchen window</value></data>
+  <data name="Temperature" xml:space="preserve"><value>Temperature</value></data>
+  <data name="OutdoorPlace" xml:space="preserve"><value>This is an outdoor place</value></data>
+  <data name="MomentInGarden" xml:space="preserve"><value>A MOMENT IN THE GARDEN</value></data>
+  <data name="LogPlantCare" xml:space="preserve"><value>Log plant care</value></data>
+  <data name="WhatHappened" xml:space="preserve"><value>What happened?</value></data>
+  <data name="Plant" xml:space="preserve"><value>Plant</value></data>
+  <data name="SelectedJournalPhoto" xml:space="preserve"><value>Selected journal photo</value></data>
+  <data name="Note" xml:space="preserve"><value>Note</value></data>
+  <data name="NotePlaceholder" xml:space="preserve"><value>Add a detail you'll want to remember…</value></data>
+  <data name="SaveEntry" xml:space="preserve"><value>Save entry</value></data>
+  <data name="PlantNameRequired" xml:space="preserve"><value>Enter a plant name.</value></data>
+  <data name="PlaceNameRequired" xml:space="preserve"><value>Enter a place name.</value></data>
+  <data name="PlaceNameDuplicate" xml:space="preserve"><value>A place with this name already exists.</value></data>
+  <data name="JournalPlantRequired" xml:space="preserve"><value>Choose a plant.</value></data>
+  <data name="ChooseImage" xml:space="preserve"><value>Choose an image file.</value></data>
+  <data name="ChooseSmallImage" xml:space="preserve"><value>Choose an image smaller than 5 MB.</value></data>
+  <data name="PanopticonAdvice" xml:space="preserve"><value>Oct–Mar: only Mediterranean plants and succulents. Move tropicals inside.</value></data>
+  <data name="WinterTemperature" xml:space="preserve"><value>Winter 5–12 °C</value></data>
+  <data name="JournalWateredTitle" xml:space="preserve"><value>Watered {0}</value></data>
+  <data name="JournalFertilizedTitle" xml:space="preserve"><value>Fertilized {0}</value></data>
+  <data name="JournalRepottedTitle" xml:space="preserve"><value>Repotted {0}</value></data>
+  <data name="JournalPrunedTitle" xml:space="preserve"><value>Pruned {0}</value></data>
+  <data name="JournalTreatedTitle" xml:space="preserve"><value>Treated {0}</value></data>
+  <data name="JournalPhotoTitle" xml:space="preserve"><value>Photo of {0}</value></data>
+  <data name="WateringDescription" xml:space="preserve"><value>{0} · Water amount: {1}</value></data>
+  <data name="SkippedWednesdayTitle" xml:space="preserve"><value>Wednesday round skipped</value></data>
+  <data name="SkippedWednesdayDescription" xml:space="preserve"><value>Winter: all plants on 1× a week</value></data>
+  <data name="MovedPlantTitle" xml:space="preserve"><value>Moved {0}</value></data>
+  <data name="MovedPlantDescription" xml:space="preserve"><value>Panopticon → Mos Eisley South (winter)</value></data>
+  <data name="TreatedPlantDescription" xml:space="preserve"><value>Spider mites · showered, neem oil. Check again in 7 days</value></data>
+  <data name="PlantNameDescription" xml:space="preserve"><value>{0}</value></data>
+  <data name="NewFruitsDescription" xml:space="preserve"><value>3 new fruits</value></data>
+  <data name="WinterStartedTitle" xml:space="preserve"><value>Winter rhythm started</value></data>
+  <data name="WinterStartedDescription" xml:space="preserve"><value>23 plants switched to 1× a week (Sunday)</value></data>
+</root>

@@ -10,7 +10,8 @@
 ## Build and validation
 
 - Build with `dotnet build Evergreen.csproj`.
-- There is no automated test project yet. If behavior changes, add or update appropriate tests when a test project is introduced.
+- Run localization tests with `dotnet test Tests\Evergreen.Tests.csproj` and `node --test Tests\localization.test.cjs` (Node.js 22 or later).
+- For localization changes, follow [the resource and live-switching guidance](README.md#languages-and-localization) and verify that switching preserves in-memory garden data.
 - Keep the GitHub Actions build workflow in sync with the supported .NET SDK.
 
 ## Configuration and security
