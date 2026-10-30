@@ -2,7 +2,7 @@
 
 ## Project
 
-- This is a .NET 10 Blazor app using interactive server rendering. See `Program.cs` and `LittleJungle.csproj`.
+- This is a .NET 10 Blazor WebAssembly app for static hosting. See `Program.cs` and `LittleJungle.csproj`.
 - The plant-care dashboard and its current sample data are in `Components/Pages/Home.razor`.
 - App data is currently held in component memory; do not imply that it is persisted.
 - Keep static assets in `wwwroot/` and reuse the existing application styles where practical.
@@ -17,4 +17,4 @@
 
 - Never commit credentials, private keys, or machine-specific settings.
 - Use environment variables or .NET user secrets for local secrets; keep committed `appsettings*.json` files free of secrets.
-- Preserve the existing interactive server rendering and antiforgery configuration unless a change intentionally requires otherwise.
+- Keep the app compatible with static hosting on GitHub Pages; do not introduce server-only dependencies without an intentional hosting change.

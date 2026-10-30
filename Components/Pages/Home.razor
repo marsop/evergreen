@@ -1,11 +1,9 @@
 ﻿@page "/"
-@rendermode InteractiveServer
-
 <PageTitle>Little Jungle | Plant care</PageTitle>
 
 <div class="app-shell">
 	<aside class="sidebar" aria-label="Main navigation">
-		<a class="brand" href="/" aria-label="Little Jungle home">
+		<a class="brand" href="" aria-label="Little Jungle home">
 			<span class="brand-mark" aria-hidden="true">lj</span>
 			<span><strong>little jungle</strong><small>plant care, in rhythm</small></span>
 		</a>
@@ -516,15 +514,15 @@
 
 	private static List<Plant> CreatePlants() =>
 	[
-		new("Ctenanthe", "Ctenanthe", "Mos Eisley South", CategoryOrder[2], "Normal", "Filtered", "/images/Calathea_Golden_Mosaic.webp"),
-		new("Dragon tree", "Dracaena marginata", "Mos Eisley South", CategoryOrder[1], "Small", "Bright", "/images/dracaena.avif"),
-		new("Monstera", "Monstera adansonii", "Mos Eisley South", CategoryOrder[1], "Small", "Bright", "/images/monstera.webp", true),
-		new("Anthurium pink", "Anthurium", "Mos Eisley South", CategoryOrder[2], "Normal", "Filtered", "/images/AuthirumPinkAmber_medium_mustard_yellow.webp"),
-		new("Anthurium white", "Anthurium", "Mos Eisley South", CategoryOrder[2], "Normal", "Filtered", "/images/167-S-ANTSWD-TRQ34G_884701dd-0b2b-4412-93a0-f3bdfcc02dae.webp"),
+		new("Ctenanthe", "Ctenanthe", "Mos Eisley South", CategoryOrder[2], "Normal", "Filtered", "images/Calathea_Golden_Mosaic.webp"),
+		new("Dragon tree", "Dracaena marginata", "Mos Eisley South", CategoryOrder[1], "Small", "Bright", "images/dracaena.avif"),
+		new("Monstera", "Monstera adansonii", "Mos Eisley South", CategoryOrder[1], "Small", "Bright", "images/monstera.webp", true),
+		new("Anthurium pink", "Anthurium", "Mos Eisley South", CategoryOrder[2], "Normal", "Filtered", "images/AuthirumPinkAmber_medium_mustard_yellow.webp"),
+		new("Anthurium white", "Anthurium", "Mos Eisley South", CategoryOrder[2], "Normal", "Filtered", "images/167-S-ANTSWD-TRQ34G_884701dd-0b2b-4412-93a0-f3bdfcc02dae.webp"),
 		new("Rubber plant", "Ficus elastica", "Mos Eisley South", CategoryOrder[1], "Small", "Bright", string.Empty),
 		new("Polka dot plant", "Hypoestes phyllostachya", "Mos Eisley South", CategoryOrder[2], "Normal", "Filtered", string.Empty),
 		new("White philodendron", "Philodendron", "Mos Eisley South", CategoryOrder[1], "Small", "Bright", string.Empty),
-		new("Aloe vera", "Aloe barbadensis", "Mos Eisley West", CategoryOrder[0], "Sip, only if bone dry", "Sun", "/images/aloevera.webp"),
+		new("Aloe vera", "Aloe barbadensis", "Mos Eisley West", CategoryOrder[0], "Sip, only if bone dry", "Sun", "images/aloevera.webp"),
 		new("Jade plant", "Crassula ovata", "Mos Eisley West", CategoryOrder[0], "Sip, only if bone dry", "Sun", string.Empty),
 		new("Spider plant", "Chlorophytum comosum", "Mos Eisley West", CategoryOrder[1], "Small", "Bright", string.Empty),
 		new("String of pearls", "Curio rowleyanus", "Mos Eisley West", CategoryOrder[0], "Sip, only if bone dry", "Sun", string.Empty),
@@ -535,10 +533,10 @@
 		new("Stonecrop", "Sedum", "Panopticon", CategoryOrder[0], "Sip, only if bone dry", "Sun", string.Empty),
 		new("Lemon tree", "Citrus limon", "Panopticon", CategoryOrder[3], "Small", "Sun", string.Empty),
 		new("Dwarf fan palm", "Chamaerops humilis", "Panopticon", CategoryOrder[3], "Small", "Sun", string.Empty),
-		new("Chinese evergreen", "Aglaonema", "Sweatshop", CategoryOrder[1], "Small", "Low light", "/images/Aglaonema_Siam_monet_grey.webp"),
-		new("Snake plant", "Dracaena trifasciata", "Sweatshop", CategoryOrder[0], "Sip, only if bone dry", "Low light", "/images/GoldenSnakePlantSmall_Reactive_Aqua.webp"),
-		new("Peace lily", "Spathiphyllum", "Sweatshop", CategoryOrder[2], "Normal", "Filtered", "/images/peace-lily.webp"),
-		new("ZZ plant", "Zamioculcas zamiifolia", "Sweatshop", CategoryOrder[0], "Sip, only if bone dry", "Low light", "/images/ZZ_plant_monet_blue.webp")
+		new("Chinese evergreen", "Aglaonema", "Sweatshop", CategoryOrder[1], "Small", "Low light", "images/Aglaonema_Siam_monet_grey.webp"),
+		new("Snake plant", "Dracaena trifasciata", "Sweatshop", CategoryOrder[0], "Sip, only if bone dry", "Low light", "images/GoldenSnakePlantSmall_Reactive_Aqua.webp"),
+		new("Peace lily", "Spathiphyllum", "Sweatshop", CategoryOrder[2], "Normal", "Filtered", "images/peace-lily.webp"),
+		new("ZZ plant", "Zamioculcas zamiifolia", "Sweatshop", CategoryOrder[0], "Sip, only if bone dry", "Low light", "images/ZZ_plant_monet_blue.webp")
 	];
 
 	private static List<Place> CreatePlaces() =>
