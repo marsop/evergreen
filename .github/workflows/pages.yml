@@ -1,0 +1,121 @@
+name: GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+      - gh-pages
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Publish WebAssembly app
+        run: dotnet publish Evergreen.csproj --configuration Release --output publish
+
+      - name: Prepare static site
+        shell: bash
+        run: |
+          set -euo pipefail
+          repository="${GITHUB_REPOSITORY#*/}"
+          owner="${GITHUB_REPOSITORY%/*}"
+          base_path="/${repository}/"
+          if [[ "${repository,,}" == "${owner,,}.github.io" ]]; then
+            base_path="/"
+          fi
+          sed -i "s|<base href=\"/\" />|<base href=\"${base_path}\" />|" publish/wwwroot/index.html
+          grep -Fq "<base href=\"${base_path}\" />" publish/wwwroot/index.html
+          cp publish/wwwroot/index.html publish/wwwroot/404.html
+          touch publish/wwwroot/.nojekyll
+          mkdir -p publish/wwwroot/.github/workflows
+          cp .github/workflows/pages.yml publish/wwwroot/.github/workflows/pages.yml
+
+      - name: Update gh-pages branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          site="$RUNNER_TEMP/gh-pages"
+          branch="$(git ls-remote --heads origin refs/heads/gh-pages)"
+          if [[ -n "$branch" ]]; then
+            git fetch origin gh-pages
+            git worktree add --detach "$site" FETCH_HEAD
+          else
+            git worktree add --detach "$site" HEAD
+            git -C "$site" checkout --orphan gh-pages
+          fi
+          git -C "$site" rm -rf --ignore-unmatch .
+          cp -a publish/wwwroot/. "$site/"
+          git -C "$site" config user.name "github-actions[bot]"
+          git -C "$site" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C "$site" add --all
+          if ! git -C "$site" diff --cached --quiet; then
+            git -C "$site" commit -m "Deploy GitHub Pages from $GITHUB_SHA" \
+              -m "Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
+          fi
+          git -C "$site" push origin HEAD:refs/heads/gh-pages
+
+  deploy:
+    needs: publish
+    if: >-
+      always() && !cancelled() &&
+      (needs.publish.result == 'success' || needs.publish.result == 'skipped') &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event_name == 'push' &&
+        (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-pages')))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: site
+          persist-credentials: false
+
+      - name: Prepare deployment artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! -f site/index.html ]]; then
+            echo "::error::The gh-pages branch must contain index.html at its root."
+            exit 1
+          fi
+          mkdir -p "$RUNNER_TEMP/pages-site"
+          git -C site archive HEAD | tar -x --exclude=.github -C "$RUNNER_TEMP/pages-site"
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ runner.temp }}/pages-site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
