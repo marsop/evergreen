@@ -1,0 +1,3 @@
+.account-status { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; padding: .75rem 1rem; background: #f4f5ef; border-bottom: 1px solid #dce0d5; }
+.account-status > span { font-size: .85rem; }
+.account-status .form-error { margin: 0; flex-basis: 100%; }

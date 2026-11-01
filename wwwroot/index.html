@@ -5,8 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <base href="/" />
+    <meta name="theme-color" content="#355747" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
     <link rel="stylesheet" href="app.css" />
     <link rel="stylesheet" href="garden.css" />
+    <link rel="stylesheet" href="firebase.css" />
     <link rel="stylesheet" href="Evergreen.styles.css" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="icon" type="image/png" href="favicon.png" />
@@ -23,6 +27,7 @@
         <button type="button" class="dismiss" data-localization="dismiss" aria-label="Dismiss">🗙</button>
     </div>
     <script src="localization.js"></script>
+    <script src="offline.js"></script>
     <script src="_framework/blazor.webassembly.js" autostart="false"></script>
     <script>
         Blazor.start({

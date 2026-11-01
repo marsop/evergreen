@@ -5,7 +5,30 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
   <data name="Language" xml:space="preserve"><value>Sprache</value></data>
-  <data name="PreferenceUnavailable" xml:space="preserve"><value>Die Sprache ist aktiv, aber die Auswahl kann in diesem Browser nicht gespeichert werden. Gartendaten bleiben weiterhin nur im Arbeitsspeicher.</value></data>
+  <data name="SignInToGarden" xml:space="preserve"><value>Melde dich an, um deinen privaten Garten zu öffnen.</value></data>
+  <data name="SignInGoogle" xml:space="preserve"><value>Mit Google anmelden</value></data>
+  <data name="SignOut" xml:space="preserve"><value>Abmelden</value></data>
+  <data name="SignInFailed" xml:space="preserve"><value>Anmeldung fehlgeschlagen. Erlaube Pop-ups und versuche es erneut.</value></data>
+  <data name="FirebaseSetupRequired" xml:space="preserve"><value>Firebase ist nicht eingerichtet. Folge der Anleitung und lade die Seite neu.</value></data>
+  <data name="DeviceCacheNotice" xml:space="preserve"><value>Dieses Gerät speichert deinen Garten lokal für die Offline-Nutzung.</value></data>
+  <data name="OfflineQueued" xml:space="preserve"><value>Offline: {0} Änderungen warten auf Synchronisierung.</value></data>
+  <data name="SyncPending" xml:space="preserve"><value>{0} Änderungen warten auf Synchronisierung.</value></data>
+  <data name="SyncFailed" xml:space="preserve"><value>{0} Änderungen konnten nicht synchronisiert werden.</value></data>
+  <data name="AppCacheUnavailable" xml:space="preserve"><value>Offline-Start ist nicht verfügbar. Halte diesen Tab geöffnet oder aktiviere Service Worker in einem unterstützten Browser.</value></data>
+  <data name="CachedGarden" xml:space="preserve"><value>Lokal gespeicherte Gartendaten werden angezeigt.</value></data>
+  <data name="GardenSynced" xml:space="preserve"><value>Garten synchronisiert.</value></data>
+  <data name="GardenLoadFailed" xml:space="preserve"><value>Der Garten konnte nicht geladen werden. Prüfe Verbindung und Firebase-Regeln.</value></data>
+  <data name="SaveFailed" xml:space="preserve"><value>Eine Änderung konnte nicht gespeichert werden. Fehlgeschlagene Änderungen bleiben lokal; behebe den Fehler oder das Kontingentproblem und versuche es erneut.</value></data>
+  <data name="SignOutPending" xml:space="preserve"><value>Änderungen sind noch ausstehend oder fehlgeschlagen. Verbinde dich und synchronisiere vor dem Abmelden.</value></data>
+  <data name="CacheClearFailed" xml:space="preserve"><value>Der lokale Cache konnte nicht gelöscht werden. Schließe andere App-Tabs und lade vor dem Abmelden neu.</value></data>
+  <data name="FirstLoadOnline" xml:space="preserve"><value>Verbinde dich mit dem Internet, um den Garten dieses Kontos zu laden oder anzulegen.</value></data>
+  <data name="OfflineUnsupported" xml:space="preserve"><value>Dauerhafte Offline-Synchronisierung ist nicht verfügbar. Aktiviere IndexedDB und Web Locks oder nutze einen unterstützten Browser.</value></data>
+  <data name="Retry" xml:space="preserve"><value>Synchronisierung wiederholen</value></data>
+  <data name="LoadPhoto" xml:space="preserve"><value>Foto laden</value></data>
+  <data name="PhotoLoadFailed" xml:space="preserve"><value>Foto nicht verfügbar. Verbinde dich und versuche es erneut.</value></data>
+  <data name="PhotoReady" xml:space="preserve"><value>Komprimiertes Foto bereit</value></data>
+  <data name="PhotoCompressionFailed" xml:space="preserve"><value>Wähle ein JPEG-, PNG- oder WebP-Bild unter 5 MiB, das auf 512 KiB und 1.600 Pixel komprimiert werden kann.</value></data>
+  <data name="PreferenceUnavailable" xml:space="preserve"><value>Die Sprache ist aktiv, aber die Startauswahl kann in diesem Browser nicht gespeichert werden.</value></data>
   <data name="LanguageChangeFailed" xml:space="preserve"><value>Die Sprache konnte nicht geändert werden. Bitte versuche es erneut.</value></data>
   <data name="UnexpectedError" xml:space="preserve"><value>Ein unerwarteter Fehler ist aufgetreten.</value></data>
   <data name="Reload" xml:space="preserve"><value>Neu laden</value></data>

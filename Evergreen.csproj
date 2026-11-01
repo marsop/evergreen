@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
+    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,11 +14,20 @@
     <PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.0" />
   </ItemGroup>
 
+  <Target Name="BundleFirebaseClient" BeforeTargets="PrepareForBuild">
+    <Exec Command="npm run build:client" />
+    <ItemGroup>
+      <Content Remove="wwwroot\firebase.js" />
+      <Content Include="wwwroot\firebase.js" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+  </Target>
+
   <ItemGroup>
     <Compile Remove="Tests\**\*.cs" />
     <EmbeddedResource Remove="Tests\**\*" />
     <Content Remove="Tests\**\*" />
     <None Remove="Tests\**\*" />
+    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
   </ItemGroup>
 
 </Project>

@@ -9,12 +9,15 @@ public sealed class LocalizationService(IJSRuntime js, ILogger<LocalizationServi
     public CultureInfo Culture { get; private set; } = CultureInfo.GetCultureInfo("en");
     public bool PreferenceUnavailable { get; private set; }
     public event Action? Changed;
+    public string StartupCulture { get; private set; } = "en";
+    public Func<string, Task>? SaveAccountCultureAsync { get; set; }
 
     public async Task InitializeAsync()
     {
         var preference = await js.InvokeAsync<BrowserPreference>("evergreenLocalization.initialize");
         var resolved = CultureSelection.Resolve(preference.SavedCulture, preference.BrowserLanguages);
         ApplyCulture(resolved);
+        StartupCulture = resolved;
         PreferenceUnavailable = preference.StorageUnavailable;
         await js.InvokeVoidAsync("evergreenLocalization.applyCulture", resolved);
     }
@@ -34,12 +37,23 @@ public sealed class LocalizationService(IJSRuntime js, ILogger<LocalizationServi
                 logger.LogWarning("The language preference could not be saved in browser storage.");
             }
             Changed?.Invoke();
+            if (SaveAccountCultureAsync is not null)
+                await SaveAccountCultureAsync(normalized);
         }
         catch (JSException exception)
         {
             logger.LogError(exception, "Unable to change the application language.");
             throw;
         }
+    }
+
+    public async Task ApplyAccountCultureAsync(string language)
+    {
+        var normalized = CultureSelection.Normalize(language)
+            ?? throw new ArgumentException("Unsupported account language.", nameof(language));
+        await js.InvokeVoidAsync("evergreenLocalization.applyCulture", normalized);
+        ApplyCulture(normalized);
+        Changed?.Invoke();
     }
 
     public string Translate(IStringLocalizer localizer, string key, params object[] arguments)

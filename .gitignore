@@ -26,3 +26,9 @@ Thumbs.db
 
 # Local logs
 *.log
+node_modules/
+wwwroot/firebase.js
+wwwroot/firebase-config.json
+firebase-debug.log
+firestore-debug.log
+.firebase/

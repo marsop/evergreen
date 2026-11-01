@@ -1,0 +1,19 @@
+{
+  "name": "evergreen-client",
+  "private": true,
+  "scripts": {
+    "build:client": "esbuild Client/firebase.js --bundle --format=esm --target=es2022 --outfile=wwwroot/firebase.js",
+    "test:client": "node --test Tests/firebase.test.mjs",
+    "test:browser": "firebase emulators:exec --project demo-evergreen --only auth,firestore \"node --test Tests/firebase-browser.test.mjs\"",
+    "test:rules": "firebase emulators:exec --project demo-evergreen --only firestore \"node --test Tests/firebase-rules.test.mjs\""
+  },
+  "dependencies": {
+    "firebase": "12.4.0"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "5.0.0",
+    "playwright": "1.56.1",
+    "esbuild": "0.25.11",
+    "firebase-tools": "14.20.0"
+  }
+}

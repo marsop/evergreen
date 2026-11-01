@@ -1,0 +1,27 @@
+@inherits LocalizedComponentBase
+@inject GardenService Garden
+
+@if (source.Length > 0)
+{
+    <img class="journal-photo" src="@source" alt="@T("JournalAttachment")" />
+}
+else
+{
+    <button class="text-button" @onclick="Load" disabled="@loading">@T(failed ? "PhotoLoadFailed" : "LoadPhoto")</button>
+}
+
+@code {
+    [Parameter, EditorRequired] public string PhotoId { get; set; } = "";
+    private string source = "";
+    private bool loading;
+    private bool failed;
+
+    private async Task Load()
+    {
+        loading = true;
+        failed = false;
+        try { source = await Garden.LoadPhotoAsync(PhotoId); }
+        catch (JSException) { failed = true; }
+        finally { loading = false; }
+    }
+}

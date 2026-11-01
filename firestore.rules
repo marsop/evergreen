@@ -1,0 +1,96 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function owner(uid) { return request.auth != null && request.auth.uid == uid; }
+    function text(value, max) { return value is string && value.size() <= max; }
+    function identifier(value) { return value is string && value.matches('^[a-zA-Z0-9_-]{1,100}$'); }
+    function plantExists(uid, id) {
+      return existsAfter(/databases/$(database)/documents/users/$(uid)/plants/$(id));
+    }
+    match /users/{uid} {
+      allow read: if owner(uid);
+      allow create: if owner(uid) && request.resource.data.keys().hasOnly(['schemaVersion'])
+        && request.resource.data.schemaVersion == 1;
+      allow update, delete: if false;
+
+      match /preferences/{id} {
+        allow read: if owner(uid);
+        allow create, update: if owner(uid) && id == 'language'
+          && request.resource.data.keys().hasOnly(['language'])
+          && request.resource.data.language in ['en', 'es', 'de'];
+      }
+      match /places/{id} {
+        allow read: if owner(uid);
+        allow create, update: if owner(uid) && identifier(id)
+          && request.resource.data.keys().hasOnly(['id', 'name', 'light', 'temperature', 'outdoor', 'note', 'temperatureKey'])
+          && request.resource.data.id == id
+          && text(request.resource.data.name, 50) && request.resource.data.name.size() > 0
+          && request.resource.data.light in ['Bright, filtered', 'Direct afternoon sun', 'Full sun', 'Low light', 'Full sun to shade']
+          && text(request.resource.data.temperature, 30)
+          && request.resource.data.outdoor is bool
+          && text(request.resource.data.note, 80)
+          && (request.resource.data.temperatureKey == null || request.resource.data.temperatureKey in ['Outdoor', 'WinterTemperature']);
+      }
+      match /plants/{id} {
+        allow read: if owner(uid);
+        allow create, update: if owner(uid) && identifier(id)
+          && request.resource.data.keys().hasOnly(['id', 'name', 'species', 'placeId', 'category', 'waterAmount', 'light', 'image'])
+          && request.resource.data.id == id
+          && text(request.resource.data.name, 60) && request.resource.data.name.size() > 0
+          && text(request.resource.data.species, 80)
+          && identifier(request.resource.data.placeId)
+          && existsAfter(/databases/$(database)/documents/users/$(uid)/places/$(request.resource.data.placeId))
+          && request.resource.data.category in ['Succulents & dry', 'Tropical, let top dry', 'Tropical, evenly moist', 'Mediterranean']
+          && request.resource.data.waterAmount in ['Normal', 'Small', 'Sip, only if bone dry']
+          && request.resource.data.light in ['Bright', 'Filtered', 'Sun', 'Low light']
+          && text(request.resource.data.image, 200)
+          && (request.resource.data.image == '' || request.resource.data.image.matches('^images/[a-zA-Z0-9_.-]+$'));
+      }
+      match /journalEntries/{id} {
+        function validEntry(data) {
+          return data.keys().hasOnly(['id', 'titleKey', 'descriptionKey', 'type', 'date', 'sortOrder', 'plantName', 'photoData', 'userNote', 'waterAmount', 'plantId', 'photoId'])
+            && data.id == id && identifier(id)
+            && text(data.titleKey, 80) && text(data.descriptionKey, 80)
+            && data.type in ['Watered', 'Fertilized', 'Repotted', 'Pruned', 'Treated', 'Photo']
+            && data.date is string && data.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+            && data.sortOrder is int && data.sortOrder >= 0
+            && text(data.plantName, 60) && data.photoData == ''
+            && (data.userNote == null || text(data.userNote, 240))
+            && text(data.waterAmount, 40)
+            && (data.plantId == '' || (identifier(data.plantId) && plantExists(uid, data.plantId)))
+            && (data.photoId == '' || (data.photoId == id && data.type == 'Photo'
+              && existsAfter(/databases/$(database)/documents/users/$(uid)/photos/$(data.photoId))))
+            && (!id.matches('^water-.*') || (data.type == 'Watered'
+              && id == 'water-' + data.plantId + '-' + data.date));
+        }
+        allow read: if owner(uid);
+        allow create: if owner(uid) && validEntry(request.resource.data);
+        allow update: if owner(uid) && validEntry(request.resource.data)
+          && request.resource.data.plantId == resource.data.plantId
+          && request.resource.data.date == resource.data.date
+          && request.resource.data.photoId == resource.data.photoId;
+        allow delete: if owner(uid) && id.matches('^water-.*')
+          && (!exists(/databases/$(database)/documents/users/$(uid)/journalEntries/$(id)) || resource.data.type == 'Watered');
+      }
+      match /photos/{id} {
+        allow read: if owner(uid);
+        allow create: if owner(uid) && identifier(id)
+          && request.resource.data.keys().hasOnly(['payload', 'bytes', 'width', 'height'])
+          && request.resource.data.payload is string
+          && request.resource.data.payload.size() <= 699052
+          && request.resource.data.payload.matches('^/9j/[A-Za-z0-9+/]*={0,2}$')
+          && request.resource.data.bytes is int && request.resource.data.bytes > 0 && request.resource.data.bytes <= 524288
+          && request.resource.data.width is int && request.resource.data.width > 0 && request.resource.data.width <= 1600
+          && request.resource.data.height is int && request.resource.data.height > 0 && request.resource.data.height <= 1600
+          && getAfter(/databases/$(database)/documents/users/$(uid)/journalEntries/$(id)).data.photoId == id;
+        allow update, delete: if false;
+      }
+      match /operations/{id} {
+        allow read: if owner(uid);
+        allow create: if owner(uid) && identifier(id) && request.resource.data.keys().hasOnly(['applied'])
+          && request.resource.data.applied == true;
+        allow update, delete: if false;
+      }
+    }
+  }
+}

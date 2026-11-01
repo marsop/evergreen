@@ -29,8 +29,21 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install client dependencies
+        run: npm ci
+
       - name: Publish WebAssembly app
-        run: dotnet publish Evergreen.csproj --configuration Release --output publish
+        env:
+          FIREBASE_WEB_CONFIG: ${{ vars.FIREBASE_WEB_CONFIG }}
+        run: |
+          node Client/write-config.mjs
+          dotnet publish Evergreen.csproj --configuration Release --output publish
 
       - name: Prepare static site
         shell: bash
@@ -42,10 +55,7 @@ jobs:
           if [[ "${repository,,}" == "${owner,,}.github.io" ]]; then
             base_path="/"
           fi
-          sed -i "s|<base href=\"/\" />|<base href=\"${base_path}\" />|" publish/wwwroot/index.html
-          grep -Fq "<base href=\"${base_path}\" />" publish/wwwroot/index.html
-          cp publish/wwwroot/index.html publish/wwwroot/404.html
-          touch publish/wwwroot/.nojekyll
+          node Client/prepare-site.mjs publish/wwwroot "${base_path}"
           mkdir -p publish/wwwroot/.github/workflows
           cp .github/workflows/pages.yml publish/wwwroot/.github/workflows/pages.yml
 

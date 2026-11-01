@@ -5,7 +5,30 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
   <data name="Language" xml:space="preserve"><value>Idioma</value></data>
-  <data name="PreferenceUnavailable" xml:space="preserve"><value>El idioma está activo, pero no se puede guardar la preferencia en este navegador. Los datos del jardín siguen guardados solo en memoria.</value></data>
+  <data name="SignInToGarden" xml:space="preserve"><value>Inicia sesión para abrir tu jardín privado.</value></data>
+  <data name="SignInGoogle" xml:space="preserve"><value>Iniciar sesión con Google</value></data>
+  <data name="SignOut" xml:space="preserve"><value>Cerrar sesión</value></data>
+  <data name="SignInFailed" xml:space="preserve"><value>No se pudo iniciar sesión. Permite las ventanas emergentes e inténtalo de nuevo.</value></data>
+  <data name="FirebaseSetupRequired" xml:space="preserve"><value>Firebase no está configurado. Sigue las instrucciones y vuelve a cargar.</value></data>
+  <data name="DeviceCacheNotice" xml:space="preserve"><value>Este dispositivo guarda una copia local de tu jardín para usarla sin conexión.</value></data>
+  <data name="OfflineQueued" xml:space="preserve"><value>Sin conexión: {0} cambios pendientes.</value></data>
+  <data name="SyncPending" xml:space="preserve"><value>{0} cambios pendientes de sincronización.</value></data>
+  <data name="SyncFailed" xml:space="preserve"><value>No se pudieron sincronizar {0} cambios.</value></data>
+  <data name="AppCacheUnavailable" xml:space="preserve"><value>El inicio sin conexión no está disponible. Mantén esta pestaña abierta o habilita service workers en un navegador compatible.</value></data>
+  <data name="CachedGarden" xml:space="preserve"><value>Mostrando los datos locales del jardín.</value></data>
+  <data name="GardenSynced" xml:space="preserve"><value>Jardín sincronizado.</value></data>
+  <data name="GardenLoadFailed" xml:space="preserve"><value>No se pudo cargar el jardín. Comprueba la conexión y las reglas de Firebase.</value></data>
+  <data name="SaveFailed" xml:space="preserve"><value>No se pudo guardar un cambio. Los cambios fallidos siguen en este dispositivo; reinténtalo tras resolver el error o el límite de cuota.</value></data>
+  <data name="SignOutPending" xml:space="preserve"><value>Hay cambios pendientes o fallidos. Conéctate y sincroniza antes de cerrar sesión.</value></data>
+  <data name="CacheClearFailed" xml:space="preserve"><value>No se pudo borrar la caché local. Cierra las otras pestañas y vuelve a cargar antes de cerrar sesión.</value></data>
+  <data name="FirstLoadOnline" xml:space="preserve"><value>Conéctate a internet para cargar o crear el jardín de esta cuenta.</value></data>
+  <data name="OfflineUnsupported" xml:space="preserve"><value>La sincronización sin conexión no está disponible. Habilita IndexedDB y Web Locks, o usa un navegador compatible.</value></data>
+  <data name="Retry" xml:space="preserve"><value>Reintentar sincronización</value></data>
+  <data name="LoadPhoto" xml:space="preserve"><value>Cargar foto</value></data>
+  <data name="PhotoLoadFailed" xml:space="preserve"><value>Foto no disponible. Conéctate e inténtalo de nuevo.</value></data>
+  <data name="PhotoReady" xml:space="preserve"><value>Foto comprimida lista</value></data>
+  <data name="PhotoCompressionFailed" xml:space="preserve"><value>Elige una imagen JPEG, PNG o WebP de menos de 5 MiB que pueda comprimirse a 512 KiB y 1.600 píxeles.</value></data>
+  <data name="PreferenceUnavailable" xml:space="preserve"><value>El idioma está activo, pero no se puede guardar la preferencia de inicio en este navegador.</value></data>
   <data name="LanguageChangeFailed" xml:space="preserve"><value>No se ha podido cambiar el idioma. Inténtalo de nuevo.</value></data>
   <data name="UnexpectedError" xml:space="preserve"><value>Se ha producido un error inesperado.</value></data>
   <data name="Reload" xml:space="preserve"><value>Recargar</value></data>

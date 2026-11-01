@@ -5,7 +5,30 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
   <data name="Language" xml:space="preserve"><value>Language</value></data>
-  <data name="PreferenceUnavailable" xml:space="preserve"><value>Your language is active, but the preference cannot be saved in this browser. Garden data is still only held in memory.</value></data>
+  <data name="PreferenceUnavailable" xml:space="preserve"><value>Your language is active, but its startup preference cannot be saved in this browser.</value></data>
+  <data name="SignInToGarden" xml:space="preserve"><value>Sign in to open your private garden.</value></data>
+  <data name="SignInGoogle" xml:space="preserve"><value>Sign in with Google</value></data>
+  <data name="SignOut" xml:space="preserve"><value>Sign out</value></data>
+  <data name="SignInFailed" xml:space="preserve"><value>Sign-in failed. Allow popups and try again.</value></data>
+  <data name="FirebaseSetupRequired" xml:space="preserve"><value>Firebase is not configured. Follow the setup instructions, then reload.</value></data>
+  <data name="DeviceCacheNotice" xml:space="preserve"><value>This device stores a local copy of your garden for offline use.</value></data>
+  <data name="OfflineQueued" xml:space="preserve"><value>Offline: {0} edits waiting to sync.</value></data>
+  <data name="SyncPending" xml:space="preserve"><value>{0} edits waiting to sync.</value></data>
+  <data name="SyncFailed" xml:space="preserve"><value>{0} edits failed to synchronize.</value></data>
+  <data name="AppCacheUnavailable" xml:space="preserve"><value>Offline app startup is unavailable. Keep this tab open to edit offline, or enable service workers in a supported browser.</value></data>
+  <data name="CachedGarden" xml:space="preserve"><value>Showing cached garden data.</value></data>
+  <data name="GardenSynced" xml:space="preserve"><value>Garden synchronized.</value></data>
+  <data name="GardenLoadFailed" xml:space="preserve"><value>The garden could not be loaded. Check your connection and Firebase rules.</value></data>
+  <data name="SaveFailed" xml:space="preserve"><value>An edit could not be saved. Failed edits remain on this device; retry after resolving the error or quota limit.</value></data>
+  <data name="SignOutPending" xml:space="preserve"><value>Sign-out is waiting for queued or failed edits. Connect and retry synchronization first.</value></data>
+  <data name="CacheClearFailed" xml:space="preserve"><value>The local cache could not be cleared. Close other app tabs and reload before signing out.</value></data>
+  <data name="FirstLoadOnline" xml:space="preserve"><value>Connect to the internet to load or initialize this account's garden.</value></data>
+  <data name="OfflineUnsupported" xml:space="preserve"><value>Durable offline synchronization is unavailable in this browser. Enable IndexedDB and Web Locks, or use a supported browser.</value></data>
+  <data name="Retry" xml:space="preserve"><value>Retry synchronization</value></data>
+  <data name="LoadPhoto" xml:space="preserve"><value>Load photo</value></data>
+  <data name="PhotoLoadFailed" xml:space="preserve"><value>Photo unavailable. Connect and try again.</value></data>
+  <data name="PhotoReady" xml:space="preserve"><value>Compressed photo ready</value></data>
+  <data name="PhotoCompressionFailed" xml:space="preserve"><value>Choose a JPEG, PNG, or WebP image under 5 MiB that can be compressed to 512 KiB and 1,600 pixels.</value></data>
   <data name="LanguageChangeFailed" xml:space="preserve"><value>The language could not be changed. Please try again.</value></data>
   <data name="UnexpectedError" xml:space="preserve"><value>An unexpected error occurred.</value></data>
   <data name="Reload" xml:space="preserve"><value>Reload</value></data>
