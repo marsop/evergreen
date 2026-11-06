@@ -92,12 +92,30 @@ for (const basePath of ["/", "/evergreen/"]) {
             await page.locator(".plant-list-row").filter({ hasText: "Persistent fern" }).click();
             const profileUrl = page.url();
             const plantId = new URL(profileUrl).searchParams.get("plant");
-            await page.getByRole("button", { name: "Edit plant", exact: true }).click();
+            const editPlantButton = page.getByRole("button", { name: "Edit plant", exact: true });
+            assert.ok(await editPlantButton.evaluate(button => button.classList.contains("button-dark")));
+            assert.equal(await editPlantButton.locator(".app-icon").count(), 1);
+            await editPlantButton.click();
             await page.locator(".modal input[maxlength='60']").fill("Renamed fern");
+            const plantImageSource = await page.evaluate(() => {
+                const canvas = document.createElement("canvas");
+                canvas.width = 2560;
+                canvas.height = 640;
+                return canvas.toDataURL("image/png");
+            });
+            await page.locator(".modal input[type='file']").setInputFiles({
+                name: "fern.png", mimeType: "image/png", buffer: Buffer.from(plantImageSource.split(",")[1], "base64")
+            });
+            await page.waitForFunction(() => document.querySelector(".plant-photo-preview")?.getAttribute("src")?.startsWith("data:image/jpeg;base64,"));
+            const replacementImage = await page.locator(".plant-photo-preview").getAttribute("src");
+            assert.ok(replacementImage.startsWith("data:image/jpeg;base64,"));
             await submitForm(page);
+            assert.equal((await storedGarden(page)).plants.find(plant => plant.id === plantId).image, replacementImage);
+            assert.equal(await page.locator(".profile-photo img").getAttribute("src"), replacementImage);
             await page.reload();
             await page.getByRole("heading", { name: "Renamed fern", exact: true }).waitFor();
             assert.equal(await page.locator(".species").innerText(), "My botanical name");
+            assert.equal(await page.locator(".profile-photo img").getAttribute("src"), replacementImage);
             assert.equal(page.url(), profileUrl);
 
             await page.getByRole("button", { name: "Log care", exact: true }).click();
@@ -211,10 +229,22 @@ test("failed mutations retain both committed data and form inputs, including ato
         await page.getByRole("button", { name: "Cancel", exact: true }).click();
         await page.locator(".plant-list-row").first().click();
         await page.getByRole("button", { name: "Edit plant", exact: true }).click();
+        const editedPlantId = new URL(page.url()).searchParams.get("plant");
+        const originalPlantImage = (await storedGarden(page)).plants.find(plant => plant.id === editedPlantId).image;
         await page.locator(".modal input[maxlength='60']").fill("Unsaved rename");
+        const plantImageSource = await page.evaluate(() => {
+            const canvas = document.createElement("canvas");
+            canvas.width = canvas.height = 32;
+            return canvas.toDataURL("image/png");
+        });
+        await page.locator(".modal input[type='file']").setInputFiles({
+            name: "unsaved.png", mimeType: "image/png", buffer: Buffer.from(plantImageSource.split(",")[1], "base64")
+        });
+        await page.waitForFunction(() => document.querySelector(".plant-photo-preview")?.getAttribute("src")?.startsWith("data:image/jpeg;base64,"));
         await page.locator(".modal button[type='submit']").click();
         await page.getByRole("alert").waitFor();
         assert.notEqual(await page.locator(".profile-title h1").innerText(), "Unsaved rename");
+        assert.equal(await page.locator(".profile-photo img").getAttribute("src"), originalPlantImage);
         await unchanged();
         await page.getByRole("button", { name: "Cancel", exact: true }).click();
 
@@ -846,6 +876,49 @@ for (const basePath of ["/", "/evergreen/"]) {
             await page.locator(".topbar .language-selector select").selectOption("en");
             await page.locator(".profile-view h1").getByText("Dragon tree", { exact: true }).waitFor();
             assert.deepEqual(errors, []);
+        } finally {
+            await context.close();
+        }
+    });
+}
+
+for (const basePath of ["/", "/evergreen/"]) {
+    test(`validated plants show a tick on their images at ${basePath}`, { timeout: 120000 }, async () => {
+        const context = await browser.newContext({ locale: "en-US" });
+        try {
+            await context.route("**/plants/ctenanthe/plant.json", async route => {
+                const response = await route.fetch();
+                const plant = await response.json();
+                await route.fulfill({ response, json: { ...plant, validated: true } });
+            });
+
+            const page = await context.newPage();
+            await page.goto(origin + basePath + "?view=plants");
+            const validatedRow = page.locator(".plant-list-row").filter({ hasText: "Ctenanthe" });
+            const validatedTick = validatedRow.locator(".validation-tick");
+            await validatedTick.waitFor();
+            assert.equal(await validatedTick.getAttribute("aria-label"), "Validated");
+            assert.equal(await page.locator(".plant-list-row").filter({ hasText: "Dragon tree" }).locator(".validation-tick").count(), 0);
+
+            const badgePosition = await validatedTick.evaluate(tick => {
+                const parent = tick.parentElement.getBoundingClientRect();
+                const badge = tick.getBoundingClientRect();
+                return {
+                    position: getComputedStyle(tick).position,
+                    right: parent.right - badge.right,
+                    bottom: parent.bottom - badge.bottom
+                };
+            });
+            assert.equal(badgePosition.position, "absolute");
+            assert.ok(badgePosition.right >= 0 && badgePosition.right <= 2);
+            assert.ok(badgePosition.bottom >= 0 && badgePosition.bottom <= 2);
+
+            await validatedRow.click();
+            await page.locator(".profile-photo .validation-tick").waitFor();
+            await goToView(page, "Today");
+            await page.locator(".task-row").filter({ hasText: "Ctenanthe" }).locator(".validation-tick").waitFor();
+            await goToView(page, "Places");
+            await page.locator(".place-entry").filter({ hasText: "Mos Eisley South" }).locator(".place-leaves .validation-tick").waitFor();
         } finally {
             await context.close();
         }

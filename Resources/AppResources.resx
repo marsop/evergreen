@@ -78,11 +78,9 @@
   <data name="MarkWatered" xml:space="preserve"><value>Mark {0} as watered</value></data>
   <data name="Watered" xml:space="preserve"><value>Watered</value></data>
   <data name="Water" xml:space="preserve"><value>Water</value></data>
-  <data name="AheadOfYou" xml:space="preserve"><value>AHEAD OF YOU</value></data>
-  <data name="NextSevenDays" xml:space="preserve"><value>Next 7 days</value></data>
-  <data name="WeekPreview" xml:space="preserve"><value>A light look at the week</value></data>
   <data name="YourCollection" xml:space="preserve"><value>YOUR COLLECTION</value></data>
   <data name="PlantsLead" xml:space="preserve"><value>Every leaf, in its own place.</value></data>
+  <data name="Validated" xml:space="preserve"><value>Validated</value></data>
   <data name="LoadingPlants" xml:space="preserve"><value>Loading plants...</value></data>
   <data name="AddPlant" xml:space="preserve"><value>Add plant</value></data>
   <data name="SearchPlants" xml:space="preserve"><value>Search plants</value></data>
@@ -125,6 +123,9 @@
   <data name="Treated" xml:space="preserve"><value>Treated</value></data>
   <data name="Photo" xml:space="preserve"><value>Photo</value></data>
   <data name="ChoosePhoto" xml:space="preserve"><value>Choose photo</value></data>
+  <data name="ChangePlantPhoto" xml:space="preserve"><value>Choose a replacement plant photo</value></data>
+  <data name="PlantPhoto" xml:space="preserve"><value>Plant photo</value></data>
+  <data name="PlantPhotoReplacementHelp" xml:space="preserve"><value>The replacement is saved when you save the plant.</value></data>
   <data name="NoPhotoSelected" xml:space="preserve"><value>No photo selected</value></data>
   <data name="JournalAttachment" xml:space="preserve"><value>Garden journal attachment</value></data>
   <data name="FreshPage" xml:space="preserve"><value>A fresh page</value></data>

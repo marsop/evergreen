@@ -22,7 +22,7 @@ Changes become part of the garden only after saving succeeds. If browser storage
 
 Journal entries retain their actual local calendar dates. Watering checkmarks reset on a new local day without removing past entries. Undoing watering removes only that day's automatically generated entry, not manually logged care.
 
-Photo uploads retain the 5 MB input limit and are resized to fit within 1280 by 1280 pixels without upscaling. They are saved as JPEG at 80% quality, with transparency composited onto white. This reduces storage use but does not guarantee that an attachment fits the browser quota. Invalid images produce an error rather than a saved attachment.
+Journal photo uploads and plant photo replacements from the Edit plant dialog retain the 5 MB input limit and are resized to fit within 1280 by 1280 pixels without upscaling. They are saved as JPEG at 80% quality, with transparency composited onto white. Replacements update the plant image only after the garden snapshot saves successfully. This reduces storage use but does not guarantee that a photo fits the browser quota. Invalid images produce an error rather than a saved photo.
 
 If saved data is damaged or uses an unsupported schema version, the app protects it from automatic overwriting and offers loading again or an explicitly confirmed reset to the sample garden. Reset removes only the garden key, not the language preference or other site data. Unreadable storage must become available before editing can resume.
 

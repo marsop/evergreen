@@ -119,6 +119,7 @@ else
 										<button class="task-plant" @onclick="() => OpenPlant(plant)" aria-label="@T("OpenPlantProfile", PlantName(plant))">
 											<span class="plant-thumb small-thumb">
 												<img src="@PlantImages.DisplaySource(plant.Image)" alt="" />
+												@if (plant.Catalog?.Validated == true) { <span class="validation-tick" role="img" aria-label="@T("Validated")"><AppIcon Name="@IconName.Check" /></span> }
 											</span>
 											<span class="task-copy"><strong>@PlantName(plant)</strong><small>@T("WaterSchedule", PlantWaterAmount(plant))</small></span>
 										</button>
@@ -132,15 +133,6 @@ else
 					}
 				</div>
 
-				<section class="week-strip">
-					<div class="section-heading"><div><p class="eyebrow">@T("AheadOfYou")</p><h2>@T("NextSevenDays")</h2></div><span class="muted-copy">@T("WeekPreview")</span></div>
-					<div class="week-days">
-						@foreach (var day in WeekDays)
-						{
-							<div class="week-day @(day.Day == DayOfWeek.Sunday ? "current" : "")"><span>@Cultures.Culture.DateTimeFormat.GetAbbreviatedDayName(day.Day)</span><strong>@day.Count</strong></div>
-						}
-					</div>
-				</section>
 			</section>
 		}
 		else if (activeView == "Plants")
@@ -177,6 +169,7 @@ else
 										<button class="plant-list-row" @onclick="() => OpenPlant(plant)">
 											<span class="plant-thumb">
 												<img src="@PlantImages.DisplaySource(plant.Image)" alt="" />
+												@if (plant.Catalog?.Validated == true) { <span class="validation-tick" role="img" aria-label="@T("Validated")"><AppIcon Name="@IconName.Check" /></span> }
 											</span>
 											<span class="plant-name"><strong>@PlantName(plant)</strong><small>@plant.Location</small></span>
 											<span class="sun-label"><AppIcon Name="@IconName.Sun" /> @PlantLight(plant)</span>
@@ -209,14 +202,13 @@ else
 								<div class="place-leaves">
 									@foreach (var plant in plants.Where(plant => plant.Location == place.Name).Take(4))
 									{
-										<span class="plant-thumb mini-thumb"><img src="@PlantImages.DisplaySource(plant.Image)" alt="" /></span>
+										<span class="plant-thumb mini-thumb"><img src="@PlantImages.DisplaySource(plant.Image)" alt="" />@if (plant.Catalog?.Validated == true) { <span class="validation-tick" role="img" aria-label="@T("Validated")"><AppIcon Name="@IconName.Check" /></span> }</span>
 									}
 								</div>
 								@if (!string.IsNullOrWhiteSpace(PlaceNote(place))) { <p class="place-note">@PlaceNote(place)</p> }
 							</button>
 							<button type="button" class="place-edit-action" aria-label="@T("EditPlace")" @onclick="() => OpenEditPlaceForm(place)">@T("EditPlace")</button>
-							<button type="button" class="place-delete-action" aria-label="@T("DeletePlace")" title="@(PlaceHasPlants(place) ? T("PlaceHasPlants") : null)" disabled="@PlaceHasPlants(place)" @onclick="() => OpenDeletePlaceConfirmation(place)">@T("DeletePlace")</button>
-							@if (PlaceHasPlants(place)) { <span class="place-delete-help">@T("PlaceHasPlants")</span> }
+							<button type="button" class="place-delete-action" aria-label="@T("DeletePlace")" disabled="@PlaceHasPlants(place)" @onclick="() => OpenDeletePlaceConfirmation(place)">@T("DeletePlace")</button>
 						</article>
 					}
 				</div>
@@ -231,8 +223,7 @@ else
 								@if (!string.IsNullOrWhiteSpace(PlaceNote(place))) { <p class="place-note">@PlaceNote(place)</p> }
 							</button>
 							<button type="button" class="place-edit-action" aria-label="@T("EditPlace")" @onclick="() => OpenEditPlaceForm(place)">@T("EditPlace")</button>
-							<button type="button" class="place-delete-action" aria-label="@T("DeletePlace")" title="@(PlaceHasPlants(place) ? T("PlaceHasPlants") : null)" disabled="@PlaceHasPlants(place)" @onclick="() => OpenDeletePlaceConfirmation(place)">@T("DeletePlace")</button>
-							@if (PlaceHasPlants(place)) { <span class="place-delete-help">@T("PlaceHasPlants")</span> }
+							<button type="button" class="place-delete-action" aria-label="@T("DeletePlace")" disabled="@PlaceHasPlants(place)" @onclick="() => OpenDeletePlaceConfirmation(place)">@T("DeletePlace")</button>
 						</article>
 					}
 				</div>
@@ -270,10 +261,11 @@ else
 		else if (selectedPlant is not null)
 		{
 			<section class="view-content profile-view">
-				<div class="profile-back-row"><button class="back-button" @onclick='() => Navigate("Plants")'><AppIcon Name="@IconName.ArrowLeft" /><span>@T("BackToPlants")</span></button><button class="text-button" @onclick="OpenEditPlantForm">@T("EditPlant") <AppIcon Name="@IconName.ArrowRight" /></button></div>
+				<div class="profile-back-row"><button class="back-button" @onclick='() => Navigate("Plants")'><AppIcon Name="@IconName.ArrowLeft" /><span>@T("BackToPlants")</span></button><button class="button button-dark" @onclick="OpenEditPlantForm"><AppIcon Name="@IconName.Edit" /> @T("EditPlant")</button></div>
 				<div class="profile-hero">
 					<div class="profile-photo">
 						<img src="@PlantImages.DisplaySource(selectedPlant.Image)" alt="@selectedPlant.Species" />
+						@if (selectedPlant.Catalog?.Validated == true) { <span class="validation-tick" role="img" aria-label="@T("Validated")"><AppIcon Name="@IconName.Check" /></span> }
 					</div>
 					<div class="profile-title"><p class="eyebrow">@selectedPlant.Location <span class="eyebrow-dot"></span> @T(selectedPlant.Category)</p><h1>@PlantName(selectedPlant)</h1><p class="species">@selectedPlant.Species</p><span class="profile-alert"><AppIcon Name="@IconName.Alert" /><span>@CareText(selectedPlant.Care.ProfileAlert)</span></span></div>
 				</div>
@@ -333,6 +325,13 @@ else
 				<label>@T("PlantName")<input required maxlength="60" @bind="plantNameInput" placeholder="@T("PlantNameExample")" /></label>
 				<label>@T("BotanicalName")<input maxlength="80" @bind="plantSpeciesInput" placeholder="@T("BotanicalNameExample")" /></label>
 				<div class="form-row"><label>@T("Place")<select @bind="plantLocationInput">@foreach (var place in places) { <option value="@place.Name">@place.Name</option> }</select></label><label>@T("CareGroup")<select @bind="plantCategoryInput">@foreach (var category in CategoryOrder) { <option value="@category">@T(category)</option> }</select></label></div>
+				@if (editingPlant is not null)
+				{
+					<label class="photo-upload"><span>@T("PlantPhoto")</span><span class="file-picker">@T("ChoosePhoto")</span><InputFile class="visually-hidden" aria-label="@T("ChangePlantPhoto")" accept="image/*" OnChange="HandlePlantPhotoSelected" /></label>
+					<p class="muted-copy">@T("PlantPhotoReplacementHelp")</p>
+					@if (!string.IsNullOrWhiteSpace(plantPhotoError)) { <p class="form-error" role="alert">@T(plantPhotoError)</p> }
+					<img class="photo-preview plant-photo-preview" src="@PlantImages.DisplaySource(plantPhotoData.Length > 0 ? plantPhotoData : editingPlant.Image)" alt="@PlantName(editingPlant)" />
+				}
 				@if (plantFormError.Length > 0) { <p class="form-error" role="alert">@T(plantFormError)</p> }
 				@if (saveError.Length > 0) { <p class="form-error" role="alert">@T(saveError)</p> }
 				<div class="modal-actions"><button type="button" class="button button-quiet" @onclick="CloseForms">@T("Cancel")</button><button type="submit" class="button button-dark">@T(editingPlant is null ? "AddPlant" : "SaveChanges")</button></div>
@@ -426,7 +425,6 @@ else
 	private static readonly string[] JournalTypes = GardenSnapshot.EntryTypes;
 	private static readonly string[] PlaceLights = GardenSnapshot.Lights;
 	private static readonly (string Name, IconName Icon)[] NavigationItems = [("Today", IconName.Today), ("Plants", IconName.Plants), ("Places", IconName.Places), ("Journal", IconName.Journal)];
-	private static readonly (DayOfWeek Day, string Count)[] WeekDays = [(DayOfWeek.Monday, "·"), (DayOfWeek.Tuesday, "·"), (DayOfWeek.Wednesday, "·"), (DayOfWeek.Thursday, "·"), (DayOfWeek.Friday, "·"), (DayOfWeek.Saturday, "·"), (DayOfWeek.Sunday, "23")];
 	private static readonly (IconName Icon, string Title, string Key)[] CareDetails =
 	[
 		(IconName.Sun, "Light", "Light"),
@@ -480,10 +478,13 @@ else
 	private string journalPhotoData = string.Empty;
 	private string journalPhotoName = string.Empty;
 	private string photoError = string.Empty;
+	private string plantPhotoData = string.Empty;
+	private string plantPhotoError = string.Empty;
 	private string plantFormError = string.Empty;
 	private string placeFormError = string.Empty;
 	private string placeDeleteError = string.Empty;
 	private string journalFormError = string.Empty;
+	private sealed record PhotoSelection(string Data, string FileName, string? Error);
 
 	private string CountLabel(string key, int count) => T(key + (count == 1 ? "One" : "Many"), count);
 	private string JournalDate(DateOnly? date) => date is null || date == SampleToday ? T("Today") : date.Value.ToString(T("JournalDateFormat"), Cultures.Culture);
@@ -703,6 +704,7 @@ else
 	{
 		saveError = string.Empty;
 		editingPlant = null;
+		ResetPlantPhotoSelection();
 		plantNameInput = string.Empty;
 		plantSpeciesInput = string.Empty;
 		plantLocationInput = places.FirstOrDefault(place => !place.Outdoor)?.Name ?? places.First().Name;
@@ -716,6 +718,7 @@ else
 		saveError = string.Empty;
 		if (selectedPlant is null) return;
 		editingPlant = selectedPlant;
+		ResetPlantPhotoSelection();
 		plantNameInput = PlantName(selectedPlant);
 		plantSpeciesInput = selectedPlant.Species;
 		plantLocationInput = selectedPlant.Location;
@@ -726,6 +729,7 @@ else
 
 	private async Task SavePlant()
 	{
+		if (photoProcessing || (editingPlant is not null && plantPhotoError.Length > 0)) return;
 		if (string.IsNullOrWhiteSpace(plantNameInput))
 		{
 			plantFormError = "PlantNameRequired";
@@ -742,6 +746,8 @@ else
 			saved.Species = string.IsNullOrWhiteSpace(plantSpeciesInput) ? saved.Name : plantSpeciesInput.Trim();
 			saved.Location = plantLocationInput;
 			saved.Category = plantCategoryInput;
+			if (editingPlant is not null && plantPhotoData.Length > 0)
+				saved.Image = plantPhotoData;
 			if (editingPlant is null) candidate.Plants.Add(saved);
 		}))
 			CloseForms();
@@ -865,36 +871,53 @@ else
 		showJournalForm = true;
 	}
 
+	private void ResetPlantPhotoSelection()
+	{
+		plantPhotoData = string.Empty;
+		plantPhotoError = string.Empty;
+	}
+
+	private async Task HandlePlantPhotoSelected(InputFileChangeEventArgs eventArgs)
+	{
+		ResetPlantPhotoSelection();
+		var selection = await ProcessPhotoSelectedAsync(eventArgs);
+		plantPhotoData = selection.Data;
+		plantPhotoError = selection.Error ?? string.Empty;
+	}
+
 	private async Task HandlePhotoSelected(InputFileChangeEventArgs eventArgs)
+	{
+		journalPhotoData = string.Empty;
+		journalPhotoName = string.Empty;
+		photoError = string.Empty;
+		var selection = await ProcessPhotoSelectedAsync(eventArgs);
+		journalPhotoData = selection.Data;
+		journalPhotoName = selection.FileName;
+		photoError = selection.Error ?? string.Empty;
+	}
+
+	private async Task<PhotoSelection> ProcessPhotoSelectedAsync(InputFileChangeEventArgs eventArgs)
 	{
 		var file = eventArgs.File;
 		photoProcessing = true;
-		journalPhotoData = string.Empty;
-		journalPhotoName = string.Empty;
-		if (!file.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
-		{
-			photoError = "ChooseImage";
-			photoProcessing = false;
-			return;
-		}
-
 		try
 		{
+			if (!file.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+				return new(string.Empty, string.Empty, "ChooseImage");
 			await using var stream = file.OpenReadStream(5 * 1024 * 1024);
 			using var buffer = new MemoryStream();
 			await stream.CopyToAsync(buffer);
-			journalPhotoData = await JS.InvokeAsync<string>("evergreenGarden.compressPhoto",
+			var data = await JS.InvokeAsync<string>("evergreenGarden.compressPhoto",
 				$"data:{file.ContentType};base64,{Convert.ToBase64String(buffer.ToArray())}");
-			journalPhotoName = file.Name;
-			photoError = string.Empty;
+			return new(data, file.Name, null);
 		}
 		catch (IOException)
 		{
-			photoError = "ChooseSmallImage";
+			return new(string.Empty, string.Empty, "ChooseSmallImage");
 		}
 		catch (JSException)
 		{
-			photoError = "GardenPhotoFailed";
+			return new(string.Empty, string.Empty, "GardenPhotoFailed");
 		}
 		finally
 		{
@@ -931,6 +954,7 @@ else
 		showJournalForm = false;
 		editingPlant = null;
 		editingPlace = null;
+		ResetPlantPhotoSelection();
 		saveError = string.Empty;
 	}
 

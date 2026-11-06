@@ -124,9 +124,11 @@ h3 { font-size: calc(14px * var(--desktop-font-scale, 1)); margin: 0; }
 .task-list { display: grid; }
 .task-row { align-items: center; border-bottom: 1px solid #eaebe5; display: flex; gap: 10px; justify-content: space-between; min-height: 64px; padding: 7px 2px; }
 .task-plant { align-items: center; background: none; border: 0; cursor: pointer; display: flex; gap: 11px; min-width: 0; padding: 0; text-align: left; }
-.plant-thumb { align-items: center; background: #e7eee5; border-radius: 6px; color: #719077; display: flex; flex: 0 0 auto; height: 47px; justify-content: center; overflow: hidden; width: 47px; }
+.plant-thumb { align-items: center; background: #e7eee5; border-radius: 6px; color: #719077; display: flex; flex: 0 0 auto; height: 47px; justify-content: center; overflow: hidden; position: relative; width: 47px; }
 .plant-thumb img { height: 100%; object-fit: cover; width: 100%; }
-.plant-thumb > span { font-size: calc(19px * var(--desktop-font-scale, 1)); }
+.plant-thumb > span:not(.validation-tick) { font-size: calc(19px * var(--desktop-font-scale, 1)); }
+.validation-tick { align-items: center; background: #39864b; border: 1px solid #fff; border-radius: 50%; bottom: 1px; color: #fff; display: inline-flex; height: 14px; justify-content: center; position: absolute; right: 1px; width: 14px; z-index: 1; }
+.validation-tick .app-icon { height: 9px; width: 9px; }
 .small-thumb { height: 38px; width: 38px; }
 .small-thumb > span { font-size: calc(15px * var(--desktop-font-scale, 1)); }
 .task-copy { min-width: 0; }
@@ -138,15 +140,6 @@ h3 { font-size: calc(14px * var(--desktop-font-scale, 1)); margin: 0; }
 .water-button .app-icon { height: 14px; width: 14px; }
 .water-button.done { background: #d4e7d5; border-color: #c9dfcb; color: #3d7049; }
 .is-watered .task-copy strong { color: #839087; text-decoration: line-through; text-decoration-color: #b1beb2; }
-.week-strip { border-top: 1px solid var(--line); margin-top: 47px; padding-top: 26px; }
-.week-strip .section-heading { align-items: center; margin-bottom: 20px; }
-.week-strip h2 { font-size: calc(21px * var(--desktop-font-scale, 1)); }
-.week-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 9px; }
-.week-day { align-items: center; background: #fffefa; border: 1px solid #e9ebe3; border-radius: 6px; color: #89938b; display: flex; flex-direction: column; gap: 11px; min-height: 78px; padding: 12px 5px; }
-.week-day span { font-size: calc(10px * var(--desktop-font-scale, 1)); }
-.week-day strong { color: #77877b; font-family: var(--serif); font-size: calc(19px * var(--desktop-font-scale, 1)); font-weight: 400; }
-.week-day.current { background: #e7eee5; border-color: #d5e0d4; color: var(--leaf-dark); }
-.week-day.current strong { color: var(--leaf-dark); }
 
 .page-heading { align-items: flex-end; display: flex; justify-content: space-between; margin-bottom: 31px; }
 .heading-count { background: #e7eee5; border-radius: 20px; color: var(--leaf-dark); display: inline-flex; font-family: var(--sans); font-size: calc(11px * var(--desktop-font-scale, 1)); height: 25px; justify-content: center; margin-left: 4px; vertical-align: middle; width: 34px; }
@@ -189,7 +182,6 @@ h3 { font-size: calc(14px * var(--desktop-font-scale, 1)); margin: 0; }
 .place-edit-action:hover { color: var(--leaf); }
 .place-delete-action { align-self: flex-end; background: transparent; border: 0; color: #9c5e4d; cursor: pointer; font-size: calc(10px * var(--desktop-font-scale, 1)); margin: 0 4px; padding: 4px 6px; text-decoration: underline; text-underline-offset: 2px; }
 .place-delete-action:disabled { color: #9a9d97; cursor: not-allowed; text-decoration: none; }
-.place-delete-help { align-self: flex-end; color: #848d84; font-size: calc(9px * var(--desktop-font-scale, 1)); margin: 0 10px 4px; text-align: right; }
 .place-card-top { align-items: center; display: flex; justify-content: space-between; }
 .place-symbol { align-items: center; background: #e8efe7; border-radius: 6px; color: var(--leaf); display: inline-flex; height: 34px; justify-content: center; width: 34px; }
 .place-symbol .app-icon { height: 19px; width: 19px; }
@@ -230,9 +222,11 @@ h3 { font-size: calc(14px * var(--desktop-font-scale, 1)); margin: 0; }
 .back-button .app-icon { height: 16px; width: 16px; }
 .back-button span { font-size: calc(11px * var(--desktop-font-scale, 1)); }
 .profile-hero { align-items: center; background: #e7eee5; border-radius: 7px; display: flex; gap: 28px; margin-bottom: 22px; min-height: 240px; overflow: hidden; padding: 23px; }
-.profile-photo { align-items: center; background: #dce8da; border-radius: 6px; color: #719077; display: flex; flex: 0 0 190px; height: 190px; justify-content: center; overflow: hidden; }
+.profile-photo { align-items: center; background: #dce8da; border-radius: 6px; color: #719077; display: flex; flex: 0 0 190px; height: 190px; justify-content: center; overflow: hidden; position: relative; }
 .profile-photo img { height: 100%; object-fit: cover; width: 100%; }
-.profile-photo > span { font-size: calc(45px * var(--desktop-font-scale, 1)); }
+.profile-photo .validation-tick { height: 20px; width: 20px; }
+.profile-photo .validation-tick .app-icon { height: 13px; width: 13px; }
+.profile-photo > span:not(.validation-tick) { font-size: calc(45px * var(--desktop-font-scale, 1)); }
 .profile-title h1 { font-size: calc(43px * var(--desktop-font-scale, 1)); }
 .profile-title .eyebrow { margin-bottom: 8px; }
 .species { color: #76847a; font-family: var(--serif); font-size: calc(17px * var(--desktop-font-scale, 1)); font-style: italic; margin: 5px 0 17px; }
@@ -343,10 +337,6 @@ h3 { font-size: calc(14px * var(--desktop-font-scale, 1)); margin: 0; }
     .today-banner { margin-bottom: 31px; min-height: 64px; padding: 10px 12px; }
     .task-locations { grid-template-columns: 1fr; }
     .water-button { min-height: 44px; }
-    .week-strip { margin-top: 35px; }
-    .week-days { gap: 5px; }
-    .week-day { min-height: 67px; }
-    .week-day strong { font-size: calc(16px * var(--desktop-font-scale, 1)); }
     .plant-groups { grid-template-columns: 1fr; }
     .page-heading { align-items: flex-start; gap: 12px; }
     .page-heading > div:first-child { min-width: 0; }

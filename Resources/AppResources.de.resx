@@ -78,11 +78,9 @@
   <data name="MarkWatered" xml:space="preserve"><value>{0} als gegossen markieren</value></data>
   <data name="Watered" xml:space="preserve"><value>Gegossen</value></data>
   <data name="Water" xml:space="preserve"><value>Gießen</value></data>
-  <data name="AheadOfYou" xml:space="preserve"><value>WAS VOR DIR LIEGT</value></data>
-  <data name="NextSevenDays" xml:space="preserve"><value>Nächste 7 Tage</value></data>
-  <data name="WeekPreview" xml:space="preserve"><value>Ein kleiner Wochenüberblick</value></data>
   <data name="YourCollection" xml:space="preserve"><value>DEINE SAMMLUNG</value></data>
   <data name="PlantsLead" xml:space="preserve"><value>Jedes Blatt an seinem Platz.</value></data>
+  <data name="Validated" xml:space="preserve"><value>Validiert</value></data>
   <data name="LoadingPlants" xml:space="preserve"><value>Pflanzen werden geladen...</value></data>
   <data name="AddPlant" xml:space="preserve"><value>Pflanze hinzufügen</value></data>
   <data name="SearchPlants" xml:space="preserve"><value>Pflanzen suchen</value></data>
@@ -125,6 +123,9 @@
   <data name="Treated" xml:space="preserve"><value>Behandelt</value></data>
   <data name="Photo" xml:space="preserve"><value>Foto</value></data>
   <data name="ChoosePhoto" xml:space="preserve"><value>Foto auswählen</value></data>
+  <data name="ChangePlantPhoto" xml:space="preserve"><value>Ersatzfoto für die Pflanze auswählen</value></data>
+  <data name="PlantPhoto" xml:space="preserve"><value>Pflanzenfoto</value></data>
+  <data name="PlantPhotoReplacementHelp" xml:space="preserve"><value>Das Ersatzfoto wird beim Speichern der Pflanze übernommen.</value></data>
   <data name="NoPhotoSelected" xml:space="preserve"><value>Kein Foto ausgewählt</value></data>
   <data name="JournalAttachment" xml:space="preserve"><value>Bildanhang im Gartentagebuch</value></data>
   <data name="FreshPage" xml:space="preserve"><value>Eine neue Seite</value></data>
