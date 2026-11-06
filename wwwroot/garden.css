@@ -109,6 +109,7 @@ h3 { font-size: 14px; margin: 0; }
 .section-heading h2 { font-size: 23px; }
 .text-button { background: none; border: 0; color: var(--leaf-dark); cursor: pointer; font-size: 12px; font-weight: 600; padding: 8px 0; }
 .text-button .app-icon { margin-left: 5px; }
+.task-heading-actions { align-items: center; display: flex; gap: 18px; }
 
 .today-heading { align-items: flex-end; display: flex; justify-content: space-between; padding-bottom: 27px; }
 .today-heading h1 { max-width: 570px; }

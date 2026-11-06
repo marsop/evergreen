@@ -37,6 +37,27 @@ public sealed class GardenTests
         Assert.Equal(plant.Name, restored.Name);
     }
 
+    [Theory]
+    [InlineData("")]
+    [InlineData("  ")]
+    public void MissingPlantImagesUseDefaultForDisplayWithoutChangingSavedValue(string image)
+    {
+        var plant = new Plant("Fern", "Fern", "Kitchen", "Tropical, evenly moist", "Normal", "Filtered", image);
+
+        Assert.Equal(GardenImages.DefaultPlant, GardenImages.DisplaySource(plant));
+        Assert.Equal(image, plant.Image);
+    }
+
+    [Fact]
+    public void ExistingPlantImageIsPreservedForDisplay()
+    {
+        const string image = "images/fern.webp";
+        var plant = new Plant("Fern", "Fern", "Kitchen", "Tropical, evenly moist", "Normal", "Filtered", image);
+
+        Assert.Equal(image, GardenImages.DisplaySource(plant));
+        Assert.Equal(image, plant.Image);
+    }
+
     [Fact]
     public void RelationshipsAndDailyWateringResolveAfterReloadAndRename()
     {

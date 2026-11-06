@@ -5,6 +5,8 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
   <data name="Language" xml:space="preserve"><value>Language</value></data>
+  <data name="PlantUnavailable" xml:space="preserve"><value>Plant unavailable</value></data>
+  <data name="PlantUnavailableDescription" xml:space="preserve"><value>This plant is no longer available in your garden.</value></data>
   <data name="PreferenceUnavailable" xml:space="preserve"><value>Your language is active, but its startup preference cannot be saved in this browser.</value></data>
   <data name="SignInToGarden" xml:space="preserve"><value>Sign in to open your private garden.</value></data>
   <data name="SignInGoogle" xml:space="preserve"><value>Sign in with Google</value></data>
@@ -96,6 +98,7 @@
   <data name="WaterSchedule" xml:space="preserve"><value>{0} · 1× week</value></data>
   <data name="UndoWatering" xml:space="preserve"><value>Undo watering {0}</value></data>
   <data name="MarkWatered" xml:space="preserve"><value>Mark {0} as watered</value></data>
+  <data name="WaterEverything" xml:space="preserve"><value>Water everything</value></data>
   <data name="Watered" xml:space="preserve"><value>Watered</value></data>
   <data name="Water" xml:space="preserve"><value>Water</value></data>
   <data name="AheadOfYou" xml:space="preserve"><value>AHEAD OF YOU</value></data>

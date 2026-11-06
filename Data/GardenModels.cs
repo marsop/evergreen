@@ -18,6 +18,14 @@ public sealed class Plant(string name, string species, string location, string c
     [JsonIgnore] public bool Watered { get; set; }
 }
 
+public static class GardenImages
+{
+    public const string DefaultPlant = "images/default-plant.svg";
+
+    public static string DisplaySource(Plant plant) =>
+        string.IsNullOrWhiteSpace(plant.Image) ? DefaultPlant : plant.Image;
+}
+
 public sealed record Place(string Name, string Light, string Temperature, bool Outdoor, string Note, string? TemperatureKey = null)
 {
     public string Id { get; init; } = Guid.NewGuid().ToString("N");

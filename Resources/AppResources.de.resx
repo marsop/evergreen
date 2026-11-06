@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
+  <data name="PlantUnavailable" xml:space="preserve"><value>Pflanze nicht verf&#252;gbar</value></data>
+  <data name="PlantUnavailableDescription" xml:space="preserve"><value>Diese Pflanze ist in deinem Garten nicht mehr verf&#252;gbar.</value></data>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
@@ -96,6 +98,7 @@
   <data name="WaterSchedule" xml:space="preserve"><value>{0} · 1× pro Woche</value></data>
   <data name="UndoWatering" xml:space="preserve"><value>Gießen von {0} rückgängig machen</value></data>
   <data name="MarkWatered" xml:space="preserve"><value>{0} als gegossen markieren</value></data>
+  <data name="WaterEverything" xml:space="preserve"><value>Alle Pflanzen gießen</value></data>
   <data name="Watered" xml:space="preserve"><value>Gegossen</value></data>
   <data name="Water" xml:space="preserve"><value>Gießen</value></data>
   <data name="AheadOfYou" xml:space="preserve"><value>WAS VOR DIR LIEGT</value></data>

@@ -1,6 +1,7 @@
 ﻿@page "/"
 @inherits LocalizedComponentBase
 @inject GardenService Garden
+@inject NavigationManager Navigation
 @implements IDisposable
 <PageTitle>@T("PlantCareTitle")</PageTitle>
 
@@ -31,7 +32,7 @@
 {
 <div class="app-shell">
 	<aside class="sidebar" aria-label="@T("MainNavigation")">
-		<a class="brand" href="" aria-label="@T("EvergreenHome")">
+		<a class="brand" href="@DestinationUrl("Today")" @onclick='() => Navigate("Today")' @onclick:preventDefault aria-label="@T("EvergreenHome")">
 			<span class="brand-mark"><AppIcon Name="@IconName.Leaf" /></span>
 			<span><strong>Evergreen</strong><small>@T("BrandTagline")</small></span>
 		</a>
@@ -93,7 +94,10 @@
 
 				<div class="section-heading task-heading">
 					<div><p class="eyebrow">@T("CareList")</p><h2>@CountLabel("ThingsToday", DueCount)</h2></div>
-					<button class="text-button" @onclick='() => Navigate("Plants")'>@T("ViewAllPlants") <AppIcon Name="@IconName.ArrowRight" /></button>
+					<div class="task-heading-actions">
+						<button class="button button-dark" disabled="@(WateredCount == plants.Count || bulkWatering)" @onclick="WaterEverything">@T("WaterEverything")</button>
+						<button class="text-button" @onclick='() => Navigate("Plants")'>@T("ViewAllPlants") <AppIcon Name="@IconName.ArrowRight" /></button>
+					</div>
 				</div>
 
 				<div class="task-locations">
@@ -107,8 +111,7 @@
 									<article class="task-row @(plant.Watered ? "is-watered" : "")">
 										<button class="task-plant" @onclick="() => OpenPlant(plant)" aria-label="@T("OpenPlantProfile", plant.Name)">
 											<span class="plant-thumb small-thumb">
-												@if (!string.IsNullOrWhiteSpace(plant.Image)) { <img src="@plant.Image" alt="" /> }
-												else { <span aria-hidden="true">✿</span> }
+												<img src="@GardenImages.DisplaySource(plant)" alt="" />
 											</span>
 											<span class="task-copy"><strong>@plant.Name</strong><small>@T("WaterSchedule", T(plant.WaterAmount))</small></span>
 										</button>
@@ -166,8 +169,7 @@
 									{
 										<button class="plant-list-row" @onclick="() => OpenPlant(plant)">
 											<span class="plant-thumb">
-												@if (!string.IsNullOrWhiteSpace(plant.Image)) { <img src="@plant.Image" alt="" /> }
-												else { <span aria-hidden="true">✿</span> }
+												<img src="@GardenImages.DisplaySource(plant)" alt="" />
 											</span>
 											<span class="plant-name"><strong>@plant.Name</strong><small>@plant.Location</small></span>
 											<span class="sun-label"><AppIcon Name="@IconName.Sun" /> @T(plant.Light)</span>
@@ -199,7 +201,7 @@
 							<div class="place-leaves">
 								@foreach (var plant in plants.Where(plant => plant.PlaceId == place.Id).Take(4))
 								{
-									<span class="plant-thumb mini-thumb">@if (!string.IsNullOrWhiteSpace(plant.Image)) { <img src="@plant.Image" alt="" /> } else { <span aria-hidden="true">✿</span> }</span>
+									<span class="plant-thumb mini-thumb"><img src="@GardenImages.DisplaySource(plant)" alt="" /></span>
 								}
 							</div>
 							@if (place.Note.Length > 0) { <p class="place-note">@T(place.Note)</p> }
@@ -258,8 +260,7 @@
 				<div class="profile-back-row"><button class="back-button" @onclick='() => Navigate("Plants")'><AppIcon Name="@IconName.ArrowLeft" /><span>@T("BackToPlants")</span></button><button class="text-button" @onclick="OpenEditPlantForm">@T("EditPlant") <AppIcon Name="@IconName.ArrowRight" /></button></div>
 				<div class="profile-hero">
 					<div class="profile-photo">
-						@if (!string.IsNullOrWhiteSpace(selectedPlant.Image)) { <img src="@selectedPlant.Image" alt="@selectedPlant.Species" /> }
-						else { <span aria-hidden="true">✿</span> }
+						<img src="@GardenImages.DisplaySource(selectedPlant)" alt="@selectedPlant.Species" />
 					</div>
 					<div class="profile-title"><p class="eyebrow">@selectedPlant.Location <span class="eyebrow-dot"></span> @T(selectedPlant.Category)</p><h1>@selectedPlant.Name</h1><p class="species">@selectedPlant.Species</p><span class="profile-alert"><AppIcon Name="@IconName.Alert" /><span>@T("ProfileAlert")</span></span></div>
 				</div>
@@ -284,6 +285,14 @@
 						<div class="history-row"><span class="journal-entry-icon"><AppIcon Name="@JournalIcon(entry.Type)" /></span><strong>@JournalTitle(entry)</strong><time>@JournalDate(entry.Date)</time></div>
 					}
 				</section>
+			</section>
+		}
+		else if (activeView == "Profile")
+		{
+			<section class="view-content">
+				<h1>@T("PlantUnavailable")</h1>
+				<p role="status">@T("PlantUnavailableDescription")</p>
+				<button class="back-button" @onclick='() => Navigate("Plants")'><AppIcon Name="@IconName.ArrowLeft" />@T("BackToPlants")</button>
 			</section>
 		}
 	</main>
@@ -356,7 +365,16 @@ else if (Garden.State.Uid.Length > 0)
 }
 
 @code {
-	private DateOnly SampleToday => DateOnly.FromDateTime(DateTime.Now);
+	[SupplyParameterFromQuery(Name = "view")]
+	public string? View { get; set; }
+	[SupplyParameterFromQuery(Name = "plant")]
+	public string? PlantId { get; set; }
+	[SupplyParameterFromQuery(Name = "place")]
+	public string? PlaceId { get; set; }
+	private string? appliedUri;
+
+	private DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+	private DateOnly SampleToday => today;
 	private static readonly string[] CategoryOrder = GardenSamples.Categories;
 	private static readonly string[] JournalTypes = ["Watered", "Fertilized", "Repotted", "Pruned", "Treated", "Photo"];
 	private static readonly string[] PlaceLights = ["Bright, filtered", "Direct afternoon sun", "Full sun", "Low light", "Full sun to shade"];
@@ -381,6 +399,7 @@ else if (Garden.State.Uid.Length > 0)
 	private string accountId = "";
 	private string actionError = "";
 	private bool accountBusy = true;
+	private bool bulkWatering;
 	private ElementReference photoInput;
 	private CompressedPhoto? selectedPhoto;
 	private bool photoBusy;
@@ -435,27 +454,91 @@ else if (Garden.State.Uid.Length > 0)
 	private string PlaceTemperature(Place place) => place.TemperatureKey is null ? place.Temperature : T(place.TemperatureKey);
 
 	private bool IsCurrent(string name) => activeView == name || (activeView == "Profile" && name == "Plants");
-	private void Navigate(string view) => activeView = view;
+	private string DestinationUrl(string view, string? plantId = null, string? placeId = null) =>
+		Navigation.GetUriWithQueryParameters(new Dictionary<string, object?>
+		{
+			["view"] = view == "Today" ? null : view.ToLowerInvariant(),
+			["plant"] = plantId,
+			["place"] = placeId
+		});
+
+	private void Navigate(string view, string? plantId = null, string? placeId = null, bool replace = false)
+	{
+		var destination = DestinationUrl(view, plantId, placeId);
+		if (!string.Equals(destination, Navigation.Uri, StringComparison.Ordinal))
+			Navigation.NavigateTo(destination, replace: replace);
+	}
+
+	protected override void OnParametersSet()
+	{
+		if (appliedUri == Navigation.Uri) return;
+		appliedUri = Navigation.Uri;
+		CloseForms();
+		activeView = View switch
+		{
+			null or "" or "today" => "Today",
+			"plants" => "Plants",
+			"places" => "Places",
+			"journal" => "Journal",
+			"profile" => "Profile",
+			_ => "Today"
+		};
+		selectedPlantId = activeView == "Profile" ? PlantId ?? "" : "";
+		selectedLocation = activeView == "Plants" ? PlaceId ?? "All" : "All";
+		ValidatePlaceFilter();
+		if (View is not (null or "" or "today" or "plants" or "places" or "journal" or "profile"))
+			Navigate("Today", replace: true);
+	}
+
+	private void ValidatePlaceFilter()
+	{
+		if (Garden.State.Ready && selectedLocation != "All" && !places.Any(place => place.Id == selectedLocation))
+			selectedLocation = "All";
+	}
 	private void SetJournalFilter(string entryType) => selectedJournalType = selectedJournalType == entryType ? "All" : entryType;
 
 	private void OpenPlant(Plant plant)
 	{
-		selectedPlantId = plant.Id;
-		activeView = "Profile";
+		Navigate("Profile", plantId: plant.Id);
 	}
 
-	private void ShowPlacePlants(string placeName)
+	private void ShowPlacePlants(string placeId)
 	{
-		selectedLocation = placeName;
-		activeView = "Plants";
+		Navigate("Plants", placeId: placeId);
 	}
 
 	private async Task ToggleWater(Plant plant)
 	{
 		var id = GardenSnapshot.WateringId(plant.Id, SampleToday);
-		var entry = new JournalEntry("JournalWateredTitle", "WateringDescription", "Watered", SampleToday,
-			DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), WaterAmount: plant.WaterAmount) { Id = id, PlantId = plant.Id };
+		var entry = CreateWateringEntry(plant, SampleToday, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
 		await RunAction(() => Garden.SaveAsync(new GardenWrite("journalEntries", id, plant.Watered ? null : entry, plant.Watered)));
+	}
+
+	private async Task WaterEverything()
+	{
+		var plantsToWater = plants.Where(plant => !plant.Watered).ToArray();
+		if (plantsToWater.Length == 0 || bulkWatering) return;
+
+		bulkWatering = true;
+		try
+		{
+			var day = SampleToday;
+			var sortOrder = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+			var writes = plantsToWater.Select(plant =>
+			{
+				var id = GardenSnapshot.WateringId(plant.Id, day);
+				return new GardenWrite("journalEntries", id, CreateWateringEntry(plant, day, sortOrder));
+			}).ToArray();
+			await RunAction(() => Garden.SaveAsync(writes));
+		}
+		finally { bulkWatering = false; }
+	}
+
+	private static JournalEntry CreateWateringEntry(Plant plant, DateOnly day, long sortOrder)
+	{
+		var id = GardenSnapshot.WateringId(plant.Id, day);
+		return new JournalEntry("JournalWateredTitle", "WateringDescription", "Watered", day, sortOrder,
+			WaterAmount: plant.WaterAmount) { Id = id, PlantId = plant.Id };
 	}
 
 	private void OpenPlantForm()
@@ -635,6 +718,7 @@ else if (Garden.State.Uid.Length > 0)
 		finally { accountBusy = false; }
 		dayTimer = new Timer(_ => InvokeAsync(() =>
 		{
+			today = DateOnly.FromDateTime(DateTime.Now);
 			Garden.State.ResolveRelationships(SampleToday);
 			StateHasChanged();
 		}), null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
@@ -646,14 +730,13 @@ else if (Garden.State.Uid.Length > 0)
 		{
 			accountId = Garden.State.Uid;
 			CloseForms();
-			activeView = "Today";
-			selectedPlantId = "";
-			selectedLocation = "All";
+			selectedLocation = activeView == "Plants" ? PlaceId ?? "All" : "All";
 			selectedJournalType = "All";
 			searchTerm = "";
 			selectedPhoto = null;
 			journalPhotoData = "";
 		}
+		ValidatePlaceFilter();
 		_ = InvokeAsync(StateHasChanged);
 	}
 

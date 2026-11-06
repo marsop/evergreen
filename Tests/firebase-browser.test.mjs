@@ -73,6 +73,187 @@ async function submit(page) {
     await page.locator(".modal button[type='submit']").click();
     await page.locator(".modal").waitFor({ state: "hidden" });
 }
+
+test("view history, deep links and navigation preserve the signed-in garden", { timeout: 180000 }, async () => {
+    const context = await browser.newContext();
+    try {
+        const page = await context.newPage();
+        const errors = [];
+        page.on("pageerror", error => errors.push(error.message));
+        // Start on a deep link before authentication or garden data is available.
+        await page.goto(origin + "?view=profile&plant=missing-plant");
+        await signIn(page, "garden-history@example.test");
+        await page.getByRole("heading", { name: "Plant unavailable", exact: true }).waitFor();
+        await page.getByRole("button", { name: "Back to plants", exact: true }).click();
+        await page.locator(".plant-list-row").first().waitFor();
+        await page.locator(".brand").click();
+        await page.locator(".today-view").waitFor();
+        const initialHistory = await page.evaluate(() => history.length);
+        const documentToken = await page.evaluate(() => window.historyTestDocument = crypto.randomUUID());
+        const counts = await page.locator(".sidebar-foot").innerText();
+        const nav = name => page.locator(".primary-nav").getByRole("button", { name, exact: true });
+        const view = async (name, ready) => {
+            await page.waitForURL(url => url.searchParams.get("view") === name);
+            await page.locator(ready).waitFor();
+            assert.equal(new URL(page.url()).pathname, "/evergreen/");
+        };
+        await nav("Plants").click();
+        await view("plants", ".plant-list-row");
+        await nav("Plants").click();
+        assert.equal(await page.evaluate(() => history.length), initialHistory + 1);
+        const plantName = await page.locator(".plant-list-row strong").first().innerText();
+        await page.locator(".plant-list-row").first().click();
+        await view("profile", ".profile-view");
+        const profileUrl = page.url();
+        assert.ok(new URL(profileUrl).searchParams.get("plant"));
+        assert.equal(await page.locator(".profile-title h1").innerText(), plantName);
+        await page.getByRole("button", { name: "Open journal", exact: true }).click();
+        await view("journal", ".journal-timeline");
+
+        await page.goBack();
+        await view("profile", ".profile-view");
+        assert.equal(page.url(), profileUrl);
+        await page.goBack();
+        await view("plants", ".plant-list-row");
+        await page.goBack();
+        await view(null, ".today-view");
+        await page.goForward();
+        await view("plants", ".plant-list-row");
+        await page.goForward();
+        await view("profile", ".profile-view");
+        await page.goForward();
+        await view("journal", ".journal-timeline");
+        assert.equal(await page.evaluate(() => window.historyTestDocument), documentToken);
+        assert.equal(await page.locator(".sidebar-foot").innerText(), counts);
+
+        await nav("Places").click();
+        await view("places", ".place-card");
+        const placeName = await page.locator(".place-card h3").first().innerText();
+        await page.locator(".place-card").first().click();
+        await view("plants", ".plant-list-row");
+        const placeUrl = page.url();
+        assert.ok(new URL(placeUrl).searchParams.get("place"));
+        assert.equal(await page.locator(".filter-chip.selected").innerText(), placeName);
+        const filteredCount = await page.locator(".plant-list-row").count();
+        await page.locator(".plant-list-row").first().click();
+        await view("profile", ".profile-view");
+        await page.goBack();
+        await view("plants", ".plant-list-row");
+        assert.equal(page.url(), placeUrl);
+        assert.equal(await page.locator(".plant-list-row").count(), filteredCount);
+        await page.goBack();
+        await view("places", ".place-card");
+        await page.goForward();
+        await view("plants", ".plant-list-row");
+
+        const beforeTransientChanges = await page.evaluate(() => history.length);
+        await page.getByRole("button", { name: "Add plant", exact: true }).click();
+        await page.getByLabel("Plant name", { exact: true }).fill("Unsaved history fern");
+        await page.locator(".modal .language-selector select").selectOption("de");
+        assert.equal(await page.getByLabel("Plant name", { exact: true }).count(), 0);
+        assert.equal(await page.locator(".modal input[maxlength='60']").inputValue(), "Unsaved history fern");
+        assert.equal(page.url(), placeUrl);
+        await page.locator(".modal .language-selector select").selectOption("en");
+        assert.equal(await page.evaluate(() => history.length), beforeTransientChanges);
+        await page.goBack();
+        await view("places", ".place-card");
+        await page.locator(".modal").waitFor({ state: "hidden" });
+        await page.goForward();
+        await view("plants", ".plant-list-row");
+        await page.locator(".filter-chip").getByText("All", { exact: true }).click();
+        await page.getByRole("textbox", { name: "Search plants", exact: true }).fill("Monstera");
+        await page.locator(".plant-list-row").filter({ hasText: "Monstera" }).waitFor();
+        assert.equal(page.url(), placeUrl);
+        assert.equal(await page.evaluate(() => history.length), beforeTransientChanges);
+        await page.getByRole("textbox", { name: "Search plants", exact: true }).fill("");
+
+        await page.locator(".plant-list-row").first().click();
+        await view("profile", ".profile-view");
+        await page.getByRole("button", { name: "Back to plants", exact: true }).click();
+        await view("plants", ".plant-list-row");
+        assert.equal(new URL(page.url()).searchParams.has("place"), false);
+        await page.locator(".plant-list-row").first().click();
+        await view("profile", ".profile-view");
+        const reloadProfileUrl = page.url();
+        await page.reload();
+        await page.locator(".profile-view").waitFor({ timeout: 30000 });
+        assert.equal(page.url(), reloadProfileUrl);
+
+        const direct = await context.newPage();
+        await direct.goto(reloadProfileUrl);
+        await direct.locator(".profile-view").waitFor({ timeout: 30000 });
+        await direct.getByRole("button", { name: "Back to plants", exact: true }).click();
+        await direct.locator(".plant-list-row").first().waitFor();
+        await direct.close();
+
+        await page.setViewportSize({ width: 390, height: 844 });
+        await page.locator(".mobile-nav").getByRole("button", { name: "Journal", exact: true }).click();
+        await view("journal", ".journal-timeline");
+        await page.goBack();
+        await view("profile", ".profile-view");
+        await page.goForward();
+        await view("journal", ".journal-timeline");
+        await page.locator(".mobile-nav").getByRole("button", { name: /^Today/ }).click();
+        await view(null, ".today-view");
+        await page.evaluate(() => navigator.serviceWorker.ready);
+        await page.reload();
+        await page.locator(".today-view").waitFor({ timeout: 30000 });
+        await context.setOffline(true);
+        await page.locator(".water-button").first().click();
+        await page.getByText("Offline: 1 edits waiting to sync.", { exact: true }).waitFor();
+        const watered = await page.locator(".water-button.done").count();
+        await page.locator(".mobile-nav").getByRole("button", { name: "Journal", exact: true }).click();
+        await view("journal", ".journal-timeline");
+        await page.goBack();
+        await view(null, ".today-view");
+        assert.equal(await page.locator(".water-button.done").count(), watered);
+        await page.getByText("Offline: 1 edits waiting to sync.", { exact: true }).waitFor();
+        assert.equal(await page.getByText("Garden synchronized.", { exact: true }).count(), 0);
+        await context.setOffline(false);
+        await synced(page);
+
+        await page.setViewportSize({ width: 1280, height: 900 });
+        await page.goto(origin + "?view=plants&place=missing-place");
+        await page.locator(".plant-list-row").first().waitFor({ timeout: 30000 });
+        assert.equal(await page.locator(".filter-chip.selected").innerText(), "All");
+        assert.equal(await page.locator(".plant-list-row").count(), 23);
+        await page.goto(origin + "?view=profile");
+        await page.getByRole("heading", { name: "Plant unavailable", exact: true }).waitFor({ timeout: 30000 });
+        await page.locator(".account-status select").selectOption("de");
+        await page.getByRole("heading", { name: "Pflanze nicht verfügbar", exact: true }).waitFor();
+        await page.locator(".account-status select").selectOption("es");
+        await page.getByRole("heading", { name: "Planta no disponible", exact: true }).waitFor();
+        await page.locator(".account-status select").selectOption("en");
+        await synced(page);
+
+        await page.getByRole("button", { name: "Back to plants", exact: true }).click();
+        await view("plants", ".plant-list-row");
+        await page.goto(origin + "?view=invalid&plant=missing-plant");
+        await view(null, ".today-view");
+        assert.equal(new URL(page.url()).search, "");
+        await page.goBack();
+        await view("plants", ".plant-list-row");
+
+        // A private plant link must not show a previous account's profile after account switching.
+        await page.getByRole("button", { name: "Add plant", exact: true }).click();
+        await page.getByLabel("Plant name", { exact: true }).fill("Private history fern");
+        await submit(page);
+        await synced(page);
+        await page.locator(".plant-list-row").filter({ hasText: "Private history fern" }).click();
+        await view("profile", ".profile-view");
+        const privateUrl = page.url();
+        await page.getByRole("button", { name: "Sign out", exact: true }).click();
+        await page.getByRole("button", { name: "Sign in with Google" }).waitFor();
+        await signIn(page, "garden-history-other@example.test");
+        await page.getByRole("heading", { name: "Plant unavailable", exact: true }).waitFor();
+        assert.equal(page.url(), privateUrl);
+        assert.equal(await page.getByText("Private history fern", { exact: true }).count(), 0);
+        assert.deepEqual(errors, []);
+    } finally {
+        await context.close();
+    }
+});
+
 test("private seeded garden, compressed photos, offline reload/sync and language", { timeout: 180000 }, async () => {
     const context = await browser.newContext();
     const page = await context.newPage();

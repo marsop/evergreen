@@ -9,6 +9,7 @@ Evergreen is a Blazor WebAssembly plant-care dashboard for keeping track of plan
 - Growing-place management
 - Care journal with notes and optional photos
 - Interactive client-rendered UI
+- Browser Back/Forward navigation and reloadable links to views and plant profiles
 - English, Spanish, and German with instant language switching
 - Installable progressive web app with offline startup after an initial online visit
 
@@ -105,13 +106,21 @@ node --test Tests\pwa-browser.test.mjs
 npm run test:browser
 ```
 
-The PWA browser tests verify published asset hashes, browser installability diagnostics, offline reloads, translations, and non-forced updates at both root and repository-subpath URLs. The Firebase test server uses only the `demo-evergreen` Auth/Firestore emulators, serves the app under a repository subpath, and exercises offline/reload, photos, language, and account isolation. Production Google OAuth, authorized domains, actual Firebase connectivity, and installation on physical iPhone/iPad or Android devices still require smoke tests.
+The PWA browser tests verify published asset hashes, browser installability diagnostics, offline reloads, translations, and non-forced updates at both root and repository-subpath URLs. The Firebase test server uses only the `demo-evergreen` Auth/Firestore emulators, serves the app under a repository subpath, and exercises browser Back/Forward and deep links, offline/reload, photos, language, and account isolation. Production Google OAuth, authorized domains, actual Firebase connectivity, and installation on physical iPhone/iPad or Android devices still require smoke tests.
+
+## View navigation
+
+Moving between Today, Plants, Places, Journal, and plant profiles creates browser history entries without reloading the app. Use browser Back/Forward to retrace these visits. Selecting the current destination does not add another entry. The profile's **Back to plants** control always opens Plants, even when the profile was opened directly.
+
+View links use query parameters relative to the site's base URL: `?view=plants`, `?view=places`, `?view=journal`, and `?view=profile&plant=<plant-id>`. Today uses the base URL. Opening a place's plants also includes `place=<place-id>`. These links work on static hosting and restore the destination after sign-in and garden loading. Unavailable plants show a message rather than another account's data; invalid view names return to Today without adding a history entry.
+
+Ordinary search/filter changes, language changes, care edits, and opening/closing dialogs do not create history entries. Navigating to another destination, including with Back/Forward, closes open dialogs and discards their unsaved inputs. Garden edits and pending offline synchronization are unaffected.
 
 ## Languages and localization
 
 Evergreen supports English (the fallback), Spanish, and German. On startup, a saved language choice takes precedence over the first supported browser language; regional variants such as `es-MX` and `de-AT` use Spanish and German. Unsupported languages fall back to English.
 
-Use the language selector in the header or an open dialog to switch immediately without losing plants, watering progress, journal entries, filters, or form inputs. The signed-in account's language is synchronized through Firestore; browser localStorage (`evergreen.culture`) is only a startup hint before account data loads. If local storage is blocked, switching continues to work with a warning. Navigation, search, filters, and unsaved form contents are transient and not synchronized.
+Use the language selector in the header or an open dialog to switch immediately without losing plants, watering progress, journal entries, filters, or form inputs. The signed-in account's language is synchronized through Firestore; browser localStorage (`evergreen.culture`) is only a startup hint before account data loads. If local storage is blocked, switching continues to work with a warning. View navigation is stored in the URL, not synchronized to the account. Search, ordinary filters, and unsaved form contents are transient and not synchronized.
 
 Application translations live in `Resources/AppResources.resx` (English), `Resources/AppResources.es.resx`, and `Resources/AppResources.de.resx`. Keep resource keys and numbered placeholders identical across files. Use complete messages, singular/plural variants where needed, and the shared localization helper for lookups and explicit culture-aware formatting. Internal navigation/filter values must not depend on translated labels.
 
