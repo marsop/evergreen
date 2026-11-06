@@ -11,6 +11,7 @@ Evergreen is a Blazor WebAssembly plant-care dashboard for keeping track of plan
 - Interactive client-rendered UI
 - Browser Back/Forward navigation between views and plant profiles
 - English, Spanish, and German with instant language switching
+- Subtle seasonal SVG backgrounds with reduced-motion support
 
 The current app is a prototype: its plant, place, and journal data lives in browser memory and is not saved across page reloads.
 
@@ -25,6 +26,12 @@ Search, ordinary filter changes, language changes, care edits, and opening/closi
 ## Requirements
 
 - .NET 10 SDK
+
+## Seasonal backgrounds
+
+The app-wide decorative background follows the browser's local date using Northern Hemisphere calendar seasons: spring (March-May) has sage and blush blossoms; summer (June-August) has a translucent golden sun; autumn (September-November) has warm falling leaves; winter (December-February) has pale blue snowflakes. The background updates at local midnight and when returning to the tab, without reloading or changing garden data.
+
+Sparse SVG motifs move slowly behind the interface. Motion pauses in hidden tabs and is disabled entirely when the operating system/browser requests reduced motion. Existing card surfaces, controls, sample dates, and winter care advice are unchanged; the background is decorative, not weather or care guidance.
 
 ## Run locally
 
@@ -45,6 +52,7 @@ Run the localization tests with:
 ```powershell
 dotnet test Tests\Evergreen.Tests.csproj
 node --test Tests\localization.test.cjs
+node --test Tests\seasonal-background.test.cjs
 ```
 
 The JavaScript tests require Node.js 22 or later. The [CI workflow](.github/workflows/ci.yml) builds the app in Release configuration and runs the localization and browser navigation suites for source pushes and pull requests, excluding the generated `gh-pages` branch.
@@ -58,7 +66,7 @@ dotnet publish Evergreen.csproj --configuration Release --output publish
 npm run test:browser
 ```
 
-The browser tests serve the app at both root and repository-subpath URLs and verify real Back/Forward traversal, desktop/mobile navigation, deep links, dialog dismissal, translations, and preservation of in-memory garden edits.
+The browser tests serve the app at both root and repository-subpath URLs and verify real Back/Forward traversal, desktop/mobile navigation, deep links, dialog dismissal, translations, and preservation of in-memory garden edits. They also verify all four seasonal backgrounds, local-date selection and rollover, SVG loading, slow animation, and live reduced-motion changes.
 
 ## Languages and localization
 
@@ -68,7 +76,7 @@ Use the language selector in the header or an open dialog to switch immediately 
 
 Application translations live in `Resources/AppResources.resx` (English), `Resources/AppResources.es.resx`, and `Resources/AppResources.de.resx`. Keep resource keys and numbered placeholders identical across files. Use complete messages, singular/plural variants where needed, and the shared localization helper for lookups and explicit culture-aware formatting. Internal navigation/filter values must not depend on translated labels.
 
-Built-in care advice and generated journal text are translated when rendered. The journal starts empty; entries added manually or through care actions are kept for the current session. Plant/place names, botanical names, and user-entered text are not translated. The prototype's sample dates and care schedule remain unchanged, with localized date, weekday, and month labels.
+Built-in plant names and care profiles are stored with each plant in `wwwroot/plants/<folder>/plant.json`; its image is colocated in the same folder. The ordered catalog index is `wwwroot/plants/index.json`; keep its order and each manifest ID stable for sample deep links. Manifests contain English, Spanish, and German names, botanical name, sample location/category, image path, localized care details and watchouts, and monthly watering/fertilizer chart data. The typed loader and schema are in `Components/Plants/`. Each profile currently uses the same sample care parameters, ready to be customized per plant. Built-in care advice and generated journal text are translated when rendered. Plants added during a session retain their user-entered names and are not saved across reloads. The journal starts empty; entries added manually or through care actions are kept for the current session. Place names, botanical names, and user-entered text are not translated. The prototype's sample dates and care schedule remain unchanged, with localized date, weekday, and month labels.
 
 The small translation map in `wwwroot/localization.js` is limited to loading and fatal-error text needed before .NET starts. Keep those strings aligned with the application error resources. Startup loads all satellite resources and globalization data to support live switching on static hosting.
 
@@ -89,6 +97,7 @@ Published files use the repository's Pages base path (or `/` for an owner Pages 
 ## Project layout
 
 - `Components/Pages/` contains the Blazor pages, including the plant-care dashboard in `Home.razor`.
+- `Components/Plants/` loads the static per-plant catalog stored under `wwwroot/plants/`.
 - `Components/Layout/` contains shared layout and navigation components.
 - `wwwroot/` contains styles, images, and static libraries.
 - `Program.cs` configures the Blazor WebAssembly app.

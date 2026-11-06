@@ -1,12 +1,6 @@
 ﻿@inherits LayoutComponentBase
-@inject NavigationManager Navigation
 @inject LocalizationService Cultures
 @inject IStringLocalizer<AppResources> Localizer
-
-@if (!string.IsNullOrEmpty(Navigation.ToBaseRelativePath(Navigation.Uri).Split('?', '#')[0]))
-{
-    <div class="route-language-selector"><LanguageSelector /></div>
-}
 
 @Body
 

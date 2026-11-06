@@ -1,4 +1,5 @@
 using Evergreen.Components;
+using Evergreen.Components.Plants;
 using Evergreen.Localization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -8,6 +9,8 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.AddScoped<LocalizationService>();
+builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddScoped<PlantCatalogService>();
 
 var host = builder.Build();
 await host.Services.GetRequiredService<LocalizationService>().InitializeAsync();

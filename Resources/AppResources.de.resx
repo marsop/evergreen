@@ -83,6 +83,7 @@
   <data name="WeekPreview" xml:space="preserve"><value>Ein kleiner Wochenüberblick</value></data>
   <data name="YourCollection" xml:space="preserve"><value>DEINE SAMMLUNG</value></data>
   <data name="PlantsLead" xml:space="preserve"><value>Jedes Blatt an seinem Platz.</value></data>
+  <data name="LoadingPlants" xml:space="preserve"><value>Pflanzen werden geladen...</value></data>
   <data name="AddPlant" xml:space="preserve"><value>Pflanze hinzufügen</value></data>
   <data name="SearchPlants" xml:space="preserve"><value>Pflanzen suchen</value></data>
   <data name="SearchPlantCountOne" xml:space="preserve"><value>{0} Pflanze durchsuchen</value></data>
@@ -183,6 +184,7 @@
   <data name="SaveChanges" xml:space="preserve"><value>Änderungen speichern</value></data>
   <data name="MakeRoomToGrow" xml:space="preserve"><value>PLATZ ZUM WACHSEN</value></data>
   <data name="AddAPlace" xml:space="preserve"><value>Einen Standort hinzufügen</value></data>
+  <data name="EditPlace" xml:space="preserve"><value>Standort bearbeiten</value></data>
   <data name="PlaceName" xml:space="preserve"><value>Standortname</value></data>
   <data name="PlaceNameExample" xml:space="preserve"><value>z. B. Küchenfenster</value></data>
   <data name="Temperature" xml:space="preserve"><value>Temperatur</value></data>
@@ -198,7 +200,11 @@
   <data name="PlantNameRequired" xml:space="preserve"><value>Gib einen Pflanzennamen ein.</value></data>
   <data name="PlaceNameRequired" xml:space="preserve"><value>Gib einen Standortnamen ein.</value></data>
   <data name="PlaceNameDuplicate" xml:space="preserve"><value>Ein Standort mit diesem Namen existiert bereits.</value></data>
+  <data name="DeletePlace" xml:space="preserve"><value>Standort löschen</value></data>
+  <data name="ConfirmDeletePlace" xml:space="preserve"><value>Möchtest du „{0}“ wirklich löschen?</value></data>
+  <data name="PlaceHasPlants" xml:space="preserve"><value>Stelle die Pflanzen an einen anderen Ort, bevor du diesen Standort löschst.</value></data>
   <data name="JournalPlantRequired" xml:space="preserve"><value>Wähle eine Pflanze aus.</value></data>
+  <data name="JournalDateCannotBeFuture" xml:space="preserve"><value>Wähle heute oder ein früheres Datum.</value></data>
   <data name="ChooseImage" xml:space="preserve"><value>Wähle eine Bilddatei aus.</value></data>
   <data name="ChooseSmallImage" xml:space="preserve"><value>Wähle ein Bild mit weniger als 5 MB aus.</value></data>
   <data name="PanopticonAdvice" xml:space="preserve"><value>Okt–Mär: nur mediterrane Pflanzen und Sukkulenten. Tropische Pflanzen nach drinnen stellen.</value></data>

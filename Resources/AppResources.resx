@@ -83,6 +83,7 @@
   <data name="WeekPreview" xml:space="preserve"><value>A light look at the week</value></data>
   <data name="YourCollection" xml:space="preserve"><value>YOUR COLLECTION</value></data>
   <data name="PlantsLead" xml:space="preserve"><value>Every leaf, in its own place.</value></data>
+  <data name="LoadingPlants" xml:space="preserve"><value>Loading plants...</value></data>
   <data name="AddPlant" xml:space="preserve"><value>Add plant</value></data>
   <data name="SearchPlants" xml:space="preserve"><value>Search plants</value></data>
   <data name="SearchPlantCountOne" xml:space="preserve"><value>Search {0} plant</value></data>
@@ -183,6 +184,7 @@
   <data name="SaveChanges" xml:space="preserve"><value>Save changes</value></data>
   <data name="MakeRoomToGrow" xml:space="preserve"><value>MAKE ROOM TO GROW</value></data>
   <data name="AddAPlace" xml:space="preserve"><value>Add a place</value></data>
+  <data name="EditPlace" xml:space="preserve"><value>Edit place</value></data>
   <data name="PlaceName" xml:space="preserve"><value>Place name</value></data>
   <data name="PlaceNameExample" xml:space="preserve"><value>e.g. Kitchen window</value></data>
   <data name="Temperature" xml:space="preserve"><value>Temperature</value></data>
@@ -198,7 +200,11 @@
   <data name="PlantNameRequired" xml:space="preserve"><value>Enter a plant name.</value></data>
   <data name="PlaceNameRequired" xml:space="preserve"><value>Enter a place name.</value></data>
   <data name="PlaceNameDuplicate" xml:space="preserve"><value>A place with this name already exists.</value></data>
+  <data name="DeletePlace" xml:space="preserve"><value>Delete place</value></data>
+  <data name="ConfirmDeletePlace" xml:space="preserve"><value>Are you sure you want to delete “{0}”?</value></data>
+  <data name="PlaceHasPlants" xml:space="preserve"><value>Move its plants before deleting this place.</value></data>
   <data name="JournalPlantRequired" xml:space="preserve"><value>Choose a plant.</value></data>
+  <data name="JournalDateCannotBeFuture" xml:space="preserve"><value>Choose today or an earlier date.</value></data>
   <data name="ChooseImage" xml:space="preserve"><value>Choose an image file.</value></data>
   <data name="ChooseSmallImage" xml:space="preserve"><value>Choose an image smaller than 5 MB.</value></data>
   <data name="PanopticonAdvice" xml:space="preserve"><value>Oct–Mar: only Mediterranean plants and succulents. Move tropicals inside.</value></data>

@@ -2,8 +2,15 @@
 @inherits LocalizedComponentBase
 @implements IDisposable
 @inject NavigationManager Navigation
+@inject PlantCatalogService PlantCatalog
 <PageTitle>@T("PlantCareTitle")</PageTitle>
 
+@if (plants.Count == 0)
+{
+	<div class="app-shell"><main class="main-area"><section class="view-content" role="status">@T("LoadingPlants")</section></main></div>
+}
+else
+{
 <div class="app-shell">
 	<aside class="sidebar" aria-label="@T("MainNavigation")">
 		<a class="brand" href="@DestinationUrl("Today")" @onclick='() => Navigate("Today")' @onclick:preventDefault aria-label="@T("EvergreenHome")">
@@ -83,13 +90,13 @@
 								@foreach (var plant in locationGroup)
 								{
 									<article class="task-row @(plant.Watered ? "is-watered" : "")">
-										<button class="task-plant" @onclick="() => OpenPlant(plant)" aria-label="@T("OpenPlantProfile", plant.Name)">
+										<button class="task-plant" @onclick="() => OpenPlant(plant)" aria-label="@T("OpenPlantProfile", PlantName(plant))">
 											<span class="plant-thumb small-thumb">
 												<img src="@PlantImages.DisplaySource(plant.Image)" alt="" />
 											</span>
-											<span class="task-copy"><strong>@plant.Name</strong><small>@T("WaterSchedule", T(plant.WaterAmount))</small></span>
+											<span class="task-copy"><strong>@PlantName(plant)</strong><small>@T("WaterSchedule", PlantWaterAmount(plant))</small></span>
 										</button>
-										<button class="water-button @(plant.Watered ? "done" : "")" @onclick="() => ToggleWater(plant)" aria-label="@T(plant.Watered ? "UndoWatering" : "MarkWatered", plant.Name)">
+										<button class="water-button @(plant.Watered ? "done" : "")" @onclick="() => ToggleWater(plant)" aria-label="@T(plant.Watered ? "UndoWatering" : "MarkWatered", PlantName(plant))">
 											<AppIcon Name="@(plant.Watered ? IconName.Check : IconName.Water)" /> @T(plant.Watered ? "Watered" : "Water")
 										</button>
 									</article>
@@ -144,8 +151,8 @@
 											<span class="plant-thumb">
 												<img src="@PlantImages.DisplaySource(plant.Image)" alt="" />
 											</span>
-											<span class="plant-name"><strong>@plant.Name</strong><small>@plant.Location</small></span>
-											<span class="sun-label"><AppIcon Name="@IconName.Sun" /> @T(plant.Light)</span>
+											<span class="plant-name"><strong>@PlantName(plant)</strong><small>@plant.Location</small></span>
+											<span class="sun-label"><AppIcon Name="@IconName.Sun" /> @PlantLight(plant)</span>
 											<span class="row-arrow"><AppIcon Name="@IconName.ArrowRight" /></span>
 										</button>
 									}
@@ -167,28 +174,39 @@
 				<div class="place-grid">
 					@foreach (var place in places.Where(place => !place.Outdoor))
 					{
-						<button class="place-card" @onclick="() => ShowPlacePlants(place.Name)">
-							<div class="place-card-top"><span class="place-symbol"><AppIcon Name="@IconName.Home" /></span><span class="plant-count">@CountLabel("PlantCount", plants.Count(plant => plant.Location == place.Name))</span></div>
-							<h3>@place.Name</h3>
-							<div class="place-facts"><span><AppIcon Name="@IconName.Sun" /> @T(place.Light)</span><span><AppIcon Name="@IconName.Thermometer" /> @PlaceTemperature(place)</span></div>
-							<div class="place-leaves">
-								@foreach (var plant in plants.Where(plant => plant.Location == place.Name).Take(4))
-								{
-									<span class="plant-thumb mini-thumb"><img src="@PlantImages.DisplaySource(plant.Image)" alt="" /></span>
-								}
-							</div>
-							@if (place.Note.Length > 0) { <p class="place-note">@T(place.Note)</p> }
-						</button>
+						<article class="place-entry">
+							<button class="place-card" @onclick="() => ShowPlacePlants(place.Name)">
+								<div class="place-card-top"><span class="place-symbol"><AppIcon Name="@IconName.Home" /></span><span class="plant-count">@CountLabel("PlantCount", plants.Count(plant => plant.Location == place.Name))</span></div>
+								<h3>@place.Name</h3>
+								<div class="place-facts"><span><AppIcon Name="@IconName.Sun" /> @T(place.Light)</span><span><AppIcon Name="@IconName.Thermometer" /> @PlaceTemperature(place)</span></div>
+								<div class="place-leaves">
+									@foreach (var plant in plants.Where(plant => plant.Location == place.Name).Take(4))
+									{
+										<span class="plant-thumb mini-thumb"><img src="@PlantImages.DisplaySource(plant.Image)" alt="" /></span>
+									}
+								</div>
+								@if (!string.IsNullOrWhiteSpace(PlaceNote(place))) { <p class="place-note">@PlaceNote(place)</p> }
+							</button>
+							<button type="button" class="place-edit-action" aria-label="@T("EditPlace")" @onclick="() => OpenEditPlaceForm(place)">@T("EditPlace")</button>
+							<button type="button" class="place-delete-action" aria-label="@T("DeletePlace")" title="@(PlaceHasPlants(place) ? T("PlaceHasPlants") : null)" disabled="@PlaceHasPlants(place)" @onclick="() => OpenDeletePlaceConfirmation(place)">@T("DeletePlace")</button>
+							@if (PlaceHasPlants(place)) { <span class="place-delete-help">@T("PlaceHasPlants")</span> }
+						</article>
 					}
 				</div>
 				<h2 class="subsection-title outdoor-title">@T("Outdoor") <span>@T("LetWeatherIn")</span></h2>
 				<div class="outdoor-row">
 					@foreach (var place in places.Where(place => place.Outdoor))
 					{
-						<button class="place-card outdoor-card" @onclick="() => ShowPlacePlants(place.Name)">
-							<div class="place-card-top"><span class="place-symbol"><AppIcon Name="@IconName.Sun" /></span><span class="plant-count">@CountLabel("PlantCount", plants.Count(plant => plant.Location == place.Name))</span></div>
-							<h3>@place.Name</h3><div class="place-facts"><span><AppIcon Name="@IconName.Sun" /> @T(place.Light)</span><span><AppIcon Name="@IconName.Thermometer" /> @PlaceTemperature(place)</span></div>
-						</button>
+						<article class="place-entry">
+							<button class="place-card outdoor-card" @onclick="() => ShowPlacePlants(place.Name)">
+								<div class="place-card-top"><span class="place-symbol"><AppIcon Name="@IconName.Sun" /></span><span class="plant-count">@CountLabel("PlantCount", plants.Count(plant => plant.Location == place.Name))</span></div>
+								<h3>@place.Name</h3><div class="place-facts"><span><AppIcon Name="@IconName.Sun" /> @T(place.Light)</span><span><AppIcon Name="@IconName.Thermometer" /> @PlaceTemperature(place)</span></div>
+								@if (!string.IsNullOrWhiteSpace(PlaceNote(place))) { <p class="place-note">@PlaceNote(place)</p> }
+							</button>
+							<button type="button" class="place-edit-action" aria-label="@T("EditPlace")" @onclick="() => OpenEditPlaceForm(place)">@T("EditPlace")</button>
+							<button type="button" class="place-delete-action" aria-label="@T("DeletePlace")" title="@(PlaceHasPlants(place) ? T("PlaceHasPlants") : null)" disabled="@PlaceHasPlants(place)" @onclick="() => OpenDeletePlaceConfirmation(place)">@T("DeletePlace")</button>
+							@if (PlaceHasPlants(place)) { <span class="place-delete-help">@T("PlaceHasPlants")</span> }
+						</article>
 					}
 				</div>
 			</section>
@@ -230,25 +248,31 @@
 					<div class="profile-photo">
 						<img src="@PlantImages.DisplaySource(selectedPlant.Image)" alt="@selectedPlant.Species" />
 					</div>
-					<div class="profile-title"><p class="eyebrow">@selectedPlant.Location <span class="eyebrow-dot"></span> @T(selectedPlant.Category)</p><h1>@selectedPlant.Name</h1><p class="species">@selectedPlant.Species</p><span class="profile-alert"><AppIcon Name="@IconName.Alert" /><span>@T("ProfileAlert")</span></span></div>
+					<div class="profile-title"><p class="eyebrow">@selectedPlant.Location <span class="eyebrow-dot"></span> @T(selectedPlant.Category)</p><h1>@PlantName(selectedPlant)</h1><p class="species">@selectedPlant.Species</p><span class="profile-alert"><AppIcon Name="@IconName.Alert" /><span>@CareText(selectedPlant.Care.ProfileAlert)</span></span></div>
 				</div>
 				<section class="care-chart"><div class="care-chart-head"><div><p class="eyebrow">@T("SeasonalCare")</p><h2>@T("CareThroughYear")</h2></div><div class="chart-legend"><span><i class="legend-water"></i>@T("Water")</span><span><i class="legend-feed"></i>@T("Fertilize")</span></div></div><div class="month-chart">
-					@foreach (var month in Months)
+					@foreach (var month in selectedPlant.Care.Months)
 					{
-						<div class="month-column"><span class="month-bar water-bar" style="--bar: @(month.WaterHeight)" title="@T("WaterAmountTooltip", month.WaterHeight)"></span><span class="month-bar feed-bar" style="--bar: @(month.FeedHeight)" title="@T("FertilizerTooltip", month.FeedHeight)"></span><small title="@Cultures.Culture.DateTimeFormat.GetMonthName(month.Number)">@Cultures.Culture.DateTimeFormat.GetAbbreviatedMonthName(month.Number)</small></div>
+						<div class="month-column"><span class="month-bar water-bar" style="--bar: @(month.Water)" title="@T("WaterAmountTooltip", month.Water)"></span><span class="month-bar feed-bar" style="--bar: @(month.Fertilizer)" title="@T("FertilizerTooltip", month.Fertilizer)"></span><small title="@Cultures.Culture.DateTimeFormat.GetMonthName(month.Month)">@Cultures.Culture.DateTimeFormat.GetAbbreviatedMonthName(month.Month)</small></div>
 					}
 				</div></section>
 				<div class="profile-details">
 					<section class="care-cards">
 						@foreach (var care in CareDetails)
 						{
-							<article class="care-card"><span class="care-icon"><AppIcon Name="@care.Icon" /></span><div><div class="care-card-title"><h3>@T(care.Title)</h3><strong>@T(care.Value)</strong></div><p>@T(care.Description)</p></div></article>
+							var detail = selectedPlant.Care.Details[care.Key];
+							<article class="care-card"><span class="care-icon"><AppIcon Name="@care.Icon" /></span><div><div class="care-card-title"><h3>@T(care.Title)</h3><strong>@CareText(detail.Value)</strong></div><p>@CareText(detail.Advice)</p></div></article>
 						}
 					</section>
-					<aside class="watchout-panel"><p class="eyebrow">@T("ThingsToWatch")</p><h2>@T("WatchOutFor")</h2><ul><li><strong>@T("YellowLeaves")</strong><span>@T("YellowLeavesAdvice")</span></li><li><strong>@T("BrownEdges")</strong><span>@T("BrownEdgesAdvice")</span></li><li><strong>@T("SpiderMites")</strong><span>@T("SpiderMitesAdvice")</span></li><li><strong>@T("Thrips")</strong><span>@T("ThripsAdvice")</span></li></ul></aside>
+					<aside class="watchout-panel"><p class="eyebrow">@T("ThingsToWatch")</p><h2>@T("WatchOutFor")</h2><ul>
+						@foreach (var watchout in selectedPlant.Care.Watchouts)
+						{
+							<li><strong>@CareText(watchout.Title)</strong><span>@CareText(watchout.Advice)</span></li>
+						}
+					</ul></aside>
 				</div>
 				<section class="profile-history"><div class="section-heading"><div><p class="eyebrow">@T("LifeLogged")</p><h2>@T("RecentHistory")</h2></div><button class="text-button" @onclick='() => Navigate("Journal")'>@T("OpenJournal") <AppIcon Name="@IconName.ArrowRight" /></button></div>
-					@foreach (var entry in journalEntries.Where(entry => JournalPlantName(entry) == selectedPlant.Name).Take(4))
+					@foreach (var entry in journalEntries.Where(entry => JournalPlantName(entry) == PlantName(selectedPlant)).Take(4))
 					{
 						<div class="history-row"><span class="journal-entry-icon"><AppIcon Name="@JournalIcon(entry.Type)" /></span><strong>@JournalTitle(entry)</strong><time>@JournalDate(entry.Date)</time></div>
 					}
@@ -277,7 +301,7 @@
 {
 	<div class="modal-backdrop" role="presentation">
 		<section class="modal" role="dialog" aria-modal="true" aria-labelledby="plant-modal-title">
-			<div class="modal-heading"><div><p class="eyebrow">@T("YourCollection")</p><h2 id="plant-modal-title">@T(editingPlant is null ? "AddAPlant" : "EditPlant")</h2></div><LanguageSelector /><button class="close-button" aria-label="@T("Close")" @onclick="CloseForms">×</button></div>
+			<div class="modal-heading"><div><p class="eyebrow">@T("YourCollection")</p><h2 id="plant-modal-title">@T(editingPlant is null ? "AddAPlant" : "EditPlant")</h2></div><button class="close-button" aria-label="@T("Close")" @onclick="CloseForms">×</button></div>
 			<form novalidate @onsubmit="SavePlant" @onsubmit:preventDefault>
 				<label>@T("PlantName")<input required maxlength="60" @bind="plantNameInput" placeholder="@T("PlantNameExample")" /></label>
 				<label>@T("BotanicalName")<input maxlength="80" @bind="plantSpeciesInput" placeholder="@T("BotanicalNameExample")" /></label>
@@ -293,14 +317,27 @@
 {
 	<div class="modal-backdrop" role="presentation">
 		<section class="modal" role="dialog" aria-modal="true" aria-labelledby="place-modal-title">
-			<div class="modal-heading"><div><p class="eyebrow">@T("MakeRoomToGrow")</p><h2 id="place-modal-title">@T("AddAPlace")</h2></div><LanguageSelector /><button class="close-button" aria-label="@T("Close")" @onclick="CloseForms">×</button></div>
+			<div class="modal-heading"><div><p class="eyebrow">@T("MakeRoomToGrow")</p><h2 id="place-modal-title">@T(editingPlace is null ? "AddAPlace" : "EditPlace")</h2></div><button class="close-button" aria-label="@T("Close")" @onclick="CloseForms">×</button></div>
 			<form novalidate @onsubmit="SavePlace" @onsubmit:preventDefault>
 				<label>@T("PlaceName")<input required maxlength="50" @bind="placeNameInput" placeholder="@T("PlaceNameExample")" /></label>
 				<div class="form-row"><label>@T("Light")<select @bind="placeLightInput">@foreach (var light in PlaceLights) { <option value="@light">@T(light)</option> }</select></label><label>@T("Temperature")<input maxlength="30" @bind="placeTemperatureInput" placeholder="20–23 °C" /></label></div>
 				<label class="check-label"><input type="checkbox" @bind="placeOutdoorInput" /> @T("OutdoorPlace")</label>
+				<label>@T("Note")<textarea rows="3" maxlength="240" @bind="placeNoteInput" placeholder="@T("NotePlaceholder")"></textarea></label>
 				@if (placeFormError.Length > 0) { <p class="form-error" role="alert">@T(placeFormError)</p> }
-				<div class="modal-actions"><button type="button" class="button button-quiet" @onclick="CloseForms">@T("Cancel")</button><button type="submit" class="button button-dark">@T("AddPlace")</button></div>
+				<div class="modal-actions"><button type="button" class="button button-quiet" @onclick="CloseForms">@T("Cancel")</button><button type="submit" class="button button-dark">@T(editingPlace is null ? "AddPlace" : "SaveChanges")</button></div>
 			</form>
+		</section>
+	</div>
+}
+
+@if (placePendingDeletion is not null)
+{
+	<div class="modal-backdrop" role="presentation">
+		<section class="modal" role="alertdialog" aria-modal="true" aria-labelledby="delete-place-title">
+			<div class="modal-heading"><div><p class="eyebrow">@T("MakeRoomToGrow")</p><h2 id="delete-place-title">@T("DeletePlace")</h2></div><button class="close-button" aria-label="@T("Close")" @onclick="CancelDeletePlace">×</button></div>
+			<p>@T("ConfirmDeletePlace", placePendingDeletion.Name)</p>
+			@if (placeDeleteError.Length > 0) { <p class="form-error" role="alert">@T(placeDeleteError)</p> }
+			<div class="modal-actions"><button type="button" class="button button-quiet" @onclick="CancelDeletePlace">@T("Cancel")</button><button type="button" class="button button-dark" @onclick="DeletePlace">@T("DeletePlace")</button></div>
 		</section>
 	</div>
 }
@@ -309,10 +346,11 @@
 {
 	<div class="modal-backdrop" role="presentation">
 		<section class="modal" role="dialog" aria-modal="true" aria-labelledby="journal-modal-title">
-			<div class="modal-heading"><div><p class="eyebrow">@T("MomentInGarden")</p><h2 id="journal-modal-title">@T("LogPlantCare")</h2></div><LanguageSelector /><button class="close-button" aria-label="@T("Close")" @onclick="CloseForms">×</button></div>
+			<div class="modal-heading"><div><p class="eyebrow">@T("MomentInGarden")</p><h2 id="journal-modal-title">@T("LogPlantCare")</h2></div><button class="close-button" aria-label="@T("Close")" @onclick="CloseForms">×</button></div>
 			<form @onsubmit="SaveJournalEntry" @onsubmit:preventDefault>
 				<label>@T("WhatHappened")<select @bind="journalTypeInput">@foreach (var type in JournalTypes) { <option value="@type">@T(type)</option> }</select></label>
-				<label>@T("Plant")<select @bind="journalPlantInput">@foreach (var plant in plants) { <option value="@plant.Name">@plant.Name</option> }</select></label>
+				<label>@T("Plant")<select @bind="journalPlantInput">@foreach (var plant in plants) { <option value="@plant.Id">@PlantName(plant)</option> }</select></label>
+				<label>@T("Date")<InputDate @bind-Value="journalDateInput" max="@JournalDateInputMax" required /></label>
 				@if (journalTypeInput == "Photo")
 				{
 					<label class="photo-upload"><span>@T("Photo")</span><span class="file-picker">@T("ChoosePhoto")</span><InputFile class="visually-hidden" aria-label="@T("ChoosePhoto")" accept="image/*" OnChange="HandlePhotoSelected" /><span>@(journalPhotoName.Length > 0 ? journalPhotoName : T("NoPhotoSelected"))</span></label>
@@ -325,6 +363,7 @@
 			</form>
 		</section>
 	</div>
+}
 }
 
 @code {
@@ -344,19 +383,18 @@
 	private static readonly string[] PlaceLights = ["Bright, filtered", "Direct afternoon sun", "Full sun", "Low light", "Full sun to shade"];
 	private static readonly (string Name, IconName Icon)[] NavigationItems = [("Today", IconName.Today), ("Plants", IconName.Plants), ("Places", IconName.Places), ("Journal", IconName.Journal)];
 	private static readonly (DayOfWeek Day, string Count)[] WeekDays = [(DayOfWeek.Monday, "·"), (DayOfWeek.Tuesday, "·"), (DayOfWeek.Wednesday, "·"), (DayOfWeek.Thursday, "·"), (DayOfWeek.Friday, "·"), (DayOfWeek.Saturday, "·"), (DayOfWeek.Sunday, "23")];
-	private static readonly (int Number, int WaterHeight, int FeedHeight)[] Months = [(1, 34, 0), (2, 36, 0), (3, 42, 18), (4, 52, 34), (5, 68, 43), (6, 78, 48), (7, 86, 50), (8, 78, 46), (9, 66, 30), (10, 52, 8), (11, 38, 0), (12, 34, 0)];
-	private static readonly (IconName Icon, string Title, string Value, string Description)[] CareDetails =
+	private static readonly (IconName Icon, string Title, string Key)[] CareDetails =
 	[
-		(IconName.Sun, "Light", "CareLightValue", "CareLightAdvice"),
-		(IconName.Water, "Water", "CareWaterValue", "CareWaterAdvice"),
-		(IconName.Fertilizer, "Fertilizer", "CareFeedValue", "CareFeedAdvice"),
-		(IconName.Thermometer, "TemperatureHumidity", "CareTemperatureValue", "CareTemperatureAdvice"),
-		(IconName.Repot, "SubstrateRepotting", "CareRepotValue", "CareRepotAdvice"),
-		(IconName.Prune, "Pruning", "CarePruningValue", "CarePruningAdvice"),
-		(IconName.Plants, "Propagation", "CarePropagationValue", "CarePropagationAdvice")
+		(IconName.Sun, "Light", "Light"),
+		(IconName.Water, "Water", "Water"),
+		(IconName.Fertilizer, "Fertilizer", "Fertilizer"),
+		(IconName.Thermometer, "TemperatureHumidity", "TemperatureHumidity"),
+		(IconName.Repot, "SubstrateRepotting", "SubstrateRepotting"),
+		(IconName.Prune, "Pruning", "Pruning"),
+		(IconName.Plants, "Propagation", "Propagation")
 	];
 
-	private readonly List<Plant> plants = CreatePlants();
+	private readonly List<Plant> plants = [];
 	private readonly List<Place> places = CreatePlaces();
 	private readonly List<JournalEntry> journalEntries = [];
 	private string activeView = "Today";
@@ -365,15 +403,18 @@
 	private string searchTerm = string.Empty;
 	private Plant? selectedPlant => plants.FirstOrDefault(plant => plant.Id == PlantId);
 	private Plant? editingPlant;
+	private Place? editingPlace;
+	private Place? placePendingDeletion;
 	private int DueCount => plants.Count;
 	private int WateredCount => plants.Count(plant => plant.Watered);
 	private string CurrentTitle => T(activeView == "Profile" ? "PlantProfile" : activeView);
 	private IEnumerable<Plant> FilteredPlants => plants
 		.Where(plant => selectedLocation == "All" || plant.Location == selectedLocation)
-		.Where(plant => plant.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || plant.Species.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+		.Where(plant => PlantName(plant).Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || plant.Species.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
 	private IEnumerable<JournalEntry> FilteredJournal => journalEntries
 		.Where(entry => selectedJournalType == "All" || entry.Type == selectedJournalType)
-		.OrderByDescending(entry => entry.SortOrder);
+		.OrderByDescending(entry => entry.Date ?? SampleToday)
+		.ThenByDescending(entry => entry.SortOrder);
 	private bool showPlantForm;
 	private bool showPlaceForm;
 	private bool showJournalForm;
@@ -384,26 +425,44 @@
 	private string placeNameInput = string.Empty;
 	private string placeLightInput = "Bright, filtered";
 	private string placeTemperatureInput = "20–23 °C";
+	private string placeTemperatureInputOriginal = string.Empty;
 	private bool placeOutdoorInput;
+	private string placeNoteInput = string.Empty;
+	private string placeNoteInputOriginal = string.Empty;
 	private string journalTypeInput = "Watered";
-	private string journalPlantInput = "Monstera";
+	private string journalPlantInput = "sample-3";
 	private string journalNoteInput = string.Empty;
+	private DateOnly journalDateInput = DateOnly.FromDateTime(DateTime.Now);
 	private string journalPhotoData = string.Empty;
 	private string journalPhotoName = string.Empty;
 	private string photoError = string.Empty;
 	private string plantFormError = string.Empty;
 	private string placeFormError = string.Empty;
+	private string placeDeleteError = string.Empty;
 	private string journalFormError = string.Empty;
 
 	private string CountLabel(string key, int count) => T(key + (count == 1 ? "One" : "Many"), count);
 	private string JournalDate(DateOnly? date) => date?.ToString(T("JournalDateFormat"), Cultures.Culture) ?? T("Today");
-	private string JournalPlantName(JournalEntry entry) => entry.WateredPlant?.Name ?? entry.PlantName;
+	private string JournalDateInputMax => SampleToday.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+	private string PlantName(Plant plant) => plant.Name.Length > 0
+		? plant.Name
+		: plant.Catalog is null ? string.Empty : PlantCatalogService.LocalizedValue(plant.Catalog.Name, Cultures.Culture);
+	private string PlantLight(Plant plant) => plant.Catalog is null
+		? T(plant.Light)
+		: CareText(plant.Care.Details["Light"].Value);
+	private string PlantWaterAmount(Plant plant) => plant.Catalog is null
+		? T(plant.WaterAmount)
+		: CareText(plant.Care.Details["Water"].Amount!);
+	private string CareText(IReadOnlyDictionary<string, string> values) => PlantCatalogService.LocalizedValue(values, Cultures.Culture);
+	private string JournalPlantName(JournalEntry entry) => entry.WateredPlant is null ? entry.PlantName : PlantName(entry.WateredPlant);
 	private string JournalTitle(JournalEntry entry) => T(entry.TitleKey, JournalPlantName(entry));
 	private string JournalDescription(JournalEntry entry) => entry.UserNote
 		?? (entry.DescriptionKey == "WateringDescription"
-			? T(entry.DescriptionKey, JournalPlantName(entry), T(entry.WaterAmount))
+			? T(entry.DescriptionKey, JournalPlantName(entry), entry.WateredPlant is null ? entry.WaterAmount : PlantWaterAmount(entry.WateredPlant))
 			: T(entry.DescriptionKey, JournalPlantName(entry)));
 	private string PlaceTemperature(Place place) => place.TemperatureKey is null ? place.Temperature : T(place.TemperatureKey);
+	private string PlaceNote(Place place) => place.NoteKey is null ? place.Note : T(place.NoteKey);
+	private bool PlaceHasPlants(Place place) => plants.Any(plant => string.Equals(plant.Location, place.Name, StringComparison.Ordinal));
 
 	private bool IsCurrent(string name) => activeView == name || (activeView == "Profile" && name == "Plants");
 	private string DestinationUrl(string view, string? plantId = null, string? placeName = null) =>
@@ -421,10 +480,10 @@
 			Navigation.NavigateTo(destination, replace: replace);
 	}
 
-	protected override void OnInitialized()
+	protected override async Task OnInitializedAsync()
 	{
-		for (var index = 0; index < plants.Count; index++)
-			plants[index].Id = $"sample-{index + 1}";
+		var catalog = await PlantCatalog.LoadAsync();
+		plants.AddRange(catalog.Select(entry => new Plant(entry)));
 
 		dayTimer = new Timer(_ => _ = InvokeAsync(() =>
 		{
@@ -473,7 +532,7 @@
 		plant.Watered = !plant.Watered;
 		if (plant.Watered)
 		{
-			journalEntries.Insert(0, new JournalEntry("JournalWateredTitle", "WateringDescription", "Watered", null, DateTime.UtcNow.Ticks, plant.Name, WateredPlant: plant, WaterAmount: plant.WaterAmount));
+			journalEntries.Insert(0, new JournalEntry("JournalWateredTitle", "WateringDescription", "Watered", null, DateTime.UtcNow.Ticks, PlantName(plant), WateredPlant: plant, WaterAmount: PlantWaterAmount(plant)));
 		}
 		else
 		{
@@ -503,7 +562,7 @@
 	{
 		if (selectedPlant is null) return;
 		editingPlant = selectedPlant;
-		plantNameInput = selectedPlant.Name;
+		plantNameInput = PlantName(selectedPlant);
 		plantSpeciesInput = selectedPlant.Species;
 		plantLocationInput = selectedPlant.Location;
 		plantCategoryInput = selectedPlant.Category;
@@ -520,7 +579,7 @@
 		}
 		if (editingPlant is null)
 		{
-			plants.Add(new Plant(plantNameInput.Trim(), string.IsNullOrWhiteSpace(plantSpeciesInput) ? plantNameInput.Trim() : plantSpeciesInput.Trim(), plantLocationInput, plantCategoryInput, "Small", "Bright", string.Empty));
+			plants.Add(new Plant(plantNameInput.Trim(), string.IsNullOrWhiteSpace(plantSpeciesInput) ? plantNameInput.Trim() : plantSpeciesInput.Trim(), plantLocationInput, plantCategoryInput, "Normal", "Bright", string.Empty, plants[0].Care));
 		}
 		else
 		{
@@ -534,35 +593,114 @@
 
 	private void OpenPlaceForm()
 	{
+		editingPlace = null;
 		placeNameInput = string.Empty;
 		placeLightInput = "Bright, filtered";
 		placeTemperatureInput = "20–23 °C";
+		placeTemperatureInputOriginal = string.Empty;
 		placeOutdoorInput = false;
+		placeNoteInput = string.Empty;
+		placeNoteInputOriginal = string.Empty;
 		placeFormError = string.Empty;
 		showPlaceForm = true;
 	}
 
+	private void OpenEditPlaceForm(Place place)
+	{
+		editingPlace = place;
+		placeNameInput = place.Name;
+		placeLightInput = place.Light;
+		placeTemperatureInput = PlaceTemperature(place);
+		placeTemperatureInputOriginal = placeTemperatureInput;
+		placeOutdoorInput = place.Outdoor;
+		placeNoteInput = PlaceNote(place);
+		placeNoteInputOriginal = placeNoteInput;
+		placeFormError = string.Empty;
+		showPlaceForm = true;
+	}
+
+	private void OpenDeletePlaceConfirmation(Place place)
+	{
+		if (!places.Contains(place) || PlaceHasPlants(place)) return;
+		placeDeleteError = string.Empty;
+		placePendingDeletion = place;
+	}
+
+	private void CancelDeletePlace()
+	{
+		placePendingDeletion = null;
+		placeDeleteError = string.Empty;
+	}
+
+	private void DeletePlace()
+	{
+		if (placePendingDeletion is null) return;
+		if (PlaceHasPlants(placePendingDeletion))
+		{
+			placeDeleteError = "PlaceHasPlants";
+			return;
+		}
+
+		places.Remove(placePendingDeletion);
+		CancelDeletePlace();
+	}
+
 	private void SavePlace()
 	{
-		if (string.IsNullOrWhiteSpace(placeNameInput))
+		var name = placeNameInput.Trim();
+		if (name.Length == 0)
 		{
 			placeFormError = "PlaceNameRequired";
 			return;
 		}
-		if (places.Any(place => place.Name.Equals(placeNameInput.Trim(), StringComparison.OrdinalIgnoreCase)))
+		if (places.Any(place => !ReferenceEquals(place, editingPlace) && place.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
 		{
 			placeFormError = "PlaceNameDuplicate";
 			return;
 		}
-		places.Add(new Place(placeNameInput.Trim(), placeLightInput, placeTemperatureInput, placeOutdoorInput, string.Empty));
+
+		if (editingPlace is null)
+		{
+			places.Add(new Place(name, placeLightInput, placeTemperatureInput.Trim(), placeOutdoorInput, placeNoteInput.Trim()));
+		}
+		else
+		{
+			var editedPlace = editingPlace;
+			var temperatureUnchanged = string.Equals(placeTemperatureInput.Trim(), placeTemperatureInputOriginal, StringComparison.Ordinal);
+			var noteUnchanged = string.Equals(placeNoteInput.Trim(), placeNoteInputOriginal, StringComparison.Ordinal);
+			var updatedPlace = editedPlace with
+			{
+				Name = name,
+				Light = placeLightInput,
+				Temperature = temperatureUnchanged ? editedPlace.Temperature : placeTemperatureInput.Trim(),
+				TemperatureKey = temperatureUnchanged ? editedPlace.TemperatureKey : null,
+				Outdoor = placeOutdoorInput,
+				Note = noteUnchanged ? editedPlace.Note : placeNoteInput.Trim(),
+				NoteKey = noteUnchanged ? editedPlace.NoteKey : null
+			};
+			var placeIndex = places.FindIndex(place => ReferenceEquals(place, editedPlace));
+			if (placeIndex < 0)
+				throw new InvalidOperationException("The place being edited is no longer available.");
+			places[placeIndex] = updatedPlace;
+
+			if (!string.Equals(editedPlace.Name, name, StringComparison.Ordinal))
+			{
+				foreach (var plant in plants.Where(plant => string.Equals(plant.Location, editedPlace.Name, StringComparison.Ordinal)))
+					plant.Location = name;
+			}
+		}
+
 		CloseForms();
 	}
 
 	private void OpenJournalForm()
 	{
 		journalTypeInput = "Watered";
-		journalPlantInput = plants.FirstOrDefault(plant => plant.Name == "Monstera")?.Name ?? plants[0].Name;
+		journalPlantInput = plants.FirstOrDefault(plant => plant.Catalog?.Id == "sample-3") is { } monstera
+			? monstera.Id
+			: plants[0].Id;
 		journalNoteInput = string.Empty;
+		journalDateInput = SampleToday;
 		journalPhotoData = string.Empty;
 		journalPhotoName = string.Empty;
 		photoError = string.Empty;
@@ -598,14 +736,21 @@
 
 	private void SaveJournalEntry()
 	{
-		if (string.IsNullOrWhiteSpace(journalPlantInput))
+		var journalPlant = plants.FirstOrDefault(plant => plant.Id == journalPlantInput);
+		if (journalPlant is null)
 		{
 			journalFormError = "JournalPlantRequired";
 			return;
 		}
+		if (journalDateInput > SampleToday)
+		{
+			journalFormError = "JournalDateCannotBeFuture";
+			return;
+		}
 		var titleKey = "Journal" + journalTypeInput + "Title";
 		var note = string.IsNullOrWhiteSpace(journalNoteInput) ? null : journalNoteInput.Trim();
-		journalEntries.Insert(0, new JournalEntry(titleKey, titleKey, journalTypeInput, null, DateTime.UtcNow.Ticks, journalPlantInput, journalPhotoData, note));
+		DateOnly? entryDate = journalDateInput == SampleToday ? null : journalDateInput;
+		journalEntries.Insert(0, new JournalEntry(titleKey, titleKey, journalTypeInput, entryDate, DateTime.UtcNow.Ticks, PlantName(journalPlant), journalPhotoData, note, WateredPlant: journalPlant));
 		CloseForms();
 	}
 
@@ -615,6 +760,7 @@
 		showPlaceForm = false;
 		showJournalForm = false;
 		editingPlant = null;
+		editingPlace = null;
 	}
 
 	private static IconName JournalIcon(string type) => type switch
@@ -628,56 +774,54 @@
 		_ => IconName.Leaf
 	};
 
-	private static List<Plant> CreatePlants() =>
-	[
-		new("Ctenanthe", "Ctenanthe", "Mos Eisley South", CategoryOrder[2], "Normal", "Filtered", "images/Calathea_Golden_Mosaic.webp"),
-		new("Dragon tree", "Dracaena marginata", "Mos Eisley South", CategoryOrder[1], "Small", "Bright", "images/dracaena.avif"),
-		new("Monstera", "Monstera adansonii", "Mos Eisley South", CategoryOrder[1], "Small", "Bright", "images/monstera.webp", true),
-		new("Anthurium pink", "Anthurium", "Mos Eisley South", CategoryOrder[2], "Normal", "Filtered", "images/AuthirumPinkAmber_medium_mustard_yellow.webp"),
-		new("Anthurium white", "Anthurium", "Mos Eisley South", CategoryOrder[2], "Normal", "Filtered", "images/167-S-ANTSWD-TRQ34G_884701dd-0b2b-4412-93a0-f3bdfcc02dae.webp"),
-		new("Rubber plant", "Ficus elastica", "Mos Eisley South", CategoryOrder[1], "Small", "Bright", string.Empty),
-		new("Polka dot plant", "Hypoestes phyllostachya", "Mos Eisley South", CategoryOrder[2], "Normal", "Filtered", string.Empty),
-		new("White philodendron", "Philodendron", "Mos Eisley South", CategoryOrder[1], "Small", "Bright", string.Empty),
-		new("Aloe vera", "Aloe barbadensis", "Mos Eisley West", CategoryOrder[0], "Sip, only if bone dry", "Sun", "images/aloevera.webp"),
-		new("Jade plant", "Crassula ovata", "Mos Eisley West", CategoryOrder[0], "Sip, only if bone dry", "Sun", string.Empty),
-		new("Spider plant", "Chlorophytum comosum", "Mos Eisley West", CategoryOrder[1], "Small", "Bright", string.Empty),
-		new("String of pearls", "Curio rowleyanus", "Mos Eisley West", CategoryOrder[0], "Sip, only if bone dry", "Sun", string.Empty),
-		new("Echeveria", "Echeveria", "Panopticon", CategoryOrder[0], "Sip, only if bone dry", "Sun", string.Empty),
-		new("Canary Island date palm", "Phoenix canariensis", "Panopticon", CategoryOrder[3], "Small", "Sun", string.Empty),
-		new("Lavender", "Lavandula", "Panopticon", CategoryOrder[3], "Small", "Sun", string.Empty),
-		new("Rosemary", "Salvia rosmarinus", "Panopticon", CategoryOrder[3], "Small", "Sun", string.Empty),
-		new("Stonecrop", "Sedum", "Panopticon", CategoryOrder[0], "Sip, only if bone dry", "Sun", string.Empty),
-		new("Lemon tree", "Citrus limon", "Panopticon", CategoryOrder[3], "Small", "Sun", string.Empty),
-		new("Dwarf fan palm", "Chamaerops humilis", "Panopticon", CategoryOrder[3], "Small", "Sun", string.Empty),
-		new("Chinese evergreen", "Aglaonema", "Sweatshop", CategoryOrder[1], "Small", "Low light", "images/Aglaonema_Siam_monet_grey.webp"),
-		new("Snake plant", "Dracaena trifasciata", "Sweatshop", CategoryOrder[0], "Sip, only if bone dry", "Low light", "images/GoldenSnakePlantSmall_Reactive_Aqua.webp"),
-		new("Peace lily", "Spathiphyllum", "Sweatshop", CategoryOrder[2], "Normal", "Filtered", "images/peace-lily.webp"),
-		new("ZZ plant", "Zamioculcas zamiifolia", "Sweatshop", CategoryOrder[0], "Sip, only if bone dry", "Low light", "images/ZZ_plant_monet_blue.webp")
-	];
-
 	private static List<Place> CreatePlaces() =>
 	[
 		new("Mos Eisley South", "Bright, filtered", "20–23 °C", false, string.Empty),
 		new("Mos Eisley West", "Direct afternoon sun", "20–23 °C", false, string.Empty),
-		new("Panopticon", "Full sun", "Winter 5–12 °C", false, "PanopticonAdvice", "WinterTemperature"),
+		new("Panopticon", "Full sun", "Winter 5–12 °C", false, string.Empty, "WinterTemperature", "PanopticonAdvice"),
 		new("Sweatshop", "Low light", "20–22 °C", false, string.Empty),
 		new("Garden", "Full sun to shade", "Outdoor", true, string.Empty, "Outdoor")
 	];
 
-	private sealed class Plant(string name, string species, string location, string category, string waterAmount, string light, string image, bool isSelected = false)
+	private sealed class Plant
 	{
-		public string Id { get; set; } = Guid.NewGuid().ToString("N");
-		public string Name { get; set; } = name;
-		public string Species { get; set; } = species;
-		public string Location { get; set; } = location;
-		public string Category { get; set; } = category;
-		public string WaterAmount { get; set; } = waterAmount;
-		public string Light { get; set; } = light;
-		public string Image { get; set; } = image;
-		public bool IsSelected { get; set; } = isSelected;
+		public Plant(PlantCatalogEntry catalog)
+		{
+			Catalog = catalog;
+			Id = catalog.Id;
+			Species = catalog.Species;
+			Location = catalog.Location;
+			Category = catalog.Category;
+			Image = catalog.Image;
+			Care = catalog.Care;
+		}
+
+		public Plant(string name, string species, string location, string category, string waterAmount, string light, string image, PlantCareProfile care)
+		{
+			Name = name;
+			Species = species;
+			Location = location;
+			Category = category;
+			WaterAmount = waterAmount;
+			Light = light;
+			Image = image;
+			Care = care;
+			Id = Guid.NewGuid().ToString("N");
+		}
+
+		public PlantCatalogEntry? Catalog { get; }
+		public PlantCareProfile Care { get; }
+		public string Id { get; }
+		public string Name { get; set; } = string.Empty;
+		public string Species { get; set; } = string.Empty;
+		public string Location { get; set; } = string.Empty;
+		public string Category { get; set; } = string.Empty;
+		public string WaterAmount { get; set; } = string.Empty;
+		public string Light { get; set; } = string.Empty;
+		public string Image { get; set; } = string.Empty;
 		public bool Watered { get; set; }
 	}
 
-	private sealed record Place(string Name, string Light, string Temperature, bool Outdoor, string Note, string? TemperatureKey = null);
+	private sealed record Place(string Name, string Light, string Temperature, bool Outdoor, string Note, string? TemperatureKey = null, string? NoteKey = null);
 	private sealed record JournalEntry(string TitleKey, string DescriptionKey, string Type, DateOnly? Date, long SortOrder, string PlantName = "", string PhotoData = "", string? UserNote = null, Plant? WateredPlant = null, string WaterAmount = "");
 }

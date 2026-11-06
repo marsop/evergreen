@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="720" viewBox="0 0 720 720">
+  <defs>
+    <g id="blossom" fill="#ae7285">
+      <ellipse cy="-9" rx="6" ry="10"/>
+      <ellipse cy="-9" rx="6" ry="10" transform="rotate(72)"/>
+      <ellipse cy="-9" rx="6" ry="10" transform="rotate(144)"/>
+      <ellipse cy="-9" rx="6" ry="10" transform="rotate(216)"/>
+      <ellipse cy="-9" rx="6" ry="10" transform="rotate(288)"/>
+      <circle r="4" fill="#b59451"/>
+    </g>
+  </defs>
+  <use href="#blossom" transform="translate(82 110) rotate(12)"/>
+  <use href="#blossom" transform="translate(610 330) rotate(40) scale(.7)"/>
+  <use href="#blossom" transform="translate(270 580) rotate(-20) scale(.8)"/>
+  <g fill="#739275">
+    <path d="M470 175q-24-24-30 3 19 14 30-3Z"/>
+    <path d="M115 442q-18-20-24 2 15 11 24-2Z"/>
+    <path d="M563 642q-24-24-30 3 19 14 30-3Z"/>
+  </g>
+</svg>

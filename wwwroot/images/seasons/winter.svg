@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="720" viewBox="0 0 720 720">
+  <defs>
+    <g id="snowflake" fill="none" stroke="#6e91a6" stroke-width="1.7" stroke-linecap="round">
+      <path id="arm" d="M0-17V17m-5-29 5 5 5-5m-10 24 5-5 5 5"/>
+      <use href="#arm" transform="rotate(60)"/>
+      <use href="#arm" transform="rotate(120)"/>
+    </g>
+  </defs>
+  <use href="#snowflake" transform="translate(75 90) rotate(10)"/>
+  <use href="#snowflake" transform="translate(540 155) scale(.65)"/>
+  <use href="#snowflake" transform="translate(310 330) rotate(20) scale(.8)"/>
+  <use href="#snowflake" transform="translate(640 510) rotate(40)"/>
+  <use href="#snowflake" transform="translate(130 610) scale(.6)"/>
+  <g fill="#6e91a6">
+    <circle cx="410" cy="70" r="2"/><circle cx="160" cy="280" r="2"/>
+    <circle cx="450" cy="570" r="3"/><circle cx="35" cy="450" r="2"/>
+  </g>
+</svg>
