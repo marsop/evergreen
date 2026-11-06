@@ -1,0 +1,78 @@
+:root {
+    --season-paper: #f1f6eb;
+    --season-glow: #e4eee0;
+}
+
+:root[data-season="spring"] {
+    --season-paper: #f2f5ee;
+    --season-glow: #eee4e7;
+    --season-image: url("images/seasons/spring.svg");
+}
+
+:root[data-season="summer"] {
+    --season-paper: #f8f5e9;
+    --season-glow: #f0e5bf;
+    --season-image: url("images/seasons/summer.svg");
+}
+
+:root[data-season="autumn"] {
+    --season-paper: #f6f0e8;
+    --season-glow: #eadbce;
+    --season-image: url("images/seasons/autumn.svg");
+}
+
+:root[data-season="winter"] {
+    --season-paper: #eef3f6;
+    --season-glow: #dce7ee;
+    --season-image: url("images/seasons/winter.svg");
+}
+
+body { isolation: isolate; }
+.seasonal-background {
+    background: radial-gradient(ellipse at 92% 8%, var(--season-glow), transparent 55%);
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    position: fixed;
+    z-index: -1;
+}
+.seasonal-background__layer {
+    animation: seasonal-fall 120s linear infinite;
+    background: var(--season-image) repeat 0 0 / 720px 720px;
+    inset: -720px 0 0;
+    opacity: .16;
+    position: absolute;
+}
+.seasonal-background__layer:nth-child(2) {
+    animation-duration: 180s;
+    animation-delay: -90s;
+    background-position: 360px 0;
+    opacity: .08;
+}
+:root[data-season="summer"] .seasonal-background__layer {
+    animation: seasonal-sun 240s ease-in-out infinite alternate;
+    background-repeat: no-repeat;
+    background-position: right -50px top 40px;
+    background-size: clamp(280px, 40vw, 480px);
+    inset: 0;
+    opacity: .14;
+}
+:root[data-season="summer"] .seasonal-background__layer:nth-child(2) { display: none; }
+:root[data-season-paused="true"] .seasonal-background__layer { animation-play-state: paused; }
+
+@keyframes seasonal-fall {
+    from { transform: translateY(0); }
+    to { transform: translateY(720px); }
+}
+@keyframes seasonal-sun {
+    from { transform: translate(0, 0) rotate(-2deg); }
+    to { transform: translate(-12px, 16px) rotate(2deg); }
+}
+
+@media (max-width: 760px) {
+    .seasonal-background__layer { opacity: .12; }
+    .seasonal-background__layer:nth-child(2) { opacity: .08; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .seasonal-background__layer { animation: none !important; }
+}

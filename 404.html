@@ -7,13 +7,19 @@
     <base href="/evergreen/" />
     <link rel="stylesheet" href="app.css" />
     <link rel="stylesheet" href="garden.css" />
+    <link rel="stylesheet" href="seasonal-background.css" />
     <link rel="stylesheet" href="Evergreen.styles.css" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="icon" type="image/png" href="favicon.png" />
+    <script src="seasonal-background.js"></script>
     <title>Evergreen</title>
 </head>
 
 <body>
+    <div class="seasonal-background" aria-hidden="true" inert>
+        <div class="seasonal-background__layer"></div>
+        <div class="seasonal-background__layer"></div>
+    </div>
     <div id="app">
         <p data-localization="loading">Loading Evergreen...</p>
     </div>

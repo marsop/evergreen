@@ -1,0 +1,226 @@
+{
+  "id": "sample-20",
+  "name": {
+    "en": "Chinese evergreen",
+    "es": "Aglaonema",
+    "de": "Kolbenfaden"
+  },
+  "species": "Aglaonema",
+  "location": "Sweatshop",
+  "category": "Tropical, let top dry",
+  "image": "plants/chinese-evergreen/image.webp",
+  "care": {
+    "details": {
+      "Light": {
+        "value": {
+          "en": "bright",
+          "es": "abundante",
+          "de": "hell"
+        },
+        "advice": {
+          "en": "Bright, indirect. No direct midday sun",
+          "es": "Luz abundante e indirecta. Sin sol directo al mediodía",
+          "de": "Hell, indirekt. Keine direkte Mittagssonne"
+        }
+      },
+      "Water": {
+        "value": {
+          "en": "1× week",
+          "es": "1× por semana",
+          "de": "1× pro Woche"
+        },
+        "amount": {
+          "en": "Normal",
+          "es": "Normal",
+          "de": "Normal"
+        },
+        "advice": {
+          "en": "Sundays. Normal amount in summer, small in winter. Skip if the top 3 cm are still wet",
+          "es": "Los domingos. Cantidad normal en verano, poca en invierno. No regar si los primeros 3 cm siguen húmedos",
+          "de": "Sonntags. Im Sommer normale Menge, im Winter wenig. Auslassen, wenn die oberen 3 cm noch feucht sind"
+        }
+      },
+      "Fertilizer": {
+        "value": {
+          "en": "paused",
+          "es": "en pausa",
+          "de": "pausiert"
+        },
+        "advice": {
+          "en": "Foliage plant fertilizer, April to September",
+          "es": "Abono para plantas de hoja, de abril a septiembre",
+          "de": "Grünpflanzendünger, April bis September"
+        }
+      },
+      "TemperatureHumidity": {
+        "value": {
+          "en": "18–27 °C",
+          "es": "18–27 °C",
+          "de": "18–27 °C"
+        },
+        "advice": {
+          "en": "Never below 15 °C. Keep out of Panopticon in winter",
+          "es": "Nunca por debajo de 15 °C. No dejar en Panopticon en invierno",
+          "de": "Nie unter 15 °C. Im Winter nicht in Panopticon lassen"
+        }
+      },
+      "SubstrateRepotting": {
+        "value": {
+          "en": "2–3 yrs",
+          "es": "2–3 años",
+          "de": "2–3 Jahre"
+        },
+        "advice": {
+          "en": "Aroid mix: bark, perlite, coco. Repot in spring",
+          "es": "Mezcla para aráceas: corteza, perlita y coco. Trasplantar en primavera",
+          "de": "Aroid-Mischung: Rinde, Perlit, Kokos. Im Frühjahr umtopfen"
+        }
+      },
+      "Pruning": {
+        "value": {
+          "en": "spring",
+          "es": "primavera",
+          "de": "Frühjahr"
+        },
+        "advice": {
+          "en": "Cut above a node. Sap irritates skin",
+          "es": "Cortar por encima de un nudo. La savia irrita la piel",
+          "de": "Über einem Knoten schneiden. Pflanzensaft reizt die Haut"
+        }
+      },
+      "Propagation": {
+        "value": {
+          "en": "cutting",
+          "es": "esqueje",
+          "de": "Steckling"
+        },
+        "advice": {
+          "en": "Stem piece with node and aerial root, in water",
+          "es": "Un trozo de tallo con nudo y raíz aérea, en agua",
+          "de": "Stängelstück mit Knoten und Luftwurzel, in Wasser"
+        }
+      }
+    },
+    "months": [
+      {
+        "month": 1,
+        "water": 34,
+        "fertilizer": 0
+      },
+      {
+        "month": 2,
+        "water": 36,
+        "fertilizer": 0
+      },
+      {
+        "month": 3,
+        "water": 42,
+        "fertilizer": 18
+      },
+      {
+        "month": 4,
+        "water": 52,
+        "fertilizer": 34
+      },
+      {
+        "month": 5,
+        "water": 68,
+        "fertilizer": 43
+      },
+      {
+        "month": 6,
+        "water": 78,
+        "fertilizer": 48
+      },
+      {
+        "month": 7,
+        "water": 86,
+        "fertilizer": 50
+      },
+      {
+        "month": 8,
+        "water": 78,
+        "fertilizer": 46
+      },
+      {
+        "month": 9,
+        "water": 66,
+        "fertilizer": 30
+      },
+      {
+        "month": 10,
+        "water": 52,
+        "fertilizer": 8
+      },
+      {
+        "month": 11,
+        "water": 38,
+        "fertilizer": 0
+      },
+      {
+        "month": 12,
+        "water": 34,
+        "fertilizer": 0
+      }
+    ],
+    "watchouts": [
+      {
+        "key": "YellowLeaves",
+        "title": {
+          "en": "Yellow lower leaves",
+          "es": "Hojas inferiores amarillas",
+          "de": "Gelbe untere Blätter"
+        },
+        "advice": {
+          "en": "Soil stays wet → water less, check drainage",
+          "es": "La tierra sigue mojada → regar menos y revisar el drenaje",
+          "de": "Erde bleibt nass → weniger gießen, Drainage prüfen"
+        }
+      },
+      {
+        "key": "BrownEdges",
+        "title": {
+          "en": "Brown crispy edges",
+          "es": "Bordes marrones y secos",
+          "de": "Braune, trockene Blattränder"
+        },
+        "advice": {
+          "en": "Air too dry → raise humidity",
+          "es": "Aire demasiado seco → aumentar la humedad",
+          "de": "Luft zu trocken → Luftfeuchtigkeit erhöhen"
+        }
+      },
+      {
+        "key": "SpiderMites",
+        "title": {
+          "en": "Spider mites",
+          "es": "Araña roja",
+          "de": "Spinnmilben"
+        },
+        "advice": {
+          "en": "Fine webs under leaves → shower, neem oil",
+          "es": "Telarañas finas bajo las hojas → ducha y aceite de neem",
+          "de": "Feine Gespinste unter Blättern → abduschen, Neemöl"
+        }
+      },
+      {
+        "key": "Thrips",
+        "title": {
+          "en": "Thrips",
+          "es": "Trips",
+          "de": "Thripse"
+        },
+        "advice": {
+          "en": "Silver speckles → isolate, blue sticky traps",
+          "es": "Manchas plateadas → aislar y usar trampas adhesivas azules",
+          "de": "Silbrige Flecken → isolieren, blaue Klebefallen"
+        }
+      }
+    ],
+    "profileAlert": {
+      "en": "Yellow leaves, thrips, spider mites · 18–27 °C",
+      "es": "Hojas amarillas, trips, araña roja · 18–27 °C",
+      "de": "Gelbe Blätter, Thripse, Spinnmilben · 18–27 °C"
+    }
+  }
+}
