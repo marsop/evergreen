@@ -4,6 +4,7 @@
 [Aa]rtifacts/
 [Pp]ublish/
 TestResults/
+node_modules/
 
 # Visual Studio and user-specific files
 .vs/

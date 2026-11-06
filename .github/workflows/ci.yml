@@ -40,3 +40,15 @@ jobs:
 
       - name: Test browser localization bootstrap
         run: node --test Tests/localization.test.cjs
+
+      - name: Install browser test dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Publish for browser tests
+        run: dotnet publish Evergreen.csproj --configuration Release --output publish
+
+      - name: Test browser navigation
+        run: npm run test:browser

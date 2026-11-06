@@ -9,9 +9,18 @@ Evergreen is a Blazor WebAssembly plant-care dashboard for keeping track of plan
 - Growing-place management
 - Care journal with notes and optional photos
 - Interactive client-rendered UI
+- Browser Back/Forward navigation between views and plant profiles
 - English, Spanish, and German with instant language switching
 
 The current app is a prototype: its plant, place, and journal data lives in browser memory and is not saved across page reloads.
+
+## View navigation
+
+Moving between Today, Plants, Places, Journal, and plant profiles creates browser history entries without reloading the app. Browser Back/Forward retraces those visits while preserving in-memory garden edits. Selecting the current destination does not add a duplicate entry. The profile's **Back to plants** control always opens Plants rather than leaving the app.
+
+View links use query parameters relative to the site's base URL: `?view=plants`, `?view=places`, `?view=journal`, and `?view=profile&plant=<plant-id>`. Today uses the base URL. Opening a place's plants also includes `place=<encoded-place-name>`. Sample plant links survive reloads; newly added plants remain in memory only, so their links show an unavailable message after reload. Invalid view names return to Today without adding a history entry.
+
+Search, ordinary filter changes, language changes, care edits, and opening/closing dialogs do not create history entries. Navigating to a different destination, including with Back/Forward, closes dialogs and discards their unsaved inputs.
 
 ## Requirements
 
@@ -38,7 +47,18 @@ dotnet test Tests\Evergreen.Tests.csproj
 node --test Tests\localization.test.cjs
 ```
 
-The JavaScript tests require Node.js 22 or later. The [CI workflow](.github/workflows/ci.yml) builds the app in Release configuration and runs both test suites for source pushes and pull requests, excluding the generated `gh-pages` branch.
+The JavaScript tests require Node.js 22 or later. The [CI workflow](.github/workflows/ci.yml) builds the app in Release configuration and runs the localization and browser navigation suites for source pushes and pull requests, excluding the generated `gh-pages` branch.
+
+Run the browser navigation regression test against a fresh static publication:
+
+```powershell
+npm ci
+npx playwright install chromium
+dotnet publish Evergreen.csproj --configuration Release --output publish
+npm run test:browser
+```
+
+The browser tests serve the app at both root and repository-subpath URLs and verify real Back/Forward traversal, desktop/mobile navigation, deep links, dialog dismissal, translations, and preservation of in-memory garden edits.
 
 ## Languages and localization
 
@@ -48,7 +68,7 @@ Use the language selector in the header or an open dialog to switch immediately 
 
 Application translations live in `Resources/AppResources.resx` (English), `Resources/AppResources.es.resx`, and `Resources/AppResources.de.resx`. Keep resource keys and numbered placeholders identical across files. Use complete messages, singular/plural variants where needed, and the shared localization helper for lookups and explicit culture-aware formatting. Internal navigation/filter values must not depend on translated labels.
 
-Built-in care advice and sample journal text are translated when rendered. Plant/place names, botanical names, and user-entered text are not translated. The prototype's sample dates and care schedule remain unchanged, with localized date, weekday, and month labels.
+Built-in care advice and generated journal text are translated when rendered. The journal starts empty; entries added manually or through care actions are kept for the current session. Plant/place names, botanical names, and user-entered text are not translated. The prototype's sample dates and care schedule remain unchanged, with localized date, weekday, and month labels.
 
 The small translation map in `wwwroot/localization.js` is limited to loading and fatal-error text needed before .NET starts. Keep those strings aligned with the application error resources. Startup loads all satellite resources and globalization data to support live switching on static hosting.
 

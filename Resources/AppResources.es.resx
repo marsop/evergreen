@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
+  <data name="PlantUnavailable" xml:space="preserve"><value>Planta no disponible</value></data>
+  <data name="PlantUnavailableDescription" xml:space="preserve"><value>Esta planta ya no está disponible. Las plantas añadidas en este prototipo solo se conservan hasta que se recarga la página.</value></data>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
@@ -69,6 +71,7 @@
   <data name="ThingsTodayOne" xml:space="preserve"><value>{0} tarea hoy</value></data>
   <data name="ThingsTodayMany" xml:space="preserve"><value>{0} tareas hoy</value></data>
   <data name="ViewAllPlants" xml:space="preserve"><value>Ver todas las plantas</value></data>
+  <data name="WaterEverything" xml:space="preserve"><value>Regar todas</value></data>
   <data name="OpenPlantProfile" xml:space="preserve"><value>Abrir el perfil de {0}</value></data>
   <data name="WaterSchedule" xml:space="preserve"><value>{0} · 1× por semana</value></data>
   <data name="UndoWatering" xml:space="preserve"><value>Deshacer el riego de {0}</value></data>
@@ -111,7 +114,6 @@
   <data name="Full sun to shade" xml:space="preserve"><value>De pleno sol a sombra</value></data>
   <data name="Outdoor" xml:space="preserve"><value>Exterior</value></data>
   <data name="LetWeatherIn" xml:space="preserve"><value>Deja entrar el tiempo</value></data>
-  <data name="AddOutdoorPlace" xml:space="preserve"><value>Añadir lugar exterior</value></data>
   <data name="NotesFromGarden" xml:space="preserve"><value>NOTAS DEL JARDÍN</value></data>
   <data name="JournalLead" xml:space="preserve"><value>Los pequeños momentos suman buenos cuidados.</value></data>
   <data name="AddEntry" xml:space="preserve"><value>Añadir entrada</value></data>
