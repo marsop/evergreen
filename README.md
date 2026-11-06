@@ -12,14 +12,27 @@ Evergreen is a Blazor WebAssembly plant-care dashboard for keeping track of plan
 - Browser Back/Forward navigation between views and plant profiles
 - English, Spanish, and German with instant language switching
 - Subtle seasonal SVG backgrounds with reduced-motion support
+- Automatic localStorage saving for plants, places, journal entries, photos, and care actions
 
-The current app is a prototype: its plant, place, and journal data lives in browser memory and is not saved across page reloads.
+## Local garden storage
+
+The first visit starts with the sample plants and places and an empty journal. Each successful garden edit saves a complete, versioned snapshot in localStorage (`evergreen.garden`). Reloading or reopening the app in the same browser and origin restores that snapshot, including user-entered names, place edits/deletions, journal notes/photos, and plant profile links. Language is stored separately in `evergreen.culture`.
+
+Changes become part of the garden only after saving succeeds. If browser storage is blocked or full, an explicit error appears, the committed garden stays unchanged, and open form inputs are retained. Allow storage or free space and repeat the action. Bulk watering is saved as one operation, so a failed save cannot water only part of the garden.
+
+Journal entries retain their actual local calendar dates. Watering checkmarks reset on a new local day without removing past entries. Undoing watering removes only that day's automatically generated entry, not manually logged care.
+
+Photo uploads retain the 5 MB input limit and are resized to fit within 1280 by 1280 pixels without upscaling. They are saved as JPEG at 80% quality, with transparency composited onto white. This reduces storage use but does not guarantee that an attachment fits the browser quota. Invalid images produce an error rather than a saved attachment.
+
+If saved data is damaged or uses an unsupported schema version, the app protects it from automatic overwriting and offers loading again or an explicitly confirmed reset to the sample garden. Reset removes only the garden key, not the language preference or other site data. Unreadable storage must become available before editing can resume.
+
+Storage is local to this browser profile and site origin, not a backup or cross-device sync. Clearing site data removes the garden; private browsing, browser policies, and quotas can limit availability. Multiple tabs use **last successful save wins**, without merging concurrent edits. Paths on the same origin share the garden key.
 
 ## View navigation
 
 Moving between Today, Plants, Places, Journal, and plant profiles creates browser history entries without reloading the app. Browser Back/Forward retraces those visits while preserving in-memory garden edits. Selecting the current destination does not add a duplicate entry. The profile's **Back to plants** control always opens Plants rather than leaving the app.
 
-View links use query parameters relative to the site's base URL: `?view=plants`, `?view=places`, `?view=journal`, and `?view=profile&plant=<plant-id>`. Today uses the base URL. Opening a place's plants also includes `place=<encoded-place-name>`. Sample plant links survive reloads; newly added plants remain in memory only, so their links show an unavailable message after reload. Invalid view names return to Today without adding a history entry.
+View links use query parameters relative to the site's base URL: `?view=plants`, `?view=places`, `?view=journal`, and `?view=profile&plant=<plant-id>`. Today uses the base URL. Opening a place's plants also includes `place=<encoded-place-name>`. Both sample and successfully saved new plant links survive reloads in the same browser storage. Unknown plant IDs show an unavailable message. Invalid view names return to Today without adding a history entry.
 
 Search, ordinary filter changes, language changes, care edits, and opening/closing dialogs do not create history entries. Navigating to a different destination, including with Back/Forward, closes dialogs and discards their unsaved inputs.
 
@@ -52,6 +65,7 @@ Run the localization tests with:
 ```powershell
 dotnet test Tests\Evergreen.Tests.csproj
 node --test Tests\localization.test.cjs
+node --test Tests\garden-storage.test.cjs
 node --test Tests\seasonal-background.test.cjs
 ```
 
@@ -66,17 +80,17 @@ dotnet publish Evergreen.csproj --configuration Release --output publish
 npm run test:browser
 ```
 
-The browser tests serve the app at both root and repository-subpath URLs and verify real Back/Forward traversal, desktop/mobile navigation, deep links, dialog dismissal, translations, and preservation of in-memory garden edits. They also verify all four seasonal backgrounds, local-date selection and rollover, SVG loading, slow animation, and live reduced-motion changes.
+The browser tests serve the app at both root and repository-subpath URLs and verify real Back/Forward traversal, desktop/mobile navigation, persistent deep links, dialog dismissal, translations, and preservation of garden edits. They cover reload/reopen persistence, transactional save failures, photo compression, recovery/reset, empty saved gardens, and local-day watering rollover. They also verify all four seasonal backgrounds, local-date selection and rollover, SVG loading, slow animation, and live reduced-motion changes.
 
 ## Languages and localization
 
 Evergreen supports English (the fallback), Spanish, and German. On startup, a saved language choice takes precedence over the first supported browser language; regional variants such as `es-MX` and `de-AT` use Spanish and German. Unsupported languages fall back to English.
 
-Use the language selector in the header or an open dialog to switch immediately without losing plants, watering progress, journal entries, filters, or form inputs. Only the language choice is saved in browser localStorage (`evergreen.culture`); garden data still resets on a page reload. If storage is blocked, switching continues to work and a warning explains that the preference cannot be saved.
+Use the language selector in the header to switch immediately without losing plants, watering progress, journal entries, filters, or form inputs, including while a dialog is open. The language choice is saved separately in browser localStorage (`evergreen.culture`); switching languages does not rewrite the garden snapshot. If storage is blocked, switching continues to work and a warning explains that the preference cannot be saved.
 
 Application translations live in `Resources/AppResources.resx` (English), `Resources/AppResources.es.resx`, and `Resources/AppResources.de.resx`. Keep resource keys and numbered placeholders identical across files. Use complete messages, singular/plural variants where needed, and the shared localization helper for lookups and explicit culture-aware formatting. Internal navigation/filter values must not depend on translated labels.
 
-Built-in plant names and care profiles are stored with each plant in `wwwroot/plants/<folder>/plant.json`; its image is colocated in the same folder. The ordered catalog index is `wwwroot/plants/index.json`; keep its order and each manifest ID stable for sample deep links. Manifests contain English, Spanish, and German names, botanical name, sample location/category, image path, localized care details and watchouts, and monthly watering/fertilizer chart data. The typed loader and schema are in `Components/Plants/`. Each profile currently uses the same sample care parameters, ready to be customized per plant. Built-in care advice and generated journal text are translated when rendered. Plants added during a session retain their user-entered names and are not saved across reloads. The journal starts empty; entries added manually or through care actions are kept for the current session. Place names, botanical names, and user-entered text are not translated. The prototype's sample dates and care schedule remain unchanged, with localized date, weekday, and month labels.
+Built-in plant names and care profiles are stored with each plant in `wwwroot/plants/<folder>/plant.json`; its image is colocated in the same folder. The ordered catalog index is `wwwroot/plants/index.json`; keep its order and each manifest ID stable for sample deep links and saved garden associations. Manifests contain English, Spanish, and German names, botanical name, sample location/category, image path, localized care details and watchouts, and monthly watering/fertilizer chart data. The typed loader and schema are in `Components/Plants/`. Each profile currently uses the same sample care parameters, ready to be customized per plant. New plants use the first catalog entry's care profile via a stable care-source ID. Built-in care advice and generated journal text are translated when rendered, rather than stored as translated text. Saved plants retain their user-entered names across reloads. The journal starts empty; entries added manually or through care actions are saved with their actual dates. Place names, botanical names, and user-entered text are not translated. The prototype's care schedule remains unchanged, with localized date, weekday, and month labels.
 
 The small translation map in `wwwroot/localization.js` is limited to loading and fatal-error text needed before .NET starts. Keep those strings aligned with the application error resources. Startup loads all satellite resources and globalization data to support live switching on static hosting.
 

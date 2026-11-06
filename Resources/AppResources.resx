@@ -225,4 +225,17 @@
   <data name="NewFruitsDescription" xml:space="preserve"><value>3 new fruits</value></data>
   <data name="WinterStartedTitle" xml:space="preserve"><value>Winter rhythm started</value></data>
   <data name="WinterStartedDescription" xml:space="preserve"><value>23 plants switched to 1× a week (Sunday)</value></data>
+  <data name="GardenRecovery" xml:space="preserve"><value>Saved garden unavailable</value></data>
+  <data name="GardenInvalid" xml:space="preserve"><value>The saved garden is damaged. It has not been overwritten. Retry loading or explicitly reset it to the sample garden.</value></data>
+  <data name="GardenUnsupported" xml:space="preserve"><value>This saved garden uses an unsupported format. It has not been overwritten. Try a compatible app version, or explicitly reset it.</value></data>
+  <data name="GardenReadFailed" xml:space="preserve"><value>Browser storage could not be read. Allow local storage and retry. Your saved garden has not been overwritten.</value></data>
+  <data name="GardenSaveFailed" xml:space="preserve"><value>Changes were not saved. Your garden is unchanged and form inputs are retained. Browser storage may be full or blocked; free space or allow storage, then try the action again.</value></data>
+  <data name="GardenResetFailed" xml:space="preserve"><value>The saved garden could not be reset. Allow browser storage and try again.</value></data>
+  <data name="GardenRetry" xml:space="preserve"><value>Retry loading</value></data>
+  <data name="GardenReset" xml:space="preserve"><value>Reset garden</value></data>
+  <data name="GardenResetConfirm" xml:space="preserve"><value>This permanently removes the saved garden in this browser and restores the samples. Your language preference will not change. Confirm reset?</value></data>
+  <data name="GardenNeedsPlace" xml:space="preserve"><value>Add a place in Places before adding your first plant.</value></data>
+  <data name="GardenPhotoFailed" xml:space="preserve"><value>This image could not be processed. Choose another image before saving.</value></data>
+  <data name="GardenPhotoProcessing" xml:space="preserve"><value>Preparing photo...</value></data>
+  <data name="GardenSaving" xml:space="preserve"><value>Saving garden...</value></data>
 </root>

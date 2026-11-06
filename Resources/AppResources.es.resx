@@ -225,4 +225,17 @@
   <data name="NewFruitsDescription" xml:space="preserve"><value>3 frutos nuevos</value></data>
   <data name="WinterStartedTitle" xml:space="preserve"><value>Inicio del ritmo de invierno</value></data>
   <data name="WinterStartedDescription" xml:space="preserve"><value>23 plantas pasan a un riego semanal (domingo)</value></data>
+  <data name="GardenRecovery" xml:space="preserve"><value>Jardín guardado no disponible</value></data>
+  <data name="GardenInvalid" xml:space="preserve"><value>El jardín guardado está dañado. No se ha sobrescrito. Vuelve a cargarlo o restablécelo explícitamente al jardín de ejemplo.</value></data>
+  <data name="GardenUnsupported" xml:space="preserve"><value>El jardín guardado usa un formato no compatible. No se ha sobrescrito. Prueba una versión compatible de la aplicación o restablécelo explícitamente.</value></data>
+  <data name="GardenReadFailed" xml:space="preserve"><value>No se pudo leer el almacenamiento del navegador. Permite el almacenamiento local y vuelve a intentarlo. Tu jardín guardado no se ha sobrescrito.</value></data>
+  <data name="GardenSaveFailed" xml:space="preserve"><value>No se guardaron los cambios. Tu jardín no ha cambiado y se conservan los datos del formulario. El almacenamiento puede estar lleno o bloqueado; libera espacio o permite el almacenamiento y repite la acción.</value></data>
+  <data name="GardenResetFailed" xml:space="preserve"><value>No se pudo restablecer el jardín guardado. Permite el almacenamiento del navegador y vuelve a intentarlo.</value></data>
+  <data name="GardenRetry" xml:space="preserve"><value>Volver a cargar</value></data>
+  <data name="GardenReset" xml:space="preserve"><value>Restablecer jardín</value></data>
+  <data name="GardenResetConfirm" xml:space="preserve"><value>Esto elimina permanentemente el jardín guardado en este navegador y restaura los ejemplos. Tu idioma no cambiará. ¿Confirmas el restablecimiento?</value></data>
+  <data name="GardenNeedsPlace" xml:space="preserve"><value>Añade un lugar en Lugares antes de añadir tu primera planta.</value></data>
+  <data name="GardenPhotoFailed" xml:space="preserve"><value>No se pudo procesar la imagen. Elige otra imagen antes de guardar.</value></data>
+  <data name="GardenPhotoProcessing" xml:space="preserve"><value>Preparando foto...</value></data>
+  <data name="GardenSaving" xml:space="preserve"><value>Guardando jardín...</value></data>
 </root>

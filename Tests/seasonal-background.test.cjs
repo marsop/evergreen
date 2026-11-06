@@ -5,6 +5,13 @@ const path = require("node:path");
 const vm = require("node:vm");
 
 const source = fs.readFileSync(path.join(__dirname, "..", "wwwroot", "seasonal-background.js"), "utf8");
+const styles = fs.readFileSync(path.join(__dirname, "..", "wwwroot", "seasonal-background.css"), "utf8");
+
+test("seasonal background animations run about 25% faster", () => {
+    assert.match(styles, /animation:\s*seasonal-fall 90s linear infinite/);
+    assert.match(styles, /animation-duration:\s*135s/);
+    assert.match(styles, /animation:\s*seasonal-sun 180s ease-in-out infinite alternate/);
+});
 
 function browser(initialDate) {
     let now = initialDate;

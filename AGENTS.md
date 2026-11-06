@@ -4,7 +4,7 @@
 
 - This is a .NET 10 Blazor WebAssembly app for static hosting. See `Program.cs` and `Evergreen.csproj`.
 - The plant-care dashboard and its current sample data are in `Components/Pages/Home.razor`.
-- App data is currently held in component memory; do not imply that it is persisted.
+- Garden edits are committed to the versioned `evergreen.garden` localStorage snapshot before updating component state. Preserve transactional saves, stable plant IDs, and explicit storage failure/recovery feedback.
 - Keep static assets in `wwwroot/` and reuse the existing application styles where practical.
 
 ## Build and validation

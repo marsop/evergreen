@@ -38,8 +38,8 @@ jobs:
         with:
           node-version: 22
 
-      - name: Test browser localization and seasonal bootstrap
-        run: node --test Tests/localization.test.cjs Tests/seasonal-background.test.cjs
+      - name: Test browser localization, storage and seasonal bootstrap
+        run: node --test Tests/localization.test.cjs Tests/garden-storage.test.cjs Tests/seasonal-background.test.cjs
 
       - name: Install browser test dependencies
         run: npm ci

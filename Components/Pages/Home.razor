@@ -3,14 +3,40 @@
 @implements IDisposable
 @inject NavigationManager Navigation
 @inject PlantCatalogService PlantCatalog
+@inject GardenStorageService GardenStorage
+@inject IJSRuntime JS
 <PageTitle>@T("PlantCareTitle")</PageTitle>
 
-@if (plants.Count == 0)
+@if (loading)
 {
 	<div class="app-shell"><main class="main-area"><section class="view-content" role="status">@T("LoadingPlants")</section></main></div>
 }
+else if (loadError is not null)
+{
+	<main class="view-content">
+		<LanguageSelector />
+		<h1>@T("GardenRecovery")</h1>
+		<p role="alert">@T(loadError)</p>
+		<button class="button button-dark" @onclick="LoadGardenAsync">@T("GardenRetry")</button>
+		@if (loadError is "GardenInvalid" or "GardenUnsupported")
+		{
+			@if (!confirmReset)
+			{
+				<button class="button button-quiet" @onclick="() => confirmReset = true">@T("GardenReset")</button>
+			}
+			else
+			{
+				<p>@T("GardenResetConfirm")</p>
+				<button class="button button-dark" @onclick="ResetGardenAsync">@T("GardenReset")</button>
+				<button class="button button-quiet" @onclick="() => confirmReset = false">@T("Cancel")</button>
+			}
+		}
+		@if (saveError.Length > 0) { <p class="form-error" role="alert">@T(saveError)</p> }
+	</main>
+}
 else
 {
+<fieldset class="garden-controls" disabled="@(saving || photoProcessing)">
 <div class="app-shell">
 	<aside class="sidebar" aria-label="@T("MainNavigation")">
 		<a class="brand" href="@DestinationUrl("Today")" @onclick='() => Navigate("Today")' @onclick:preventDefault aria-label="@T("EvergreenHome")">
@@ -48,7 +74,7 @@ else
 			<div class="topbar-actions">
 				<span class="today-date">@SampleToday.ToString(T("DashboardDateFormat"), Cultures.Culture)</span>
 				<LanguageSelector />
-				<button class="button button-dark" @onclick="OpenJournalForm"><AppIcon Name="@IconName.Plus" /> @T("LogCare")</button>
+				<button class="button button-dark" disabled="@(plants.Count == 0)" @onclick="OpenJournalForm"><AppIcon Name="@IconName.Plus" /> @T("LogCare")</button>
 			</div>
 		</header>
 
@@ -122,8 +148,9 @@ else
 			<section class="view-content">
 				<div class="page-heading">
 					<div><p class="eyebrow">@T("YourCollection")</p><h1>@T("Plants") <span class="heading-count">@plants.Count</span></h1><p class="lead">@T("PlantsLead")</p></div>
-					<button class="button button-dark" @onclick="OpenPlantForm"><AppIcon Name="@IconName.Plus" /> @T("AddPlant")</button>
+					<button class="button button-dark" disabled="@(places.Count == 0)" @onclick="OpenPlantForm"><AppIcon Name="@IconName.Plus" /> @T("AddPlant")</button>
 				</div>
+				@if (places.Count == 0) { <p role="status">@T("GardenNeedsPlace")</p> }
 				<div class="toolbar">
 					<label class="search-box"><AppIcon Name="@IconName.Search" /><input aria-label="@T("SearchPlants")" placeholder="@CountLabel("SearchPlantCount", plants.Count)" @bind="searchTerm" @bind:event="oninput" /></label>
 					<div class="filter-row" role="group" aria-label="@T("FilterByPlace")">
@@ -272,7 +299,7 @@ else
 					</ul></aside>
 				</div>
 				<section class="profile-history"><div class="section-heading"><div><p class="eyebrow">@T("LifeLogged")</p><h2>@T("RecentHistory")</h2></div><button class="text-button" @onclick='() => Navigate("Journal")'>@T("OpenJournal") <AppIcon Name="@IconName.ArrowRight" /></button></div>
-					@foreach (var entry in journalEntries.Where(entry => JournalPlantName(entry) == PlantName(selectedPlant)).Take(4))
+					@foreach (var entry in journalEntries.Where(entry => entry.WateredPlant?.Id == selectedPlant.Id).Take(4))
 					{
 						<div class="history-row"><span class="journal-entry-icon"><AppIcon Name="@JournalIcon(entry.Type)" /></span><strong>@JournalTitle(entry)</strong><time>@JournalDate(entry.Date)</time></div>
 					}
@@ -307,6 +334,7 @@ else
 				<label>@T("BotanicalName")<input maxlength="80" @bind="plantSpeciesInput" placeholder="@T("BotanicalNameExample")" /></label>
 				<div class="form-row"><label>@T("Place")<select @bind="plantLocationInput">@foreach (var place in places) { <option value="@place.Name">@place.Name</option> }</select></label><label>@T("CareGroup")<select @bind="plantCategoryInput">@foreach (var category in CategoryOrder) { <option value="@category">@T(category)</option> }</select></label></div>
 				@if (plantFormError.Length > 0) { <p class="form-error" role="alert">@T(plantFormError)</p> }
+				@if (saveError.Length > 0) { <p class="form-error" role="alert">@T(saveError)</p> }
 				<div class="modal-actions"><button type="button" class="button button-quiet" @onclick="CloseForms">@T("Cancel")</button><button type="submit" class="button button-dark">@T(editingPlant is null ? "AddPlant" : "SaveChanges")</button></div>
 			</form>
 		</section>
@@ -324,6 +352,7 @@ else
 				<label class="check-label"><input type="checkbox" @bind="placeOutdoorInput" /> @T("OutdoorPlace")</label>
 				<label>@T("Note")<textarea rows="3" maxlength="240" @bind="placeNoteInput" placeholder="@T("NotePlaceholder")"></textarea></label>
 				@if (placeFormError.Length > 0) { <p class="form-error" role="alert">@T(placeFormError)</p> }
+				@if (saveError.Length > 0) { <p class="form-error" role="alert">@T(saveError)</p> }
 				<div class="modal-actions"><button type="button" class="button button-quiet" @onclick="CloseForms">@T("Cancel")</button><button type="submit" class="button button-dark">@T(editingPlace is null ? "AddPlace" : "SaveChanges")</button></div>
 			</form>
 		</section>
@@ -337,6 +366,7 @@ else
 			<div class="modal-heading"><div><p class="eyebrow">@T("MakeRoomToGrow")</p><h2 id="delete-place-title">@T("DeletePlace")</h2></div><button class="close-button" aria-label="@T("Close")" @onclick="CancelDeletePlace">×</button></div>
 			<p>@T("ConfirmDeletePlace", placePendingDeletion.Name)</p>
 			@if (placeDeleteError.Length > 0) { <p class="form-error" role="alert">@T(placeDeleteError)</p> }
+			@if (saveError.Length > 0) { <p class="form-error" role="alert">@T(saveError)</p> }
 			<div class="modal-actions"><button type="button" class="button button-quiet" @onclick="CancelDeletePlace">@T("Cancel")</button><button type="button" class="button button-dark" @onclick="DeletePlace">@T("DeletePlace")</button></div>
 		</section>
 	</div>
@@ -359,11 +389,18 @@ else
 				}
 				<label>@T("Note")<textarea rows="3" maxlength="240" @bind="journalNoteInput" placeholder="@T("NotePlaceholder")"></textarea></label>
 				@if (journalFormError.Length > 0) { <p class="form-error" role="alert">@T(journalFormError)</p> }
+				@if (saveError.Length > 0) { <p class="form-error" role="alert">@T(saveError)</p> }
 				<div class="modal-actions"><button type="button" class="button button-quiet" @onclick="CloseForms">@T("Cancel")</button><button type="submit" class="button button-dark">@T("SaveEntry")</button></div>
 			</form>
 		</section>
 	</div>
 }
+</fieldset>
+@if (saveError.Length > 0 && !showPlantForm && !showPlaceForm && !showJournalForm && placePendingDeletion is null)
+{
+	<div class="garden-storage-message form-error" role="alert">@T(saveError)</div>
+}
+@if (saving || photoProcessing) { <div class="garden-storage-message" role="status">@T(photoProcessing ? "GardenPhotoProcessing" : "GardenSaving")</div> }
 }
 
 @code {
@@ -374,13 +411,20 @@ else
 	[SupplyParameterFromQuery(Name = "place")]
 	public string? PlaceName { get; set; }
 	private string? appliedUri;
+	private bool loading = true;
+	private bool saving;
+	private bool photoProcessing;
+	private bool confirmReset;
+	private string? loadError;
+	private string saveError = string.Empty;
+	private IReadOnlyList<PlantCatalogEntry> catalog = [];
 
 	private DateOnly today = DateOnly.FromDateTime(DateTime.Now);
 	private DateOnly SampleToday => today;
 	private Timer? dayTimer;
-	private static readonly string[] CategoryOrder = ["Succulents & dry", "Tropical, let top dry", "Tropical, evenly moist", "Mediterranean"];
-	private static readonly string[] JournalTypes = ["Watered", "Fertilized", "Repotted", "Pruned", "Treated", "Photo"];
-	private static readonly string[] PlaceLights = ["Bright, filtered", "Direct afternoon sun", "Full sun", "Low light", "Full sun to shade"];
+	private static readonly string[] CategoryOrder = GardenSnapshot.Categories;
+	private static readonly string[] JournalTypes = GardenSnapshot.EntryTypes;
+	private static readonly string[] PlaceLights = GardenSnapshot.Lights;
 	private static readonly (string Name, IconName Icon)[] NavigationItems = [("Today", IconName.Today), ("Plants", IconName.Plants), ("Places", IconName.Places), ("Journal", IconName.Journal)];
 	private static readonly (DayOfWeek Day, string Count)[] WeekDays = [(DayOfWeek.Monday, "·"), (DayOfWeek.Tuesday, "·"), (DayOfWeek.Wednesday, "·"), (DayOfWeek.Thursday, "·"), (DayOfWeek.Friday, "·"), (DayOfWeek.Saturday, "·"), (DayOfWeek.Sunday, "23")];
 	private static readonly (IconName Icon, string Title, string Key)[] CareDetails =
@@ -442,7 +486,7 @@ else
 	private string journalFormError = string.Empty;
 
 	private string CountLabel(string key, int count) => T(key + (count == 1 ? "One" : "Many"), count);
-	private string JournalDate(DateOnly? date) => date?.ToString(T("JournalDateFormat"), Cultures.Culture) ?? T("Today");
+	private string JournalDate(DateOnly? date) => date is null || date == SampleToday ? T("Today") : date.Value.ToString(T("JournalDateFormat"), Cultures.Culture);
 	private string JournalDateInputMax => SampleToday.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 	private string PlantName(Plant plant) => plant.Name.Length > 0
 		? plant.Name
@@ -482,8 +526,8 @@ else
 
 	protected override async Task OnInitializedAsync()
 	{
-		var catalog = await PlantCatalog.LoadAsync();
-		plants.AddRange(catalog.Select(entry => new Plant(entry)));
+		catalog = await PlantCatalog.LoadAsync();
+		await LoadGardenAsync();
 
 		dayTimer = new Timer(_ => _ = InvokeAsync(() =>
 		{
@@ -492,6 +536,106 @@ else
 			today = currentDay;
 			StateHasChanged();
 		}), null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
+	}
+
+	private async Task LoadGardenAsync()
+	{
+		loading = true;
+		saveError = string.Empty;
+		var result = await GardenStorage.LoadAsync(catalog);
+		loadError = result.Error;
+		if (loadError is null)
+		{
+			if (result.Snapshot is not null)
+				ApplySnapshot(result.Snapshot);
+			else
+			{
+				plants.Clear();
+				plants.AddRange(catalog.Select(entry => new Plant(entry)));
+				places.Clear();
+				places.AddRange(CreatePlaces());
+				journalEntries.Clear();
+			}
+			appliedUri = null;
+			OnParametersSet();
+		}
+		confirmReset = false;
+		loading = false;
+	}
+
+	private async Task ResetGardenAsync()
+	{
+		if (await GardenStorage.ResetAsync())
+			await LoadGardenAsync();
+		else
+			saveError = "GardenResetFailed";
+	}
+
+	private GardenSnapshot CaptureSnapshot() => new()
+	{
+		Plants = plants.Select(plant => new GardenPlant
+		{
+			Id = plant.Id, CatalogId = plant.Catalog?.Id, CareCatalogId = plant.CareCatalogId,
+			Name = plant.Name, Species = plant.Species, Location = plant.Location, Category = plant.Category,
+			Image = plant.Image, WaterAmount = plant.WaterAmount, Light = plant.Light, WateredOn = plant.WateredOn
+		}).ToList(),
+		Places = places.Select(place => new GardenPlace(place.Name, place.Light, place.Temperature, place.Outdoor,
+			place.Note, place.TemperatureKey, place.NoteKey)).ToList(),
+		Entries = journalEntries.Select(entry => new GardenEntry(entry.TitleKey, entry.DescriptionKey, entry.Type,
+			entry.Date ?? SampleToday, entry.SortOrder, entry.WateredPlant!.Id, entry.PhotoData,
+			entry.UserNote, entry.AutomaticWatering)).ToList()
+	};
+
+	private void ApplySnapshot(GardenSnapshot snapshot)
+	{
+		plants.Clear();
+		foreach (var saved in snapshot.Plants)
+		{
+			var source = catalog.First(item => item.Id == (saved.CatalogId ?? saved.CareCatalogId));
+			var plant = saved.CatalogId is not null ? new Plant(source) :
+				new Plant(saved.Name, saved.Species, saved.Location, saved.Category, saved.WaterAmount, saved.Light, saved.Image, source.Care);
+			plant.Id = saved.Id;
+			plant.CareCatalogId = source.Id;
+			plant.Name = saved.Name;
+			plant.Species = saved.Species;
+			plant.Location = saved.Location;
+			plant.Category = saved.Category;
+			plant.Image = saved.Image;
+			plant.WaterAmount = saved.WaterAmount;
+			plant.Light = saved.Light;
+			plant.WateredOn = saved.WateredOn;
+			plants.Add(plant);
+		}
+		places.Clear();
+		places.AddRange(snapshot.Places.Select(place => new Place(place.Name, place.Light, place.Temperature,
+			place.Outdoor, place.Note, place.TemperatureKey, place.NoteKey)));
+		journalEntries.Clear();
+		journalEntries.AddRange(snapshot.Entries.Select(entry => new JournalEntry(entry.TitleKey, entry.DescriptionKey,
+			entry.Type, entry.Date, entry.SortOrder, PhotoData: entry.PhotoData, UserNote: entry.UserNote,
+			WateredPlant: plants.First(plant => plant.Id == entry.PlantId), AutomaticWatering: entry.AutomaticWatering)));
+	}
+
+	private async Task<bool> CommitAsync(Action<GardenSnapshot> change)
+	{
+		if (saving || photoProcessing || loadError is not null) return false;
+		saving = true;
+		saveError = string.Empty;
+		try
+		{
+			var candidate = CaptureSnapshot();
+			change(candidate);
+			if (!await GardenStorage.SaveAsync(candidate, catalog))
+			{
+				saveError = "GardenSaveFailed";
+				return false;
+			}
+			ApplySnapshot(candidate);
+			return true;
+		}
+		finally
+		{
+			saving = false;
+		}
 	}
 
 	public void Dispose() => dayTimer?.Dispose();
@@ -527,32 +671,41 @@ else
 		Navigate("Plants", placeName: placeName);
 	}
 
-	private void ToggleWater(Plant plant)
+	private async Task ToggleWater(Plant plant)
 	{
-		plant.Watered = !plant.Watered;
-		if (plant.Watered)
+		await CommitAsync(candidate =>
 		{
-			journalEntries.Insert(0, new JournalEntry("JournalWateredTitle", "WateringDescription", "Watered", null, DateTime.UtcNow.Ticks, PlantName(plant), WateredPlant: plant, WaterAmount: PlantWaterAmount(plant)));
-		}
-		else
-		{
-			var entry = journalEntries.FirstOrDefault(item => item.Type == "Watered" && item.WateredPlant == plant && item.Date is null);
-			if (entry is not null) journalEntries.Remove(entry);
-		}
+			var saved = candidate.Plants.First(item => item.Id == plant.Id);
+			if (saved.WateredOn == SampleToday)
+			{
+				saved.WateredOn = null;
+				candidate.Entries.RemoveAll(entry => entry.AutomaticWatering && entry.PlantId == plant.Id && entry.Date == SampleToday);
+			}
+			else
+				WaterPlant(candidate, saved);
+		});
 	}
 
-	private void WaterEverything()
+	private void WaterPlant(GardenSnapshot candidate, GardenPlant plant)
 	{
-		foreach (var plant in plants.Where(plant => !plant.Watered).ToArray())
-			ToggleWater(plant);
+		plant.WateredOn = SampleToday;
+		candidate.Entries.Insert(0, new GardenEntry("JournalWateredTitle", "WateringDescription", "Watered",
+			SampleToday, DateTime.UtcNow.Ticks, plant.Id, AutomaticWatering: true));
 	}
+
+	private async Task WaterEverything() => await CommitAsync(candidate =>
+	{
+		foreach (var plant in candidate.Plants.Where(plant => plant.WateredOn != SampleToday))
+			WaterPlant(candidate, plant);
+	});
 
 	private void OpenPlantForm()
 	{
+		saveError = string.Empty;
 		editingPlant = null;
 		plantNameInput = string.Empty;
 		plantSpeciesInput = string.Empty;
-		plantLocationInput = places.First(place => !place.Outdoor).Name;
+		plantLocationInput = places.FirstOrDefault(place => !place.Outdoor)?.Name ?? places.First().Name;
 		plantCategoryInput = CategoryOrder[1];
 		plantFormError = string.Empty;
 		showPlantForm = true;
@@ -560,6 +713,7 @@ else
 
 	private void OpenEditPlantForm()
 	{
+		saveError = string.Empty;
 		if (selectedPlant is null) return;
 		editingPlant = selectedPlant;
 		plantNameInput = PlantName(selectedPlant);
@@ -570,29 +724,32 @@ else
 		showPlantForm = true;
 	}
 
-	private void SavePlant()
+	private async Task SavePlant()
 	{
 		if (string.IsNullOrWhiteSpace(plantNameInput))
 		{
 			plantFormError = "PlantNameRequired";
 			return;
 		}
-		if (editingPlant is null)
+		if (await CommitAsync(candidate =>
 		{
-			plants.Add(new Plant(plantNameInput.Trim(), string.IsNullOrWhiteSpace(plantSpeciesInput) ? plantNameInput.Trim() : plantSpeciesInput.Trim(), plantLocationInput, plantCategoryInput, "Normal", "Bright", string.Empty, plants[0].Care));
-		}
-		else
-		{
-			editingPlant.Name = plantNameInput.Trim();
-			editingPlant.Species = string.IsNullOrWhiteSpace(plantSpeciesInput) ? plantNameInput.Trim() : plantSpeciesInput.Trim();
-			editingPlant.Location = plantLocationInput;
-			editingPlant.Category = plantCategoryInput;
-		}
-		CloseForms();
+			var saved = editingPlant is null ? new GardenPlant
+			{
+				Id = Guid.NewGuid().ToString("N"), CareCatalogId = catalog[0].Id,
+				WaterAmount = "Normal", Light = "Bright"
+			} : candidate.Plants.First(plant => plant.Id == editingPlant.Id);
+			saved.Name = plantNameInput.Trim();
+			saved.Species = string.IsNullOrWhiteSpace(plantSpeciesInput) ? saved.Name : plantSpeciesInput.Trim();
+			saved.Location = plantLocationInput;
+			saved.Category = plantCategoryInput;
+			if (editingPlant is null) candidate.Plants.Add(saved);
+		}))
+			CloseForms();
 	}
 
 	private void OpenPlaceForm()
 	{
+		saveError = string.Empty;
 		editingPlace = null;
 		placeNameInput = string.Empty;
 		placeLightInput = "Bright, filtered";
@@ -607,6 +764,7 @@ else
 
 	private void OpenEditPlaceForm(Place place)
 	{
+		saveError = string.Empty;
 		editingPlace = place;
 		placeNameInput = place.Name;
 		placeLightInput = place.Light;
@@ -621,6 +779,7 @@ else
 
 	private void OpenDeletePlaceConfirmation(Place place)
 	{
+		saveError = string.Empty;
 		if (!places.Contains(place) || PlaceHasPlants(place)) return;
 		placeDeleteError = string.Empty;
 		placePendingDeletion = place;
@@ -628,11 +787,12 @@ else
 
 	private void CancelDeletePlace()
 	{
+		saveError = string.Empty;
 		placePendingDeletion = null;
 		placeDeleteError = string.Empty;
 	}
 
-	private void DeletePlace()
+	private async Task DeletePlace()
 	{
 		if (placePendingDeletion is null) return;
 		if (PlaceHasPlants(placePendingDeletion))
@@ -641,11 +801,11 @@ else
 			return;
 		}
 
-		places.Remove(placePendingDeletion);
-		CancelDeletePlace();
+		if (await CommitAsync(candidate => candidate.Places.RemoveAll(place => place.Name == placePendingDeletion.Name)))
+			CancelDeletePlace();
 	}
 
-	private void SavePlace()
+	private async Task SavePlace()
 	{
 		var name = placeNameInput.Trim();
 		if (name.Length == 0)
@@ -659,16 +819,18 @@ else
 			return;
 		}
 
-		if (editingPlace is null)
+		if (await CommitAsync(candidate =>
 		{
-			places.Add(new Place(name, placeLightInput, placeTemperatureInput.Trim(), placeOutdoorInput, placeNoteInput.Trim()));
-		}
-		else
-		{
-			var editedPlace = editingPlace;
-			var temperatureUnchanged = string.Equals(placeTemperatureInput.Trim(), placeTemperatureInputOriginal, StringComparison.Ordinal);
-			var noteUnchanged = string.Equals(placeNoteInput.Trim(), placeNoteInputOriginal, StringComparison.Ordinal);
-			var updatedPlace = editedPlace with
+			if (editingPlace is null)
+			{
+				candidate.Places.Add(new GardenPlace(name, placeLightInput, placeTemperatureInput.Trim(), placeOutdoorInput, placeNoteInput.Trim()));
+				return;
+			}
+			var index = candidate.Places.FindIndex(place => place.Name == editingPlace.Name);
+			var editedPlace = candidate.Places[index];
+			var temperatureUnchanged = placeTemperatureInput.Trim() == placeTemperatureInputOriginal;
+			var noteUnchanged = placeNoteInput.Trim() == placeNoteInputOriginal;
+			candidate.Places[index] = editedPlace with
 			{
 				Name = name,
 				Light = placeLightInput,
@@ -678,23 +840,18 @@ else
 				Note = noteUnchanged ? editedPlace.Note : placeNoteInput.Trim(),
 				NoteKey = noteUnchanged ? editedPlace.NoteKey : null
 			};
-			var placeIndex = places.FindIndex(place => ReferenceEquals(place, editedPlace));
-			if (placeIndex < 0)
-				throw new InvalidOperationException("The place being edited is no longer available.");
-			places[placeIndex] = updatedPlace;
-
 			if (!string.Equals(editedPlace.Name, name, StringComparison.Ordinal))
 			{
-				foreach (var plant in plants.Where(plant => string.Equals(plant.Location, editedPlace.Name, StringComparison.Ordinal)))
+				foreach (var plant in candidate.Plants.Where(plant => string.Equals(plant.Location, editedPlace.Name, StringComparison.Ordinal)))
 					plant.Location = name;
 			}
-		}
-
-		CloseForms();
+		}))
+			CloseForms();
 	}
 
 	private void OpenJournalForm()
 	{
+		saveError = string.Empty;
 		journalTypeInput = "Watered";
 		journalPlantInput = plants.FirstOrDefault(plant => plant.Catalog?.Id == "sample-3") is { } monstera
 			? monstera.Id
@@ -711,11 +868,13 @@ else
 	private async Task HandlePhotoSelected(InputFileChangeEventArgs eventArgs)
 	{
 		var file = eventArgs.File;
+		photoProcessing = true;
 		journalPhotoData = string.Empty;
 		journalPhotoName = string.Empty;
 		if (!file.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
 		{
 			photoError = "ChooseImage";
+			photoProcessing = false;
 			return;
 		}
 
@@ -724,7 +883,8 @@ else
 			await using var stream = file.OpenReadStream(5 * 1024 * 1024);
 			using var buffer = new MemoryStream();
 			await stream.CopyToAsync(buffer);
-			journalPhotoData = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer.ToArray())}";
+			journalPhotoData = await JS.InvokeAsync<string>("evergreenGarden.compressPhoto",
+				$"data:{file.ContentType};base64,{Convert.ToBase64String(buffer.ToArray())}");
 			journalPhotoName = file.Name;
 			photoError = string.Empty;
 		}
@@ -732,10 +892,19 @@ else
 		{
 			photoError = "ChooseSmallImage";
 		}
+		catch (JSException)
+		{
+			photoError = "GardenPhotoFailed";
+		}
+		finally
+		{
+			photoProcessing = false;
+		}
 	}
 
-	private void SaveJournalEntry()
+	private async Task SaveJournalEntry()
 	{
+		if (photoProcessing || (journalTypeInput == "Photo" && photoError.Length > 0)) return;
 		var journalPlant = plants.FirstOrDefault(plant => plant.Id == journalPlantInput);
 		if (journalPlant is null)
 		{
@@ -749,9 +918,10 @@ else
 		}
 		var titleKey = "Journal" + journalTypeInput + "Title";
 		var note = string.IsNullOrWhiteSpace(journalNoteInput) ? null : journalNoteInput.Trim();
-		DateOnly? entryDate = journalDateInput == SampleToday ? null : journalDateInput;
-		journalEntries.Insert(0, new JournalEntry(titleKey, titleKey, journalTypeInput, entryDate, DateTime.UtcNow.Ticks, PlantName(journalPlant), journalPhotoData, note, WateredPlant: journalPlant));
-		CloseForms();
+		if (await CommitAsync(candidate => candidate.Entries.Insert(0, new GardenEntry(titleKey, titleKey,
+			journalTypeInput, journalDateInput, DateTime.UtcNow.Ticks, journalPlant.Id,
+			journalTypeInput == "Photo" ? journalPhotoData : string.Empty, note))))
+			CloseForms();
 	}
 
 	private void CloseForms()
@@ -761,6 +931,7 @@ else
 		showJournalForm = false;
 		editingPlant = null;
 		editingPlace = null;
+		saveError = string.Empty;
 	}
 
 	private static IconName JournalIcon(string type) => type switch
@@ -811,7 +982,8 @@ else
 
 		public PlantCatalogEntry? Catalog { get; }
 		public PlantCareProfile Care { get; }
-		public string Id { get; }
+		public string Id { get; set; }
+		public string? CareCatalogId { get; set; }
 		public string Name { get; set; } = string.Empty;
 		public string Species { get; set; } = string.Empty;
 		public string Location { get; set; } = string.Empty;
@@ -819,9 +991,10 @@ else
 		public string WaterAmount { get; set; } = string.Empty;
 		public string Light { get; set; } = string.Empty;
 		public string Image { get; set; } = string.Empty;
-		public bool Watered { get; set; }
+		public DateOnly? WateredOn { get; set; }
+		public bool Watered => WateredOn == DateOnly.FromDateTime(DateTime.Now);
 	}
 
 	private sealed record Place(string Name, string Light, string Temperature, bool Outdoor, string Note, string? TemperatureKey = null, string? NoteKey = null);
-	private sealed record JournalEntry(string TitleKey, string DescriptionKey, string Type, DateOnly? Date, long SortOrder, string PlantName = "", string PhotoData = "", string? UserNote = null, Plant? WateredPlant = null, string WaterAmount = "");
+	private sealed record JournalEntry(string TitleKey, string DescriptionKey, string Type, DateOnly? Date, long SortOrder, string PlantName = "", string PhotoData = "", string? UserNote = null, Plant? WateredPlant = null, string WaterAmount = "", bool AutomaticWatering = false);
 }

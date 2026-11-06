@@ -19,6 +19,7 @@ public sealed class PlantCatalogTests
         Assert.Equal(Enumerable.Range(1, 23).Select(index => $"sample-{index}"), plants.Select(plant => plant.Id));
         Assert.All(plants, plant =>
         {
+            Assert.False(plant.Validated);
             Assert.All(new[] { "en", "es", "de" }, language =>
             {
                 Assert.False(string.IsNullOrWhiteSpace(plant.Name[language]));

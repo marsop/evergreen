@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 
 namespace Evergreen.Components.Plants;
 
@@ -112,6 +113,8 @@ public sealed class PlantCatalogIndexEntry
 public sealed class PlantCatalogEntry
 {
     public string Id { get; set; } = string.Empty;
+    [JsonRequired]
+    public bool Validated { get; set; }
     public Dictionary<string, string> Name { get; set; } = [];
     public string Species { get; set; } = string.Empty;
     public string Location { get; set; } = string.Empty;

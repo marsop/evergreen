@@ -225,4 +225,17 @@
   <data name="NewFruitsDescription" xml:space="preserve"><value>3 neue Früchte</value></data>
   <data name="WinterStartedTitle" xml:space="preserve"><value>Winterrhythmus gestartet</value></data>
   <data name="WinterStartedDescription" xml:space="preserve"><value>23 Pflanzen auf 1× pro Woche umgestellt (Sonntag)</value></data>
+  <data name="GardenRecovery" xml:space="preserve"><value>Gespeicherter Garten nicht verfügbar</value></data>
+  <data name="GardenInvalid" xml:space="preserve"><value>Der gespeicherte Garten ist beschädigt. Er wurde nicht überschrieben. Erneut laden oder ausdrücklich auf den Beispielgarten zurücksetzen.</value></data>
+  <data name="GardenUnsupported" xml:space="preserve"><value>Der gespeicherte Garten verwendet ein nicht unterstütztes Format. Er wurde nicht überschrieben. Eine kompatible App-Version verwenden oder ausdrücklich zurücksetzen.</value></data>
+  <data name="GardenReadFailed" xml:space="preserve"><value>Der Browserspeicher konnte nicht gelesen werden. Lokalen Speicher erlauben und erneut versuchen. Der gespeicherte Garten wurde nicht überschrieben.</value></data>
+  <data name="GardenSaveFailed" xml:space="preserve"><value>Die Änderungen wurden nicht gespeichert. Der Garten ist unverändert und die Formulareingaben bleiben erhalten. Der Browserspeicher ist möglicherweise voll oder blockiert. Speicher freigeben oder erlauben und die Aktion erneut versuchen.</value></data>
+  <data name="GardenResetFailed" xml:space="preserve"><value>Der gespeicherte Garten konnte nicht zurückgesetzt werden. Browserspeicher erlauben und erneut versuchen.</value></data>
+  <data name="GardenRetry" xml:space="preserve"><value>Erneut laden</value></data>
+  <data name="GardenReset" xml:space="preserve"><value>Garten zurücksetzen</value></data>
+  <data name="GardenResetConfirm" xml:space="preserve"><value>Dies entfernt den gespeicherten Garten in diesem Browser endgültig und stellt die Beispiele wieder her. Die Spracheinstellung bleibt erhalten. Zurücksetzen bestätigen?</value></data>
+  <data name="GardenNeedsPlace" xml:space="preserve"><value>Vor der ersten Pflanze unter Standorte einen Standort hinzufügen.</value></data>
+  <data name="GardenPhotoFailed" xml:space="preserve"><value>Das Bild konnte nicht verarbeitet werden. Vor dem Speichern ein anderes Bild auswählen.</value></data>
+  <data name="GardenPhotoProcessing" xml:space="preserve"><value>Foto wird vorbereitet...</value></data>
+  <data name="GardenSaving" xml:space="preserve"><value>Garten wird gespeichert...</value></data>
 </root>
