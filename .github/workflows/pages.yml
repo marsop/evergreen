@@ -17,7 +17,7 @@ concurrency:
 jobs:
   publish:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
@@ -81,7 +81,7 @@ jobs:
       (github.event_name == 'workflow_dispatch' ||
        (github.event_name == 'push' &&
         (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/gh-pages')))
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       pages: write
