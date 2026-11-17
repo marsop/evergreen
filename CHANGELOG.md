@@ -6,6 +6,8 @@ Notable changes to Evergreen are documented here.
 
 ### Added
 
+- IndexedDB persistence for large-capacity local plant and photo storage with synchronized `localStorage` backup.
+- Garden backup export and file import with full schema validation and confirmation.
 - Repository contributor guidance and a Release build workflow.
 - GitHub Pages deployment for the standalone WebAssembly app.
 - English, Spanish, and German localization using `.resx` resources, browser-language detection, and a persistent language selector.

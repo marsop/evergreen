@@ -30,8 +30,13 @@ else if (loadError is not null)
 				<button class="button button-dark" @onclick="ResetGardenAsync">@T("GardenReset")</button>
 				<button class="button button-quiet" @onclick="() => confirmReset = false">@T("Cancel")</button>
 			}
+			<label class="button button-quiet recovery-import-label">
+				<span>@T("ImportGarden")</span>
+				<InputFile class="visually-hidden" aria-label="@T("ChooseBackupFile")" accept=".json,application/json" OnChange="HandleRecoveryBackupFileSelected" />
+			</label>
 		}
 		@if (saveError.Length > 0) { <p class="form-error" role="alert">@T(saveError)</p> }
+		@if (importError.Length > 0) { <p class="form-error" role="alert">@T(importError)</p> }
 	</main>
 }
 else
@@ -74,6 +79,7 @@ else
 			<div class="topbar-actions">
 				<span class="today-date">@SampleToday.ToString(T("DashboardDateFormat"), Cultures.Culture)</span>
 				<LanguageSelector />
+				<button class="button button-quiet button-icon" @onclick="OpenBackupDialog" title="@T("GardenData")" aria-label="@T("GardenData")"><AppIcon Name="@IconName.Database" /></button>
 				<button class="button button-dark" disabled="@(plants.Count == 0)" @onclick="OpenJournalForm"><AppIcon Name="@IconName.Plus" /> @T("LogCare")</button>
 			</div>
 		</header>
@@ -394,8 +400,85 @@ else
 		</section>
 	</div>
 }
+@if (showBackupDialog)
+{
+	<div class="modal-backdrop" role="presentation">
+		<section class="modal backup-modal" role="dialog" aria-modal="true" aria-labelledby="backup-modal-title">
+			<div class="modal-heading">
+				<div>
+					<p class="eyebrow">@T("YourGarden")</p>
+					<h2 id="backup-modal-title">@T("GardenData")</h2>
+				</div>
+				<button class="close-button" aria-label="@T("Close")" @onclick="CloseForms">×</button>
+			</div>
+
+			<div class="backup-section">
+				<h3>@T("ExportGarden")</h3>
+				<p class="muted-copy">@T("ExportGardenHelp")</p>
+				<button type="button" class="button button-dark" @onclick="ExportGardenAsync">
+					<AppIcon Name="@IconName.Database" /> @T("ExportGarden")
+				</button>
+			</div>
+
+			<hr class="backup-divider" />
+
+			<div class="backup-section">
+				<h3>@T("ImportGarden")</h3>
+				<p class="muted-copy">@T("ImportGardenHelp")</p>
+				<label class="photo-upload">
+					<span>@T("ImportGarden")</span>
+					<span class="file-picker">@T("ChooseBackupFile")</span>
+					<InputFile class="visually-hidden" aria-label="@T("ChooseBackupFile")" accept=".json,application/json" OnChange="HandleBackupFileSelected" />
+					<span>@(importFileName.Length > 0 ? importFileName : T("NoFileSelected"))</span>
+				</label>
+				@if (importError.Length > 0)
+				{
+					<p class="form-error" role="alert">@T(importError)</p>
+				}
+				@if (pendingImportSnapshot is not null)
+				{
+					<div class="import-preview-box">
+						<p><strong>@T("ImportSummaryTitle")</strong></p>
+						<p>@T("ImportSummaryDetails", pendingImportSnapshot.Plants.Count, pendingImportSnapshot.Places.Count, pendingImportSnapshot.Entries.Count)</p>
+						<p class="form-warning">@T("ImportOverwriteWarning")</p>
+						<div class="modal-actions">
+							<button type="button" class="button button-quiet" @onclick="CancelImport">@T("Cancel")</button>
+							<button type="button" class="button button-dark" @onclick="ConfirmImportAsync">@T("ConfirmImport")</button>
+						</div>
+					</div>
+				}
+			</div>
+
+			<hr class="backup-divider" />
+
+			<div class="backup-section">
+				<h3>@T("GardenReset")</h3>
+				<p class="muted-copy">@T("GardenResetHelp")</p>
+				@if (!confirmReset)
+				{
+					<button type="button" class="button button-quiet" @onclick="() => confirmReset = true">@T("GardenReset")</button>
+				}
+				else
+				{
+					<p class="form-warning">@T("GardenResetConfirm")</p>
+					<div class="modal-actions">
+						<button type="button" class="button button-quiet" @onclick="() => confirmReset = false">@T("Cancel")</button>
+						<button type="button" class="button button-dark" @onclick="ResetGardenFromDialogAsync">@T("GardenReset")</button>
+					</div>
+				}
+			</div>
+
+			@if (saveError.Length > 0) { <p class="form-error" role="alert">@T(saveError)</p> }
+			@if (backupSuccessMessage.Length > 0) { <p class="form-success" role="status">@T(backupSuccessMessage)</p> }
+
+			<div class="modal-actions">
+				<button type="button" class="button button-quiet" @onclick="CloseForms">@T("Close")</button>
+			</div>
+		</section>
+	</div>
+}
 </fieldset>
-@if (saveError.Length > 0 && !showPlantForm && !showPlaceForm && !showJournalForm && placePendingDeletion is null)
+@if (saveError.Length > 0 && !showPlantForm && !showPlaceForm && !showJournalForm && !showBackupDialog && placePendingDeletion is null)
 {
 	<div class="garden-storage-message form-error" role="alert">@T(saveError)</div>
 }
@@ -484,6 +567,11 @@ else
 	private string placeFormError = string.Empty;
 	private string placeDeleteError = string.Empty;
 	private string journalFormError = string.Empty;
+	private bool showBackupDialog;
+	private string importFileName = string.Empty;
+	private string importError = string.Empty;
+	private GardenSnapshot? pendingImportSnapshot;
+	private string backupSuccessMessage = string.Empty;
 	private sealed record PhotoSelection(string Data, string FileName, string? Error);
 
 	private string CountLabel(string key, int count) => T(key + (count == 1 ? "One" : "Many"), count);
@@ -952,10 +1040,127 @@ else
 		showPlantForm = false;
 		showPlaceForm = false;
 		showJournalForm = false;
+		showBackupDialog = false;
 		editingPlant = null;
 		editingPlace = null;
+		pendingImportSnapshot = null;
+		importFileName = string.Empty;
+		importError = string.Empty;
+		backupSuccessMessage = string.Empty;
+		confirmReset = false;
 		ResetPlantPhotoSelection();
 		saveError = string.Empty;
+	}
+
+	private void OpenBackupDialog()
+	{
+		CloseForms();
+		showBackupDialog = true;
+	}
+
+	private async Task ExportGardenAsync()
+	{
+		backupSuccessMessage = string.Empty;
+		saveError = string.Empty;
+		var snapshot = CaptureSnapshot();
+		if (await GardenStorage.ExportAsync(snapshot))
+			backupSuccessMessage = "ExportSuccess";
+		else
+			saveError = "GardenSaveFailed";
+	}
+
+	private async Task HandleBackupFileSelected(InputFileChangeEventArgs eventArgs)
+	{
+		importError = string.Empty;
+		backupSuccessMessage = string.Empty;
+		pendingImportSnapshot = null;
+		var file = eventArgs.File;
+		importFileName = file.Name;
+		try
+		{
+			using var stream = file.OpenReadStream(maxAllowedSize: 50 * 1024 * 1024);
+			using var reader = new StreamReader(stream);
+			var json = await reader.ReadToEndAsync();
+			var result = GardenStorage.ValidateImport(json, catalog);
+			if (result.Error is not null)
+			{
+				importError = result.Error;
+				return;
+			}
+			pendingImportSnapshot = result.Snapshot;
+		}
+		catch (Exception)
+		{
+			importError = "ImportInvalidFile";
+		}
+	}
+
+	private void CancelImport()
+	{
+		pendingImportSnapshot = null;
+		importFileName = string.Empty;
+		importError = string.Empty;
+	}
+
+	private async Task ConfirmImportAsync()
+	{
+		if (pendingImportSnapshot is null) return;
+		if (await GardenStorage.SaveAsync(pendingImportSnapshot, catalog))
+		{
+			ApplySnapshot(pendingImportSnapshot);
+			pendingImportSnapshot = null;
+			importFileName = string.Empty;
+			backupSuccessMessage = "ImportSuccess";
+			showBackupDialog = false;
+		}
+		else
+		{
+			importError = "GardenSaveFailed";
+		}
+	}
+
+	private async Task ResetGardenFromDialogAsync()
+	{
+		if (await GardenStorage.ResetAsync())
+		{
+			await LoadGardenAsync();
+			showBackupDialog = false;
+		}
+		else
+		{
+			saveError = "GardenResetFailed";
+		}
+	}
+
+	private async Task HandleRecoveryBackupFileSelected(InputFileChangeEventArgs eventArgs)
+	{
+		importError = string.Empty;
+		saveError = string.Empty;
+		var file = eventArgs.File;
+		try
+		{
+			using var stream = file.OpenReadStream(maxAllowedSize: 50 * 1024 * 1024);
+			using var reader = new StreamReader(stream);
+			var json = await reader.ReadToEndAsync();
+			var result = GardenStorage.ValidateImport(json, catalog);
+			if (result.Error is not null)
+			{
+				importError = result.Error;
+				return;
+			}
+			if (await GardenStorage.SaveAsync(result.Snapshot!, catalog))
+			{
+				await LoadGardenAsync();
+			}
+			else
+			{
+				importError = "GardenSaveFailed";
+			}
+		}
+		catch (Exception)
+		{
+			importError = "ImportInvalidFile";
+		}
 	}
 
 	private static IconName JournalIcon(string type) => type switch

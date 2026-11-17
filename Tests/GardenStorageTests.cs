@@ -120,6 +120,53 @@ public sealed class GardenStorageTests
         Assert.Equal(0, js.Writes);
     }
 
+    [Fact]
+    public async Task ExportGardenGeneratesTimestampedJsonAndTriggersDownload()
+    {
+        var js = new StorageRuntime();
+        var service = CreateService(js);
+        var snapshot = Sample();
+        Assert.True(await service.ExportAsync(snapshot));
+        Assert.NotNull(js.ExportedFilename);
+        Assert.StartsWith("evergreen-garden-", js.ExportedFilename);
+        Assert.EndsWith(".json", js.ExportedFilename);
+        Assert.NotNull(js.ExportedJson);
+        var restored = JsonSerializer.Deserialize<GardenSnapshot>(js.ExportedJson, Options);
+        Assert.NotNull(restored);
+        Assert.True(restored.IsValid(Catalog));
+        js.Fail = true;
+        Assert.False(await service.ExportAsync(snapshot));
+    }
+
+    [Theory]
+    [InlineData("not json", "ImportInvalidFile")]
+    [InlineData("{}", "ImportInvalidFile")]
+    [InlineData("{\"version\":2,\"plants\":[],\"places\":[],\"entries\":[]}", "GardenUnsupported")]
+    [InlineData("{\"version\":1,\"plants\":[{\"id\":\"p1\",\"species\":\"Fern\",\"location\":\"Unknown\",\"category\":\"Succulents & dry\",\"image\":\"\",\"waterAmount\":\"Low\",\"light\":\"Full sun\"}],\"places\":[],\"entries\":[]}", "ImportInvalidFile")]
+    public void ValidateImportRejectsMalformedOrInvalidSnapshots(string json, string expectedError)
+    {
+        var js = new StorageRuntime();
+        var service = CreateService(js);
+        var result = service.ValidateImport(json, Catalog);
+        Assert.Null(result.Snapshot);
+        Assert.Equal(expectedError, result.Error);
+    }
+
+    [Fact]
+    public void ValidateImportAcceptsValidSnapshot()
+    {
+        var js = new StorageRuntime();
+        var service = CreateService(js);
+        var sample = Sample();
+        var json = JsonSerializer.Serialize(sample, Options);
+        var result = service.ValidateImport(json, Catalog);
+        Assert.Null(result.Error);
+        Assert.NotNull(result.Snapshot);
+        Assert.Equal(sample.Plants.Count, result.Snapshot.Plants.Count);
+        Assert.Equal(sample.Places.Count, result.Snapshot.Places.Count);
+        Assert.Equal(sample.Entries.Count, result.Snapshot.Entries.Count);
+    }
+
     private static GardenStorageService CreateService(StorageRuntime js) => new(js, NullLogger<GardenStorageService>.Instance);
 
     private static GardenSnapshot Sample() => new()
@@ -139,6 +186,8 @@ public sealed class GardenStorageTests
         public string? Value { get; set; }
         public bool Fail { get; set; }
         public int Writes { get; private set; }
+        public string? ExportedFilename { get; private set; }
+        public string? ExportedJson { get; private set; }
 
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) =>
             InvokeAsync<TValue>(identifier, CancellationToken.None, args);
@@ -152,6 +201,10 @@ public sealed class GardenStorageTests
                 case "evergreenGarden.read": result = Value; break;
                 case "evergreenGarden.write": Value = (string)args![0]!; Writes++; break;
                 case "evergreenGarden.reset": Value = null; break;
+                case "evergreenGarden.exportFile":
+                    ExportedFilename = (string)args![0]!;
+                    ExportedJson = (string)args[1]!;
+                    break;
                 default: throw new InvalidOperationException(identifier);
             }
             return ValueTask.FromResult(result is null ? default! : (TValue)result);

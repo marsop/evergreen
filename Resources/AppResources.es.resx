@@ -239,4 +239,19 @@
   <data name="GardenPhotoFailed" xml:space="preserve"><value>No se pudo procesar la imagen. Elige otra imagen antes de guardar.</value></data>
   <data name="GardenPhotoProcessing" xml:space="preserve"><value>Preparando foto...</value></data>
   <data name="GardenSaving" xml:space="preserve"><value>Guardando jardín...</value></data>
+  <data name="GardenData" xml:space="preserve"><value>Datos del jardín</value></data>
+  <data name="ExportGarden" xml:space="preserve"><value>Exportar copia</value></data>
+  <data name="ExportGardenHelp" xml:space="preserve"><value>Descarga tus plantas, lugares, fotos y entradas del diario en un archivo JSON.</value></data>
+  <data name="ImportGarden" xml:space="preserve"><value>Importar copia</value></data>
+  <data name="ImportGardenHelp" xml:space="preserve"><value>Restaura tu jardín desde una copia de seguridad JSON exportada anteriormente.</value></data>
+  <data name="ChooseBackupFile" xml:space="preserve"><value>Elegir archivo JSON de copia</value></data>
+  <data name="NoFileSelected" xml:space="preserve"><value>Ningún archivo seleccionado</value></data>
+  <data name="ImportSummaryTitle" xml:space="preserve"><value>Contenido de la copia</value></data>
+  <data name="ImportSummaryDetails" xml:space="preserve"><value>{0} plantas, {1} lugares, {2} entradas del diario</value></data>
+  <data name="ImportOverwriteWarning" xml:space="preserve"><value>Al importar esta copia se reemplazará tu jardín actual en este navegador.</value></data>
+  <data name="ConfirmImport" xml:space="preserve"><value>Confirmar y restaurar</value></data>
+  <data name="ImportInvalidFile" xml:space="preserve"><value>El archivo seleccionado no es una copia de seguridad válida de Evergreen.</value></data>
+  <data name="ImportSuccess" xml:space="preserve"><value>Copia de seguridad del jardín restaurada con éxito.</value></data>
+  <data name="ExportSuccess" xml:space="preserve"><value>Copia de seguridad del jardín descargada.</value></data>
+  <data name="GardenResetHelp" xml:space="preserve"><value>Restaura las plantas de ejemplo originales y borra el progreso personalizado en este navegador.</value></data>
 </root>

@@ -6,6 +6,7 @@ public enum IconName
     ArrowLeft,
     ArrowRight,
     Check,
+    Database,
     Edit,
     Fertilizer,
     Home,

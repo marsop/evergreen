@@ -239,4 +239,19 @@
   <data name="GardenPhotoFailed" xml:space="preserve"><value>Das Bild konnte nicht verarbeitet werden. Vor dem Speichern ein anderes Bild auswählen.</value></data>
   <data name="GardenPhotoProcessing" xml:space="preserve"><value>Foto wird vorbereitet...</value></data>
   <data name="GardenSaving" xml:space="preserve"><value>Garten wird gespeichert...</value></data>
+  <data name="GardenData" xml:space="preserve"><value>Gartendaten</value></data>
+  <data name="ExportGarden" xml:space="preserve"><value>Backup exportieren</value></data>
+  <data name="ExportGardenHelp" xml:space="preserve"><value>Lade deine Pflanzen, Standorte, Fotos und Tagebucheinträge als JSON-Datei herunter.</value></data>
+  <data name="ImportGarden" xml:space="preserve"><value>Backup importieren</value></data>
+  <data name="ImportGardenHelp" xml:space="preserve"><value>Stelle deinen Garten aus einer zuvor exportierten JSON-Backup-Datei wieder her.</value></data>
+  <data name="ChooseBackupFile" xml:space="preserve"><value>JSON-Backup-Datei auswählen</value></data>
+  <data name="NoFileSelected" xml:space="preserve"><value>Keine Datei ausgewählt</value></data>
+  <data name="ImportSummaryTitle" xml:space="preserve"><value>Inhalt des Backups</value></data>
+  <data name="ImportSummaryDetails" xml:space="preserve"><value>{0} Pflanzen, {1} Standorte, {2} Tagebucheinträge</value></data>
+  <data name="ImportOverwriteWarning" xml:space="preserve"><value>Das Importieren dieses Backups ersetzt deinen aktuellen Garten in diesem Browser.</value></data>
+  <data name="ConfirmImport" xml:space="preserve"><value>Bestätigen und wiederherstellen</value></data>
+  <data name="ImportInvalidFile" xml:space="preserve"><value>Die ausgewählte Datei ist kein gültiges Evergreen-Gartenbackup.</value></data>
+  <data name="ImportSuccess" xml:space="preserve"><value>Garten-Backup erfolgreich wiederhergestellt.</value></data>
+  <data name="ExportSuccess" xml:space="preserve"><value>Garten-Backup heruntergeladen.</value></data>
+  <data name="GardenResetHelp" xml:space="preserve"><value>Stellt die ursprünglichen Beispielpflanzen wieder her und löscht den eigenen Fortschritt in diesem Browser.</value></data>
 </root>

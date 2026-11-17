@@ -239,4 +239,19 @@
   <data name="GardenPhotoFailed" xml:space="preserve"><value>This image could not be processed. Choose another image before saving.</value></data>
   <data name="GardenPhotoProcessing" xml:space="preserve"><value>Preparing photo...</value></data>
   <data name="GardenSaving" xml:space="preserve"><value>Saving garden...</value></data>
+  <data name="GardenData" xml:space="preserve"><value>Garden data</value></data>
+  <data name="ExportGarden" xml:space="preserve"><value>Export backup</value></data>
+  <data name="ExportGardenHelp" xml:space="preserve"><value>Download your plants, places, photos, and journal entries as a JSON file.</value></data>
+  <data name="ImportGarden" xml:space="preserve"><value>Import backup</value></data>
+  <data name="ImportGardenHelp" xml:space="preserve"><value>Restore your garden from a previously exported JSON backup file.</value></data>
+  <data name="ChooseBackupFile" xml:space="preserve"><value>Choose JSON backup file</value></data>
+  <data name="NoFileSelected" xml:space="preserve"><value>No file selected</value></data>
+  <data name="ImportSummaryTitle" xml:space="preserve"><value>Backup contents</value></data>
+  <data name="ImportSummaryDetails" xml:space="preserve"><value>{0} plants, {1} places, {2} journal entries</value></data>
+  <data name="ImportOverwriteWarning" xml:space="preserve"><value>Importing this backup will replace your current garden in this browser.</value></data>
+  <data name="ConfirmImport" xml:space="preserve"><value>Confirm and restore</value></data>
+  <data name="ImportInvalidFile" xml:space="preserve"><value>The selected file is not a valid Evergreen garden backup.</value></data>
+  <data name="ImportSuccess" xml:space="preserve"><value>Garden backup restored successfully.</value></data>
+  <data name="ExportSuccess" xml:space="preserve"><value>Garden backup downloaded.</value></data>
+  <data name="GardenResetHelp" xml:space="preserve"><value>Restore the original sample plants and clear custom progress in this browser.</value></data>
 </root>

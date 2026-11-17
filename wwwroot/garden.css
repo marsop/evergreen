@@ -292,6 +292,15 @@ h3 { font-size: calc(14px * var(--desktop-font-scale, 1)); margin: 0; }
 .form-row { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
 .check-label { align-items: center; display: flex !important; flex-direction: row; gap: 9px !important; }
 .check-label input { accent-color: var(--leaf); }
+.button-icon { min-width: 40px; padding: 0 10px; }
+.backup-modal { max-width: 520px; }
+.backup-section { margin-bottom: 20px; }
+.backup-section h3 { font-family: var(--serif); font-size: calc(18px * var(--desktop-font-scale, 1)); font-weight: 400; margin: 0 0 6px; }
+.backup-divider { border: 0; border-top: 1px solid var(--line); margin: 18px 0; }
+.import-preview-box { background: #f2f7ef; border: 1px solid #d5e4d2; border-radius: 6px; margin-top: 12px; padding: 12px; }
+.form-warning { color: #b06526; font-size: calc(11px * var(--desktop-font-scale, 1)); font-weight: 500; margin: 8px 0; }
+.form-success { color: #31583d; font-size: calc(11px * var(--desktop-font-scale, 1)); font-weight: 500; margin: 8px 0; }
+.recovery-import-label { cursor: pointer; display: inline-flex; margin-top: 8px; }
 .modal-actions { border-top: 1px solid var(--line); display: flex; gap: 9px; justify-content: flex-end; margin-top: 4px; padding-top: 16px; }
 
 #blazor-error-ui { background: #f7e7e2; bottom: 0; box-shadow: 0 -1px 5px rgba(0,0,0,.15); display: none; left: 0; padding: 10px 18px; position: fixed; right: 0; z-index: 1000; }

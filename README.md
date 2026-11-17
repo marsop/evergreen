@@ -12,11 +12,14 @@ Evergreen is a Blazor WebAssembly plant-care dashboard for keeping track of plan
 - Browser Back/Forward navigation between views and plant profiles
 - English, Spanish, and German with instant language switching
 - Subtle seasonal SVG backgrounds with reduced-motion support
-- Automatic localStorage saving for plants, places, journal entries, photos, and care actions
+- Automatic IndexedDB and localStorage saving for plants, places, journal entries, photos, and care actions
+- Garden data backup export and restore import (JSON files) from the dashboard or recovery screen
 
 ## Local garden storage
 
-The first visit starts with the sample plants and places and an empty journal. Each successful garden edit saves a complete, versioned snapshot in localStorage (`evergreen.garden`). Reloading or reopening the app in the same browser and origin restores that snapshot, including user-entered names, place edits/deletions, journal notes/photos, and plant profile links. Language is stored separately in `evergreen.culture`.
+The first visit starts with the sample plants and places and an empty journal. Each successful garden edit saves a complete, versioned snapshot in IndexedDB (`evergreen_db` / `garden`), while keeping `localStorage` (`evergreen.garden`) synchronized as a safety backup. Reloading or reopening the app in the same browser and origin restores that snapshot, including user-entered names, place edits/deletions, journal notes/photos, and plant profile links. Language is stored separately in `evergreen.culture`.
+
+Users can also export a complete backup of their garden (plants, places, photos, notes, and watering history) as a timestamped JSON file via the **Garden data** header button, and import a previously saved backup file with validation and confirmation. The import option is also accessible from the **Garden recovery** view if local storage ever becomes unreadable or damaged.
 
 Changes become part of the garden only after saving succeeds. If browser storage is blocked or full, an explicit error appears, the committed garden stays unchanged, and open form inputs are retained. Allow storage or free space and repeat the action. Bulk watering is saved as one operation, so a failed save cannot water only part of the garden.
 
