@@ -214,7 +214,8 @@ else
 								@if (!string.IsNullOrWhiteSpace(PlaceNote(place))) { <p class="place-note">@PlaceNote(place)</p> }
 							</button>
 							<button type="button" class="place-edit-action" aria-label="@T("EditPlace")" @onclick="() => OpenEditPlaceForm(place)">@T("EditPlace")</button>
-							<button type="button" class="place-delete-action" aria-label="@T("DeletePlace")" disabled="@PlaceHasPlants(place)" @onclick="() => OpenDeletePlaceConfirmation(place)">@T("DeletePlace")</button>
+							<button type="button" class="place-delete-action" aria-label="@T("DeletePlace")" title="@(PlaceHasPlants(place) ? T("PlaceHasPlants") : null)" disabled="@PlaceHasPlants(place)" @onclick="() => OpenDeletePlaceConfirmation(place)">@T("DeletePlace")</button>
+							@if (PlaceHasPlants(place)) { <span class="place-delete-help">@T("PlaceHasPlants")</span> }
 						</article>
 					}
 				</div>
@@ -229,7 +230,8 @@ else
 								@if (!string.IsNullOrWhiteSpace(PlaceNote(place))) { <p class="place-note">@PlaceNote(place)</p> }
 							</button>
 							<button type="button" class="place-edit-action" aria-label="@T("EditPlace")" @onclick="() => OpenEditPlaceForm(place)">@T("EditPlace")</button>
-							<button type="button" class="place-delete-action" aria-label="@T("DeletePlace")" disabled="@PlaceHasPlants(place)" @onclick="() => OpenDeletePlaceConfirmation(place)">@T("DeletePlace")</button>
+							<button type="button" class="place-delete-action" aria-label="@T("DeletePlace")" title="@(PlaceHasPlants(place) ? T("PlaceHasPlants") : null)" disabled="@PlaceHasPlants(place)" @onclick="() => OpenDeletePlaceConfirmation(place)">@T("DeletePlace")</button>
+							@if (PlaceHasPlants(place)) { <span class="place-delete-help">@T("PlaceHasPlants")</span> }
 						</article>
 					}
 				</div>
