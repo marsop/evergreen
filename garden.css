@@ -182,6 +182,7 @@ h3 { font-size: calc(14px * var(--desktop-font-scale, 1)); margin: 0; }
 .place-edit-action:hover { color: var(--leaf); }
 .place-delete-action { align-self: flex-end; background: transparent; border: 0; color: #9c5e4d; cursor: pointer; font-size: calc(10px * var(--desktop-font-scale, 1)); margin: 0 4px; padding: 4px 6px; text-decoration: underline; text-underline-offset: 2px; }
 .place-delete-action:disabled { color: #9a9d97; cursor: not-allowed; text-decoration: none; }
+.place-delete-help { align-self: flex-end; color: #848d84; font-size: calc(9px * var(--desktop-font-scale, 1)); margin: 0 10px 4px; text-align: right; }
 .place-card-top { align-items: center; display: flex; justify-content: space-between; }
 .place-symbol { align-items: center; background: #e8efe7; border-radius: 6px; color: var(--leaf); display: inline-flex; height: 34px; justify-content: center; width: 34px; }
 .place-symbol .app-icon { height: 19px; width: 19px; }
